@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <!-- Chinese key-fret (回纹) window lattice, drawn for Lulu. Used as a faint texture. -->
+  <defs>
+    <pattern id="fret" width="160" height="160" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#c9a961" stroke-width="3" stroke-linecap="square">
+        <path d="M10 10 H150 V150 H10 V40 H120 V120 H40 V70 H90 V90" />
+        <path d="M0 80 H10 M150 80 H160 M80 0 V10 M80 150 V160" />
+      </g>
+    </pattern>
+    <radialGradient id="fade" cx="70%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#fff" stop-opacity="1" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </radialGradient>
+    <mask id="m">
+      <rect width="1600" height="1000" fill="url(#fade)" />
+    </mask>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#fret)" mask="url(#m)" />
+</svg>

@@ -149,7 +149,7 @@ export default function MenuBoard() {
   };
 
   return (
-    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#050509]" : "bg-ink"}`}>
+    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#070303]" : "bg-ink"}`}>
       {neon && (
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_30%_at_80%_10%,rgba(255,46,126,0.14),transparent_70%)]" />
       )}

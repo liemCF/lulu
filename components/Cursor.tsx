@@ -45,8 +45,8 @@ export default function Cursor() {
       gsap.to(ring.current, {
         width: filled ? 96 : next === "link" ? 64 : 38,
         height: filled ? 96 : next === "link" ? 64 : 38,
-        backgroundColor: filled ? "rgba(201,169,97,0.95)" : "rgba(201,169,97,0)",
-        borderColor: filled ? "rgba(201,169,97,0)" : "rgba(201,169,97,0.55)",
+        backgroundColor: filled ? "color-mix(in srgb, var(--color-gold) 95%, transparent)" : "color-mix(in srgb, var(--color-gold) 0%, transparent)",
+        borderColor: filled ? "color-mix(in srgb, var(--color-gold) 0%, transparent)" : "color-mix(in srgb, var(--color-gold) 55%, transparent)",
         duration: 0.45,
         ease: "expo.out",
       });

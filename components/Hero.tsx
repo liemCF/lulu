@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/reveal";
-import { info, links } from "@/lib/content";
+import { info } from "@/lib/content";
 import HeroCanvas from "./HeroCanvas";
 import OpenStatus from "./OpenStatus";
 import { useLenis } from "./SmoothScroll";
@@ -71,6 +71,7 @@ export default function Hero() {
       // Act 1: the mark surfaces from the dark, a band of light passes over it,
       // and a hairline tracks the hero photo loading. Act 2: lacquer doors part.
       let ready = false;
+      const wordmark = SplitText.create(q("[data-wordmark]"), { type: "chars" });
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
       tl.fromTo(
         q("[data-loader-logo]"),
@@ -113,24 +114,15 @@ export default function Hero() {
         .add(finish, "doors+=0.6")
         .set(q("[data-loader]"), { display: "none" }, "doors+=1.5")
         .fromTo(q("[data-hero-veil]"), { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" }, "doors+=0.3")
+        // The wordmark rises letter by letter once the doors are open.
+        .set(q("[data-wordmark]"), { opacity: 1 }, "doors+=0.8")
         .fromTo(
-          q("[data-hero-line]"),
-          { yPercent: 110, opacity: 1 },
-          { yPercent: 0, opacity: 1, duration: 1.4, stagger: 0.1 },
-          "doors+=0.7",
+          wordmark.chars,
+          { opacity: 0, y: "2rem" },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.05, ease: "power2.out" },
+          "doors+=0.8",
         )
-        .fromTo(
-          q("[data-hero-fade]"),
-          { y: 24, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 1.2, stagger: 0.08 },
-          "doors+=1.0",
-        )
-        .fromTo(
-          q("[data-hero-info]"),
-          { y: 30, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 1.2, stagger: 0.08 },
-          "doors+=1.1",
-        );
+        .fromTo(q("[data-hero-fade]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, "doors+=1.4");
 
       // Returning in the same session: skip straight to the doors.
       if (seen) tl.seek(tl.labels.doors - 0.15);
@@ -146,8 +138,8 @@ export default function Hero() {
         ease: "none",
         scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: true },
       });
-      gsap.to(q("[data-hero-copy]"), {
-        yPercent: -30,
+      gsap.to(q("[data-wordmark]"), {
+        yPercent: -40,
         opacity: 0,
         ease: "none",
         scrollTrigger: { trigger: section, start: "top top", end: "bottom 30%", scrub: true },
@@ -203,7 +195,7 @@ export default function Hero() {
 
         <div
           data-loader-glow
-          className="absolute inset-0 bg-[radial-gradient(38%_32%_at_50%_48%,rgba(201,169,97,0.10),transparent_70%)] opacity-0"
+          className="absolute inset-0 bg-[radial-gradient(38%_32%_at_50%_48%,color-mix(in_srgb,var(--color-gold)_10%,transparent),transparent_70%)] opacity-0"
         />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -237,94 +229,18 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Vertical seal */}
-      <div
-        data-hero-fade
-        className="intro-hide absolute top-1/2 left-5 z-10 hidden -translate-y-1/2 flex-col items-center gap-6 md:flex"
-      >
-        <span className="font-cn text-2xl font-black text-gold [writing-mode:vertical-rl]">品味</span>
-        <span className="h-16 w-px bg-gold/40" />
-        <span className="text-[0.62rem] tracking-[0.4em] text-cream/60 uppercase [writing-mode:vertical-rl]">
-          {info.region}
-        </span>
-      </div>
-
-      {/* Copy */}
-      <div
-        data-hero-copy
-        className="pointer-events-none relative z-10 flex h-full flex-col justify-end px-5 pb-40 sm:px-10 md:pl-24 lg:pb-44"
-      >
-        <div data-hero-fade className="intro-hide mb-6 flex flex-wrap items-center gap-x-6 gap-y-2">
-          <p className="eyebrow">{info.region}</p>
+      {/* Wordmark, centred at the foot of the frame */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-md:pb-10">
+        <div data-hero-fade className="intro-hide mb-4 flex items-center gap-6 text-cream/80">
           <OpenStatus />
         </div>
-        <h1 className="font-display text-[clamp(3rem,min(9.2vw,15svh),10rem)] leading-[0.92] tracking-[-0.02em]">
-          <span className="block overflow-hidden pb-[0.06em]">
-            <span data-hero-line className="intro-hide block">
-              Modern Asian Dining.
-            </span>
-          </span>
-          <span className="block overflow-hidden pb-[0.06em]">
-            <span data-hero-line className="intro-hide block">
-              <em className="gold-foil pr-[0.1em]">Unforgettable</em>
-            </span>
-          </span>
-          <span className="block overflow-hidden pb-[0.06em]">
-            <span data-hero-line className="intro-hide block">
-              Experiences.
-            </span>
-          </span>
+        <h1
+          data-wordmark
+          aria-label="Lulu Modern Chinese"
+          className="intro-hide text-center font-display text-[10.5vw] leading-[0.9] font-light text-cream uppercase max-md:text-[17vw]"
+        >
+          Lulu Modern
         </h1>
-        <div className="pointer-events-auto mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <p data-hero-fade className="intro-hide max-w-md text-base leading-relaxed text-cream/75">
-            Home of the iconic Flaming Peking Duck and chef-driven Asian cuisine inspired by tradition, innovation,
-            and the Asian American experience.
-          </p>
-          <div data-hero-fade className="intro-hide flex flex-wrap gap-3">
-            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid">
-              Reserve a Table
-            </a>
-            <a href="/menu" className="btn text-cream">
-              View Menu
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Info strip */}
-      <div className="absolute inset-x-0 bottom-0 z-10 hidden border-t border-gold/20 bg-ink/40 backdrop-blur-md sm:block">
-        <div className="grid grid-cols-3 divide-x divide-gold/15 px-5 sm:px-10 md:pl-24">
-          <a
-            data-hero-info
-            href={links.directions}
-            target="_blank"
-            rel="noreferrer"
-            className="intro-hide group py-5 pr-6"
-          >
-            <span className="eyebrow block text-[0.62rem]">Visit</span>
-            <span className="mt-1 block text-sm text-cream/80 transition-colors group-hover:text-gold">
-              {info.address}, {info.city}
-            </span>
-          </a>
-          <a data-hero-info href={links.phone} className="intro-hide group px-6 py-5">
-            <span className="eyebrow block text-[0.62rem]">Reserve</span>
-            <span className="mt-1 block text-sm text-cream/80 transition-colors group-hover:text-gold">
-              {info.phone}
-            </span>
-          </a>
-          <a
-            data-hero-info
-            href={links.order}
-            target="_blank"
-            rel="noreferrer"
-            className="intro-hide group py-5 pl-6"
-          >
-            <span className="eyebrow block text-[0.62rem]">Order Online</span>
-            <span className="mt-1 block text-sm text-cream/80 transition-colors group-hover:text-gold">
-              Pickup & take out via Toast ↗
-            </span>
-          </a>
-        </div>
       </div>
     </section>
   );

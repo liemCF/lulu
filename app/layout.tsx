@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Inter_Tight, Noto_Serif_SC } from "next/font/google";
+import { Cormorant_Garamond, Noto_Serif_SC, Work_Sans } from "next/font/google";
 import Cursor from "@/components/Cursor";
 import Nav from "@/components/Nav";
 import PageTransition from "@/components/PageTransition";
@@ -7,15 +7,17 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Visit from "@/components/Visit";
 import "./globals.css";
 
-const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
+// Light editorial serif + Work Sans, the pairing Belgrade Arbor-style layouts are built on.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
+  weight: ["300", "400", "500"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
+const workSans = Work_Sans({
+  variable: "--font-work-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -34,14 +36,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07080c",
+  themeColor: "#0d0706",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${bodoni.variable} ${interTight.variable} ${notoSerifSC.variable} antialiased`}
+      className={`${cormorant.variable} ${workSans.variable} ${notoSerifSC.variable} antialiased`}
     >
       <body className="grain">
         <noscript>

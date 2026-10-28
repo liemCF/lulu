@@ -12,8 +12,10 @@ void main() {
   gl_Position = vec4(aPos, 0.0, 1.0);
 }`;
 
-// Heat haze rising off the flame, a soft ripple around the pointer,
-// and an RGB split that follows scroll velocity.
+// Fluted (reeded) glass over the photo: every vertical reed bends its own slice of the
+// image with a little colour fringing. The glass clears under the pointer, settles
+// after the intro and frosts up again as the hero scrolls away. A faint heat haze
+// still rises off the flame.
 const FRAG = /* glsl */ `
 precision highp float;
 uniform sampler2D uTex;
@@ -25,6 +27,8 @@ uniform float uTime;
 uniform float uHover;
 uniform float uScroll;
 uniform float uShift;
+uniform float uGlass;
+uniform float uReeds;
 varying vec2 vUv;
 
 vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -67,27 +71,33 @@ void main() {
   vec2 q = uv * vec2(3.0 * aspect, 5.0);
   float n1 = snoise(q - vec2(0.0, uTime * 0.9));
   float n2 = snoise(q * 1.7 + vec2(4.0, -uTime * 1.3));
-  vec2 offset = vec2(n1, n2) * vec2(0.0025, 0.0045) * (0.35 + heat * 1.3);
+  vec2 offset = vec2(n1, n2) * vec2(0.0015, 0.003) * (0.35 + heat * 1.3);
 
-  // Pointer ripple.
+  // The pointer acts like a clear pane in the glass.
   vec2 p = (uv - uMouse) * vec2(aspect, 1.0);
-  float d = length(p);
-  float ripple = sin(d * 38.0 - uTime * 5.0) * exp(-d * 7.0) * 0.008 * uHover;
-  offset += (d > 0.0 ? p / d : vec2(0.0)) * ripple;
+  float lens = smoothstep(0.28, 0.04, length(p)) * uHover;
+  float glass = clamp(mix(uGlass, 1.0, uScroll * 0.85) * (1.0 - lens * 0.92), 0.0, 1.0);
+
+  // Each reed refracts a slice of the image sideways.
+  float f = fract(uv.x * uReeds);
+  float k = f - 0.5;
+  float bend = k * glass * 2.2 / uReeds;
 
   // Slow push-in as the hero scrolls away.
-  vec2 st = (uv - 0.5) * (1.0 - uScroll * 0.08) + 0.5;
-  vec2 tuv = cover(st + offset);
-
+  vec2 st = (uv - 0.5) * (1.0 - uScroll * 0.08) + 0.5 + offset;
   float shift = uShift * 0.012;
   vec3 col;
-  col.r = texture2D(uTex, tuv + vec2(shift, 0.0)).r;
-  col.g = texture2D(uTex, tuv).g;
-  col.b = texture2D(uTex, tuv - vec2(shift, 0.0)).b;
+  col.r = texture2D(uTex, cover(st + vec2(bend * 1.12 + shift, 0.0))).r;
+  col.g = texture2D(uTex, cover(st + vec2(bend, 0.0))).g;
+  col.b = texture2D(uTex, cover(st + vec2(bend * 0.88 - shift, 0.0))).b;
+
+  // Rounded reed shading and a thin highlight on each ridge.
+  col *= 1.0 - glass * 0.22 * pow(abs(k) * 2.0, 2.0);
+  col += smoothstep(0.88, 1.0, f) * glass * 0.09;
 
   // Ember glow breathing with the noise.
   float flicker = 0.5 + 0.5 * sin(uTime * 6.0 + n1 * 3.0);
-  col += vec3(1.0, 0.42, 0.12) * heat * 0.07 * flicker;
+  col += vec3(1.0, 0.42, 0.12) * heat * 0.06 * flicker;
 
   // Vignette.
   float v = smoothstep(1.25, 0.35, length((uv - 0.5) * vec2(aspect * 0.9, 1.0)));
@@ -152,6 +162,8 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
     const uHover = u("uHover");
     const uScroll = u("uScroll");
     const uShift = u("uShift");
+    const uGlass = u("uGlass");
+    const uReeds = u("uReeds");
     gl.uniform2f(uFocus, focus[0], 1 - focus[1]);
 
     const texture = gl.createTexture();
@@ -181,13 +193,20 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
       canvas.height = Math.max(1, Math.round(height * dpr));
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
+      // Reeds roughly 56 CSS px wide, whatever the screen.
+      gl.uniform1f(uReeds, Math.max(6, Math.round(width / 56)));
     };
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
 
     // Smoothed pointer + hover strength.
-    const state = { mx: 0.5, my: 0.5, hover: 0, shift: 0, scroll: 0 };
+    const state = { mx: 0.5, my: 0.5, hover: 0, shift: 0, scroll: 0, glass: 1 };
+
+    // Frosted while the doors open, then the glass settles to a light flute.
+    const settle = () => gsap.to(state, { glass: 0.45, duration: 2.8, ease: "power2.inOut" });
+    if (document.documentElement.classList.contains("intro-done")) settle();
+    else window.addEventListener("lulu:intro", settle, { once: true });
     const target = { mx: 0.5, my: 0.5, hover: 0 };
     const host = canvas.parentElement!.closest("section") ?? canvas;
     const onMove = (e: PointerEvent) => {
@@ -226,6 +245,7 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
       gl.uniform1f(uHover, state.hover);
       gl.uniform1f(uScroll, state.scroll);
       gl.uniform1f(uShift, state.shift);
+      gl.uniform1f(uGlass, state.glass);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     gsap.ticker.add(tick);
@@ -233,6 +253,8 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
     return () => {
       disposed = true;
       img.onload = null;
+      window.removeEventListener("lulu:intro", settle);
+      gsap.killTweensOf(state);
       gsap.ticker.remove(tick);
       ro.disconnect();
       io.disconnect();

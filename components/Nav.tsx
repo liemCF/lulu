@@ -24,7 +24,7 @@ export default function Nav() {
 
   useGSAP(
     () => {
-      gsap.set(bar.current, { yPercent: -100, autoAlpha: 0 });
+      gsap.set(bar.current, { yPercent: -170, autoAlpha: 0 });
       const show = () => gsap.to(bar.current, { yPercent: 0, autoAlpha: 1, duration: 1.2, ease: "expo.out" });
       window.addEventListener(INTRO_EVENT, show);
 
@@ -33,12 +33,11 @@ export default function Nav() {
         start: "top -80",
         end: "max",
         onUpdate: (self) => {
-          bar.current?.classList.toggle("is-scrolled", self.scroll() > 80);
           if (openRef.current) return;
           const hide = self.direction === 1 && self.scroll() > 600;
           document.documentElement.classList.toggle("nav-hidden", hide);
           gsap.to(bar.current, {
-            yPercent: hide ? -100 : 0,
+            yPercent: hide ? -170 : 0,
             duration: 0.6,
             ease: "expo.out",
             overwrite: "auto",
@@ -102,53 +101,30 @@ export default function Nav() {
 
   return (
     <>
-      <header
-        ref={bar}
-        className="group fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-500 [&.is-scrolled]:border-gold/10 [&.is-scrolled]:bg-ink/70 [&.is-scrolled]:backdrop-blur-xl"
-      >
-        <div className="flex items-center justify-between px-5 py-3 sm:px-10">
-          <TLink href="/" onClick={close} aria-label="Lulu Modern Chinese — home">
-            <Image src="/images/logo-lulu.png" alt="Lulu Modern Chinese" width={606} height={410} loading="eager" className="h-11 w-auto" />
+      {/* Floating pill: menu toggle, logo, reserve. */}
+      <header ref={bar} className="fixed top-4 left-1/2 z-50 w-[min(560px,calc(100vw-24px))] -translate-x-1/2">
+        <div className="flex h-14 items-center justify-between rounded-full border border-gold/20 bg-ink/75 pr-2 pl-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            className="group flex h-10 items-center gap-3 rounded-full px-3 text-[0.68rem] tracking-[0.26em] text-cream uppercase transition-colors hover:text-gold"
+          >
+            <span className="relative flex h-3 w-6 flex-col justify-between">
+              <span className={`h-px w-full bg-current transition-transform duration-500 ${open ? "translate-y-[5.5px] rotate-45" : ""}`} />
+              <span className={`h-px w-full bg-current transition-transform duration-500 ${open ? "-translate-y-[5.5px] -rotate-45" : "group-hover:w-2/3"}`} />
+            </span>
+            {open ? "Close" : "Menu"}
+          </button>
+
+          <TLink href="/" onClick={close} aria-label="Lulu Modern Chinese — home" className="absolute left-1/2 -translate-x-1/2">
+            <Image src="/images/logo-lulu.png" alt="Lulu Modern Chinese" width={606} height={410} loading="eager" className="h-9 w-auto" />
           </TLink>
 
-          <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">
-            {nav.map((item) => (
-              <TLink
-                key={item.href}
-                href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className="link-line text-[0.7rem] tracking-[0.26em] text-cream/80 uppercase transition-colors hover:text-gold aria-[current=page]:text-gold"
-              >
-                {item.label}
-              </TLink>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={links.reserve}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-solid hidden !px-5 !py-3 sm:inline-flex"
-            >
-              Reserve
-            </a>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls="site-menu"
-              className="relative flex h-11 w-11 items-center justify-center lg:hidden"
-            >
-              <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-              <span
-                className={`absolute h-px w-6 bg-cream transition-transform duration-500 ${open ? "rotate-45" : "-translate-y-1"}`}
-              />
-              <span
-                className={`absolute h-px w-6 bg-cream transition-transform duration-500 ${open ? "-rotate-45" : "translate-y-1"}`}
-              />
-            </button>
-          </div>
+          <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid !rounded-full !px-5 !py-2.5 !text-[0.66rem]">
+            Reserve
+          </a>
         </div>
       </header>
 
@@ -156,7 +132,7 @@ export default function Nav() {
       <div
         ref={overlay}
         id="site-menu"
-        className="invisible fixed inset-0 z-40 flex flex-col justify-between bg-night px-5 pt-28 pb-10 sm:px-10 lg:hidden"
+        className="invisible fixed inset-0 z-40 flex flex-col justify-between bg-night px-5 pt-28 pb-10 sm:px-10 lg:grid lg:grid-cols-2 lg:items-end lg:gap-16 lg:px-24 lg:pt-32 lg:pb-16"
         style={{ clipPath: "inset(0% 0% 100% 0%)" }}
       >
         <span className="pointer-events-none absolute -right-6 bottom-24 font-cn text-[40vw] leading-none font-black text-gold/[0.04]">
@@ -170,7 +146,7 @@ export default function Nav() {
                 href={item.href}
                 onClick={close}
                 aria-current={isActive(item.href) ? "page" : undefined}
-                className="flex items-baseline gap-4 py-1 font-display text-[clamp(2.4rem,11vw,4.5rem)] leading-[1.05] aria-[current=page]:text-gold"
+                className="flex items-baseline gap-4 py-1 font-display text-[clamp(2.4rem,min(11vw,8.5svh),5.5rem)] leading-[1.05] transition-colors hover:text-gold aria-[current=page]:text-gold"
               >
                 <span className="font-sans text-xs text-gold">0{i + 1}</span>
                 {item.label}
@@ -178,7 +154,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <div data-menu-meta className="flex flex-col gap-5">
+        <div data-menu-meta className="flex flex-col gap-5 lg:max-w-md lg:justify-self-end">
           <div className="flex gap-3">
             <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid flex-1 justify-center">
               Reserve

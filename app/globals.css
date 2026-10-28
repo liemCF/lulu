@@ -1,19 +1,25 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
+/* Lacquer palette, sampled from the restaurant photos (lacquer red, oxblood, rice paper).
+   Token names are roles: "gold" is the accent, "navy" the raised section colour. */
 @theme {
-  --color-ink: #07080c;
-  --color-night: #0d1222;
-  --color-navy: #1b294f;
-  --color-gold: #c9a961;
-  --color-gold-soft: #e3cf9c;
-  --color-cream: #efe7d6;
-  --color-mute: #9a958a;
+  --color-ink: #0d0706;
+  --color-night: #140908;
+  --color-navy: #3a1411;
+  --color-navy-hi: #4c1a15;
+  --color-navy-lo: #210c0a;
+  --color-gold: #d24a2e;
+  --color-gold-soft: #eba48a;
+  --color-gold-deep: #a8321e;
+  --color-paper: #efe4d2;
+  --color-cream: #f1e5d1;
+  --color-mute: #a39385;
   --color-cinnabar: #c8322b;
   --color-neon: #ff2e7e;
 
-  --font-display: var(--font-bodoni), "Times New Roman", serif;
-  --font-sans: var(--font-inter-tight), system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-work-sans), system-ui, sans-serif;
   --font-cn: var(--font-noto-serif-sc), "Songti SC", serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -60,6 +66,61 @@ body {
 
 /* Component classes live in a layer so Tailwind utilities (hidden, px-*, etc.) can override them. */
 @layer components {
+  /* Type scale: light serif at very large sizes, tight leading. */
+  .t-huge {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(5.5rem, 17vw, 20rem);
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .t-hero {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(3.4rem, 8.4vw, 10rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .t-h1 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.8rem, 5.2vw, 6.25rem);
+    line-height: 1;
+  }
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.9rem, 2.9vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.9vw, 2rem);
+    line-height: 1.1;
+  }
+  .kicker {
+    font-family: var(--font-sans);
+    font-size: clamp(0.85rem, 1vw, 1.05rem);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .t-link {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+    text-decoration-thickness: 1px;
+    transition: color 0.3s;
+  }
+  .t-link:hover {
+    color: var(--color-gold);
+  }
+
   .eyebrow {
     font-family: var(--font-sans);
     font-size: 0.72rem;
@@ -138,13 +199,13 @@ html:not(.intro-done) .intro-hide {
 .gold-foil {
   background-image: linear-gradient(
     100deg,
-    #8a6a32 0%,
-    #c9a961 18%,
-    #f3e3b0 32%,
-    #b8954f 46%,
-    #e9d49a 60%,
-    #9c7a3c 80%,
-    #d9bf7f 100%
+    var(--color-gold-deep) 0%,
+    var(--color-gold) 18%,
+    color-mix(in srgb, var(--color-gold-soft) 70%, white) 32%,
+    var(--color-gold) 46%,
+    var(--color-gold-soft) 60%,
+    var(--color-gold-deep) 80%,
+    color-mix(in srgb, var(--color-gold) 60%, var(--color-gold-soft)) 100%
   );
   background-size: 260% 100%;
   background-position: 100% 0;

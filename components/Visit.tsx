@@ -40,6 +40,11 @@ export default function Visit() {
           scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom bottom", scrub: true },
         },
       );
+      gsap.to(q("[data-footer-front]"), {
+        y: "10rem",
+        ease: "none",
+        scrollTrigger: { trigger: q("[data-footer-scroller]")[0], start: "top bottom", end: "bottom bottom", scrub: true },
+      });
     },
     { scope: root },
   );
@@ -136,6 +141,20 @@ export default function Visit() {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* The room itself closes the page, sliding as you reach the end, with the name over it. */}
+      <div data-footer-scroller className="relative h-[70svh] overflow-clip select-none">
+        <div data-footer-front className="absolute inset-x-0 -top-40 h-[calc(100%+10rem)]">
+          <Image src="/images/night-room.webp" alt="" fill sizes="100vw" className="object-cover object-[50%_60%]" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-night via-night/30 to-ink/40" />
+        <p
+          aria-hidden
+          className="absolute inset-x-0 bottom-6 text-center font-display text-[13vw] leading-none font-light text-cream uppercase"
+        >
+          Lulu Modern
+        </p>
       </div>
     </footer>
   );
