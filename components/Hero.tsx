@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 import { info } from "@/lib/content";
-import HeroCanvas from "./HeroCanvas";
+import HeroEmbers from "./HeroEmbers";
 import OpenStatus from "./OpenStatus";
 import { useLenis } from "./SmoothScroll";
 
@@ -145,7 +145,7 @@ export default function Hero() {
         .to(q("[data-seam]"), { opacity: 0, duration: 0.9, ease: "power2.out" }, "doors+=0.5")
         .to(q("[data-door='l']"), { xPercent: -100, duration: 1.5, ease: "expo.inOut" }, "doors")
         .to(q("[data-door='r']"), { xPercent: 100, duration: 1.5, ease: "expo.inOut" }, "doors")
-        .fromTo(q("[data-hero-media]"), { scale: 1.22 }, { scale: 1, duration: 2.6, ease: "expo.out" }, "doors+=0.25")
+        .fromTo(q("[data-hero-media]"), { scale: 1.06 }, { scale: 1, duration: 2.6, ease: "expo.out" }, "doors+=0.25")
         .add(finish, "doors+=0.6")
         .set(q("[data-loader]"), { display: "none" }, "doors+=1.5")
         .fromTo(q("[data-hero-veil]"), { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" }, "doors+=0.3")
@@ -203,13 +203,15 @@ export default function Hero() {
               sizes="100vw"
               className="object-cover object-[62%_50%]"
             />
-            <HeroCanvas src={HERO_SRC} focus={[0.62, 0.5]} className="absolute inset-0 h-full w-full" />
           </div>
         </div>
+        {/* Soft warm glow over the flame and slow rising embers. The photo itself never warps. */}
+        <div className="hero-glow pointer-events-none absolute inset-0 bg-[radial-gradient(35%_30%_at_50%_88%,rgba(242,150,60,0.22),transparent_70%)]" />
         <div data-hero-veil className="intro-hide absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70" />
           <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,rgba(47,84,214,0.28),transparent_70%)]" />
         </div>
+        <HeroEmbers className="pointer-events-none absolute inset-0 h-full w-full" />
         <div data-hero-dim className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
       </div>
 
