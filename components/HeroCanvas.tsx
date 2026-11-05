@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { prefersReducedMotion } from "@/lib/reveal";
+import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 
 const VERT = /* glsl */ `
 attribute vec2 aPos;
@@ -132,7 +132,8 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || prefersReducedMotion()) return;
+    // Phones get the plain photo: the moving glass and heat haze were too much on a small screen.
+    if (!canvas || prefersReducedMotion() || prefersCalmMotion()) return;
     const gl = canvas.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: false });
     if (!gl) return;
 
