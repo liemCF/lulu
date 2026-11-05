@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
-import { prefersReducedMotion } from "@/lib/reveal";
+import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 import { info } from "@/lib/content";
 import HeroCanvas from "./HeroCanvas";
 import OpenStatus from "./OpenStatus";
@@ -67,6 +67,41 @@ export default function Hero() {
       try {
         seen = sessionStorage.getItem(SEEN_KEY) === "1";
       } catch {}
+
+      // Phones: a short, gentle fade instead of the doors, zoom, letter rise and scroll parallax
+      // (the client found the full intro dizzying on mobile).
+      if (prefersCalmMotion()) {
+        const loader = q("[data-loader]");
+        const shown = q("[data-hero-veil], [data-wordmark], [data-hero-fade]");
+        if (seen) {
+          gsap.set(loader, { display: "none" });
+          gsap.set(shown, { autoAlpha: 1 });
+          finish();
+          return;
+        }
+        let calmReady = false;
+        const calm = gsap.timeline({ defaults: { ease: "power1.out" } });
+        calm
+          .fromTo(q("[data-loader-logo]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 0.1)
+          .fromTo(q("[data-loader-sub]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 0.3)
+          .fromTo(q("[data-loader-bar]"), { scaleX: 0 }, { scaleX: 0.7, duration: 1 }, 0.2)
+          .addLabel("hold", 1.1)
+          .addPause("hold", () => {
+            if (calmReady) calm.play();
+          })
+          .to(q("[data-loader-bar]"), { scaleX: 1, duration: 0.3 }, "hold")
+          .to(loader, { autoAlpha: 0, duration: 0.9, ease: "power1.inOut" }, "hold+=0.3")
+          .fromTo(q("[data-hero-veil]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.9 }, "hold+=0.3")
+          .add(finish, "hold+=0.6")
+          .fromTo(q("[data-wordmark]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, "hold+=0.6")
+          .fromTo(q("[data-hero-fade]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, "hold+=0.9")
+          .set(loader, { display: "none" }, "hold+=1.3");
+        heroReady().then(() => {
+          calmReady = true;
+          if (calm.paused()) calm.play();
+        });
+        return;
+      }
 
       // Act 1: the mark surfaces from the dark, a band of light passes over it,
       // and a hairline tracks the hero photo loading. Act 2: lacquer doors part.
@@ -173,7 +208,7 @@ export default function Hero() {
         </div>
         <div data-hero-veil className="intro-hide absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70" />
-          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,rgba(255,46,126,0.2),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,rgba(47,84,214,0.28),transparent_70%)]" />
         </div>
         <div data-hero-dim className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
       </div>

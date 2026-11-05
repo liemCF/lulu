@@ -1,20 +1,20 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* Lacquer palette, sampled from the restaurant photos (lacquer red, oxblood, rice paper).
+/* Royal blue & gold, the client's brand colours (Nov 2026).
    Token names are roles: "gold" is the accent, "navy" the raised section colour. */
 @theme {
-  --color-ink: #0d0706;
-  --color-night: #140908;
-  --color-navy: #3a1411;
-  --color-navy-hi: #4c1a15;
-  --color-navy-lo: #210c0a;
-  --color-gold: #d24a2e;
-  --color-gold-soft: #eba48a;
-  --color-gold-deep: #a8321e;
-  --color-paper: #efe4d2;
-  --color-cream: #f1e5d1;
-  --color-mute: #a39385;
+  --color-ink: #050a1f;
+  --color-night: #08112e;
+  --color-navy: #142a78;
+  --color-navy-hi: #1f3fa8;
+  --color-navy-lo: #0a1645;
+  --color-gold: #d4af37;
+  --color-gold-soft: #ecd593;
+  --color-gold-deep: #a8862a;
+  --color-paper: #f4ecd8;
+  --color-cream: #f3ead6;
+  --color-mute: #9ca3bd;
   --color-cinnabar: #c8322b;
   --color-neon: #ff2e7e;
 
@@ -249,6 +249,11 @@ html.nav-hidden .sticky-under-nav {
 .split-line-mask {
   padding-bottom: 0.08em;
   margin-bottom: -0.08em;
+}
+
+/* Phones: hold the grain still, it adds shimmer the eye can't settle on. */
+@media (max-width: 767px), (pointer: coarse) {
+  .grain::after { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
