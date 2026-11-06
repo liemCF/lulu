@@ -107,7 +107,7 @@ export default function PrivateEvents() {
     <div ref={root} className="bg-ink">
       {/* Stats */}
       <section className="border-y border-gold/10 px-5 py-16 sm:px-10 lg:pl-24">
-        <dl className="grid grid-cols-3 gap-6">
+        <dl className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-6">
           {stats.map((s) => (
             <div key={s.label}>
               <dt className="font-display text-[clamp(2.8rem,7vw,7rem)] leading-none text-gold">
@@ -118,7 +118,7 @@ export default function PrivateEvents() {
                   </>
                 )}
               </dt>
-              <dd className="mt-3 text-[0.65rem] tracking-[0.25em] text-cream/55 uppercase">{s.label}</dd>
+              <dd className="mt-3 text-[0.78rem] tracking-[0.18em] text-cream/70 uppercase">{s.label}</dd>
             </div>
           ))}
         </dl>
@@ -193,7 +193,7 @@ export default function PrivateEvents() {
               content: (
                 <div className="flex items-baseline justify-between py-5 font-display text-[clamp(2rem,4.4vw,4.4rem)] leading-none transition-[padding,color] duration-700 ease-[var(--ease-out-expo)] group-hover:pl-4 group-hover:text-gold">
                   <span>{o.name}</span>
-                  <span className="font-sans text-xs text-gold">0{i + 1}</span>
+                  <span className="price font-sans text-sm text-gold">0{i + 1}</span>
                 </div>
               ),
             }))}

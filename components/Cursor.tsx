@@ -118,7 +118,7 @@ export default function Cursor() {
       >
         <span
           ref={label}
-          className="text-[0.6rem] font-medium tracking-[0.25em] text-ink uppercase opacity-0"
+          className="text-[0.78rem] font-medium tracking-[0.18em] text-ink uppercase opacity-0"
         />
       </div>
       <div ref={dot} className="cursor h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />

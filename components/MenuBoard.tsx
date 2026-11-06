@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { links } from "@/lib/content";
@@ -25,20 +25,21 @@ function Item({ item, neon }: { item: MenuItem; neon: boolean }) {
         <h4 className="font-display text-[1.35rem] leading-tight transition-colors duration-500 group-hover:text-gold">
           {item.name}
         </h4>
-        {item.cn && <span className="font-cn text-sm text-gold/70">{item.cn}</span>}
-        <span className="mx-1 h-px flex-1 translate-y-[-0.3em] border-b border-dotted border-cream/20" />
-        <span className={`text-sm tabular-nums ${neon ? "text-neon" : "text-gold"}`}>{item.price ?? "Options"}</span>
+        {item.cn && <span className="font-cn text-[0.95rem] whitespace-nowrap text-gold/80 max-sm:hidden">{item.cn}</span>}
+        <span className="mx-1 h-px min-w-6 flex-1 translate-y-[-0.3em] border-b border-dotted border-cream/20" />
+        <span className={`price shrink-0 text-[1.05rem] ${neon ? "text-neon" : "text-cream"}`}>{item.price ?? "Options"}</span>
       </div>
+      {item.cn && <p className="mt-1 font-cn text-[0.95rem] text-gold/80 sm:hidden">{item.cn}</p>}
       {(item.desc || item.spicy || item.gf || item.gfAvailable) && (
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          {item.desc && <p className="max-w-[46ch] text-sm leading-relaxed text-cream/55">{item.desc}</p>}
+          {item.desc && <p className="max-w-[48ch] text-[0.95rem] leading-relaxed text-cream/75">{item.desc}</p>}
           {!!item.spicy && (
-            <span className="font-cn text-xs text-cinnabar" title={`Spicy (${item.spicy})`}>
+            <span className="font-cn text-sm text-cinnabar" title={`Spicy (${item.spicy})`}>
               {"辣".repeat(item.spicy)}
             </span>
           )}
           {(item.gf || item.gfAvailable) && (
-            <span className="border border-cream/20 px-1.5 py-0.5 text-[0.6rem] tracking-[0.2em] text-cream/60 uppercase">
+            <span className="border border-cream/20 px-1.5 py-0.5 text-[0.72rem] font-medium tracking-[0.12em] text-cream/75 uppercase">
               {item.gf ? "GF" : "GF available"}
             </span>
           )}
@@ -55,7 +56,7 @@ function Section({ section, index, neon }: { section: MenuSection; index: number
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-40">
-            <span className="text-xs tracking-[0.3em] text-cream/40 tabular-nums">
+            <span className="price text-sm text-gold">
               {String(index + 1).padStart(2, "0")}
             </span>
             <h3 data-split className="mt-3 font-display text-[clamp(2.4rem,4vw,3.8rem)] leading-none">
@@ -95,6 +96,15 @@ export default function MenuBoard() {
   const [activeSection, setActiveSection] = useState(menu[0].sections[0].id);
   const lenis = useLenis();
   const group = menu.find((g) => g.id === tab)!;
+  const chips = useRef<HTMLDivElement>(null);
+
+  // Keep the active category chip in view as the page scrolls.
+  useEffect(() => {
+    const row = chips.current;
+    const chip = row?.querySelector<HTMLElement>(`[data-chip="${activeSection}"]`);
+    if (!row || !chip) return;
+    row.scrollTo({ left: chip.offsetLeft - row.clientWidth / 2 + chip.offsetWidth / 2, behavior: "smooth" });
+  }, [activeSection]);
   const neon = tab === "after-dark";
 
   useGSAP(
@@ -149,9 +159,9 @@ export default function MenuBoard() {
   };
 
   return (
-    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#070303]" : "bg-ink"}`}>
+    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#03061a]" : "bg-ink"}`}>
       {neon && (
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_30%_at_80%_10%,rgba(255,46,126,0.14),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_30%_at_80%_10%,rgba(240,207,134,0.1),transparent_70%)]" />
       )}
 
       {/* Sticky tabs + section chips */}
@@ -164,8 +174,8 @@ export default function MenuBoard() {
               role="tab"
               aria-selected={g.id === tab}
               onClick={() => switchTab(g.id)}
-              className={`group relative flex items-baseline gap-2 px-3 py-3 text-[0.65rem] tracking-[0.22em] whitespace-nowrap uppercase transition-colors first:pl-0 sm:px-4 sm:text-[0.7rem] sm:tracking-[0.28em] ${
-                g.id === tab ? (g.id === "after-dark" ? "text-neon" : "text-gold") : "text-cream/50 hover:text-cream"
+              className={`group relative flex items-baseline gap-2 px-3 py-3 text-[0.78rem] tracking-[0.18em] whitespace-nowrap uppercase transition-colors first:pl-0 sm:px-4 sm:text-[0.78rem] sm:tracking-[0.18em] ${
+                g.id === tab ? (g.id === "after-dark" ? "text-neon" : "text-gold") : "text-cream/65 hover:text-cream"
               }`}
             >
               <span className="hidden font-cn text-sm tracking-normal sm:inline">{g.cn}</span>
@@ -178,18 +188,22 @@ export default function MenuBoard() {
             </button>
           ))}
         </div>
-        <div className="flex gap-2 overflow-x-auto px-5 py-3 [scrollbar-width:none] sm:px-10 lg:pl-24">
+        <div
+          ref={chips}
+          className="flex gap-2 overflow-x-auto px-5 py-3 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] sm:px-10 lg:pl-24 lg:[mask-image:none]"
+        >
           {group.sections.map((s) => (
             <button
               key={s.id}
+              data-chip={s.id}
               type="button"
               onClick={() => jump(s.id)}
-              className={`shrink-0 border px-3 py-1.5 text-[0.65rem] tracking-[0.18em] whitespace-nowrap uppercase transition-colors ${
+              className={`shrink-0 border px-3 py-1.5 text-[0.78rem] tracking-[0.18em] whitespace-nowrap uppercase transition-colors ${
                 s.id === activeSection
                   ? neon
                     ? "border-neon/60 text-neon"
                     : "border-gold/60 text-gold"
-                  : "border-cream/10 text-cream/50 hover:border-cream/30 hover:text-cream"
+                  : "border-cream/10 text-cream/65 hover:border-cream/30 hover:text-cream"
               }`}
             >
               {s.title}
@@ -201,7 +215,7 @@ export default function MenuBoard() {
       <div data-board key={tab} className="relative px-5 pb-24 sm:px-10 lg:pl-24">
         {neon && (
           <div className="pt-16 lg:pt-24">
-            <h2 className="neon-text font-display text-[clamp(3.5rem,10vw,9rem)] leading-none whitespace-nowrap italic">After Dark</h2>
+            <h2 className="neon-text font-display text-[clamp(3.5rem,10vw,9rem)] leading-none italic">After Dark</h2>
             <p className="mt-6 max-w-lg text-cream/65">
               Nightlife shots, champagne and bottle service for the late crowd. Fridays until 11:30 PM, Saturdays
               until midnight.
@@ -211,7 +225,7 @@ export default function MenuBoard() {
         {group.sections.map((s, i) => (
           <Section key={s.id} section={s} index={i} neon={neon} />
         ))}
-        <p className="border-t border-cream/10 pt-8 text-xs leading-relaxed text-cream/40">
+        <p className="border-t border-cream/10 pt-8 text-sm leading-relaxed text-cream/65">
           Prices in USD, before tax. Menu and prices may change.{" "}
           <a href={links.order} target="_blank" rel="noreferrer" className="link-line text-gold">
             Order pickup & takeout on Toast ↗

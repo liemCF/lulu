@@ -5,6 +5,10 @@ import { gsap, SplitText } from "@/lib/gsap";
 export const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/** Phones and touch screens get a calmer hero: softer doors, no parallax and a gentler heat haze. */
+export const prefersCalmMotion = () =>
+  prefersReducedMotion() || (typeof window !== "undefined" && window.matchMedia("(max-width: 767px), (pointer: coarse)").matches);
+
 /**
  * Wires the shared scroll reveals inside `root`:
  *  - [data-split]  headings rise line by line from a mask

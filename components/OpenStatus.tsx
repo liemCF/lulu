@@ -54,7 +54,7 @@ export default function OpenStatus() {
         ? "bg-gold"
         : "bg-cream/30";
   return (
-    <span className="flex items-center gap-2 text-[0.68rem] tracking-[0.22em] text-cream/70 uppercase">
+    <span className="flex items-center gap-2 text-[0.78rem] tracking-[0.18em] text-cream/70 uppercase">
       <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
       {label}
     </span>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
-import { prefersReducedMotion } from "@/lib/reveal";
+import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 import { info } from "@/lib/content";
 import HeroCanvas from "./HeroCanvas";
 import OpenStatus from "./OpenStatus";
@@ -63,6 +63,8 @@ export default function Hero() {
       }
 
       const section = root.current!;
+      // Phones: slower, softer doors and no parallax on the photo.
+      const calm = prefersCalmMotion();
       let seen = false;
       try {
         seen = sessionStorage.getItem(SEEN_KEY) === "1";
@@ -71,7 +73,7 @@ export default function Hero() {
       // Act 1: the mark surfaces from the dark, a band of light passes over it,
       // and a hairline tracks the hero photo loading. Act 2: lacquer doors part.
       let ready = false;
-      const wordmark = SplitText.create(q("[data-wordmark]"), { type: "chars" });
+      const wordmark = SplitText.create(q("[data-wordmark]"), { type: "words,chars" });
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
       tl.fromTo(
         q("[data-loader-logo]"),
@@ -108,9 +110,8 @@ export default function Hero() {
           "doors-=0.55",
         )
         .to(q("[data-seam]"), { opacity: 0, duration: 0.9, ease: "power2.out" }, "doors+=0.5")
-        .to(q("[data-door='l']"), { xPercent: -100, duration: 1.5, ease: "expo.inOut" }, "doors")
-        .to(q("[data-door='r']"), { xPercent: 100, duration: 1.5, ease: "expo.inOut" }, "doors")
-        .fromTo(q("[data-hero-media]"), { scale: 1.22 }, { scale: 1, duration: 2.6, ease: "expo.out" }, "doors+=0.25")
+        .to(q("[data-door='l']"), { xPercent: -100, duration: calm ? 2 : 1.5, ease: calm ? "power2.inOut" : "expo.inOut" }, "doors")
+        .to(q("[data-door='r']"), { xPercent: 100, duration: calm ? 2 : 1.5, ease: calm ? "power2.inOut" : "expo.inOut" }, "doors")
         .add(finish, "doors+=0.6")
         .set(q("[data-loader]"), { display: "none" }, "doors+=1.5")
         .fromTo(q("[data-hero-veil]"), { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" }, "doors+=0.3")
@@ -118,7 +119,7 @@ export default function Hero() {
         .set(q("[data-wordmark]"), { opacity: 1 }, "doors+=0.8")
         .fromTo(
           wordmark.chars,
-          { opacity: 0, y: "2rem" },
+          { opacity: 0, y: calm ? "0.5rem" : "2rem" },
           { opacity: 1, y: 0, duration: 0.9, stagger: 0.05, ease: "power2.out" },
           "doors+=0.8",
         )
@@ -132,9 +133,9 @@ export default function Hero() {
         if (tl.paused()) tl.play();
       });
 
-      // Scroll-out: image drifts and dims, copy lifts away faster.
+      // Scroll-out: image drifts a little and dims, copy lifts away faster.
       gsap.to(q("[data-hero-parallax]"), {
-        yPercent: 18,
+        yPercent: calm ? 0 : 8,
         ease: "none",
         scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: true },
       });
@@ -154,26 +155,25 @@ export default function Hero() {
   );
 
   return (
-    <section ref={root} id="top" className="relative h-[100svh] min-h-[680px] overflow-hidden bg-ink">
+    <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink">
       {/* Media */}
       <div className="absolute inset-0">
         <div data-hero-parallax className="absolute inset-0 will-change-transform">
-          <div data-hero-media className="absolute inset-0">
-            <Image
-              src={HERO_SRC}
-              alt="Flaming Peking Duck being carved tableside"
-              fill
-              preload
-              quality={85}
-              sizes="100vw"
-              className="object-cover object-[62%_50%]"
-            />
-            <HeroCanvas src={HERO_SRC} focus={[0.62, 0.5]} className="absolute inset-0 h-full w-full" />
-          </div>
+          <Image
+            src={HERO_SRC}
+            alt="Flaming Peking Duck being carved tableside"
+            fill
+            preload
+            quality={85}
+            sizes="100vw"
+            className="object-cover object-[62%_50%] max-md:object-[46%_50%]"
+          />
+          {/* Heat haze and embers rising off the pan */}
+          <HeroCanvas src={HERO_SRC} focus={[0.62, 0.5]} mobileFocus={[0.46, 0.5]} className="absolute inset-0 h-full w-full" />
         </div>
         <div data-hero-veil className="intro-hide absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70" />
-          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,rgba(255,46,126,0.2),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,color-mix(in_srgb,var(--color-navy-hi)_35%,transparent),transparent_70%)]" />
         </div>
         <div data-hero-dim className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
       </div>
@@ -222,7 +222,7 @@ export default function Hero() {
           </div>
           <p
             data-loader-sub
-            className="mt-5 text-[0.6rem] tracking-[0.5em] text-cream/45 uppercase opacity-0"
+            className="mt-5 text-[0.78rem] tracking-[0.18em] text-cream/60 uppercase opacity-0"
           >
             {info.region}
           </p>
@@ -230,14 +230,14 @@ export default function Hero() {
       </div>
 
       {/* Wordmark, centred at the foot of the frame */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-md:pb-10">
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-sm:pb-28">
         <div data-hero-fade className="intro-hide mb-4 flex items-center gap-6 text-cream/80">
           <OpenStatus />
         </div>
         <h1
           data-wordmark
           aria-label="Lulu Modern Chinese"
-          className="intro-hide text-center font-display text-[10.5vw] leading-[0.9] font-light text-cream uppercase max-md:text-[17vw]"
+          className="intro-hide text-center font-display text-[9.5vw] leading-[0.9] tracking-[0.01em] text-cream uppercase max-md:text-[16vw]"
         >
           Lulu Modern
         </h1>

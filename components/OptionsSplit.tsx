@@ -38,8 +38,7 @@ export default function OptionsSplit({ id, kicker, heading, options, imageSide, 
         .fromTo(q("[data-reveal-image]"), { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power2.inOut" }, 0)
         .fromTo(q("[data-reveal-content]"), { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power2.inOut" }, 0)
         .fromTo(q("[data-zoom]"), { scale: 1.1 }, { scale: 1, duration: 1.2, ease: "power2.inOut" }, 0);
-      gsap.set(q("[data-parallax]"), { top: "-=10rem" });
-      gsap.to(q("[data-parallax]"), { top: "+=20rem", ease: "none", scrollTrigger: { trigger: root.current, scrub: true } });
+      gsap.to(q("[data-parallax]"), { y: "20rem", ease: "none", scrollTrigger: { trigger: root.current, scrub: true } });
     },
     { scope: root },
   );
@@ -57,14 +56,14 @@ export default function OptionsSplit({ id, kicker, heading, options, imageSide, 
         {/* Photo half */}
         <div
           data-reveal-image
-          className={`relative h-[70svh] w-full lg:absolute lg:top-0 lg:h-full lg:w-[55vw] ${imageLeft ? "lg:left-0" : "lg:right-0"}`}
+          className={`relative h-[52svh] w-full lg:absolute lg:top-0 lg:h-full lg:w-[55vw] ${imageLeft ? "lg:left-0" : "lg:right-0"}`}
         >
           <div data-zoom className="relative h-full w-full overflow-hidden">
             {options.map((o, i) => (
               <div
                 key={o.image + i}
                 data-parallax
-                className="absolute top-1/2 left-0 h-[calc(100%+20rem)] w-full -translate-y-1/2 transition-opacity duration-700"
+                className="absolute -top-80 left-0 h-[calc(100%+20rem)] w-full transition-opacity duration-700"
                 style={{ opacity: i === active ? 1 : 0 }}
               >
                 <Image src={o.image} alt={o.alt} fill sizes="(min-width:1024px) 55vw, 100vw" className="object-cover" />
@@ -73,7 +72,7 @@ export default function OptionsSplit({ id, kicker, heading, options, imageSide, 
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </div>
           <p
-            className={`t-h1 absolute bottom-16 z-[3] text-cream uppercase max-xl:hidden ${imageLeft ? "left-16" : "right-16"}`}
+            className={`t-h1 absolute bottom-16 z-[3] text-cream max-xl:hidden ${imageLeft ? "left-16" : "right-16"}`}
           >
             {tag}
           </p>
@@ -151,7 +150,7 @@ export default function OptionsSplit({ id, kicker, heading, options, imageSide, 
                   aria-hidden={i !== active}
                 >
                   {o.meta && <p className={`t-h2 ${light ? "text-[var(--color-gold-deep)]" : "text-gold"}`}>{o.meta}</p>}
-                  <p className="mt-3 max-w-md leading-snug opacity-80">{o.detail}</p>
+                  <p className="mt-3 max-w-md text-[1.05rem] leading-relaxed opacity-85">{o.detail}</p>
                 </div>
               ))}
             </div>

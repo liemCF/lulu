@@ -17,21 +17,21 @@ const photos = [
   {
     src: "/images/story-mural.webp",
     alt: "Lulu in Chinese opera makeup, painted on the wall",
-    cls: "top-[9%] left-[5%] w-[15rem] aspect-[3/4] z-[2]",
+    cls: "top-[6%] left-[3%] w-[13rem] aspect-[3/4] z-[2]",
     mask: mask([[30, 0], [300, 20], [300, 330], [190, 400], [0, 380], [10, 120]], 300, 400, 40),
     strength: 0.09,
   },
   {
     src: "/images/private-guest.webp",
     alt: "A guest at dinner",
-    cls: "top-[12%] right-[5%] w-[19rem] aspect-[4/5]",
+    cls: "top-[50%] right-[4%] w-[18rem] aspect-[4/5]",
     mask: mask([[0, 40], [260, 0], [320, 250], [300, 400], [40, 380]], 320, 400, 46),
     strength: 0.06,
   },
   {
     src: "/images/dish-pork-xlb.webp",
     alt: "Soup dumplings in a bamboo steamer",
-    cls: "bottom-[9%] right-[22%] w-[14rem] aspect-square z-[2]",
+    cls: "top-[8%] right-[18%] w-[12rem] aspect-square z-[2]",
     mask: mask([[20, 30], [300, 0], [280, 260], [120, 300], [0, 230]], 300, 300, 40),
     strength: 0.035,
   },
@@ -90,7 +90,7 @@ export default function TwoWorlds() {
   return (
     <section ref={root} id="story" className="relative z-[1] min-h-screen overflow-clip bg-navy text-cream">
       <div className="relative flex min-h-screen flex-col justify-center py-32 lg:py-40">
-        <div data-kicker-wrap className="relative z-[3] px-5 sm:px-10 lg:px-24">
+        <div data-kicker-wrap className="relative z-[3] px-5 text-center sm:px-10 lg:px-24">
           <p data-anim="chars" className="kicker">
             Our roots
           </p>
@@ -141,11 +141,15 @@ export default function TwoWorlds() {
           </div>
         </div>
 
-        {/* Phones: the photos in a simple row */}
-        <div className="mt-14 grid grid-cols-3 gap-3 px-5 lg:hidden">
-          {photos.map((p) => (
-            <div key={p.src} className="relative aspect-[3/4]" style={{ maskImage: p.mask, WebkitMaskImage: p.mask, maskSize: "100% 100%", WebkitMaskSize: "100% 100%" }}>
-              <Image src={p.src} alt={p.alt} fill sizes="33vw" className="object-cover" />
+        {/* Phones: a staggered collage */}
+        <div className="mt-14 grid grid-cols-2 gap-4 px-5 lg:hidden">
+          {photos.map((p, i) => (
+            <div
+              key={p.src}
+              className={`relative ${i === 0 ? "row-span-2 aspect-[3/5]" : "aspect-square"} ${i === 2 ? "-ml-6" : ""}`}
+              style={{ maskImage: p.mask, WebkitMaskImage: p.mask, maskSize: "100% 100%", WebkitMaskSize: "100% 100%" }}
+            >
+              <Image src={p.src} alt={p.alt} fill sizes="50vw" className="object-cover" />
             </div>
           ))}
         </div>

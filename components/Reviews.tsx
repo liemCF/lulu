@@ -26,7 +26,7 @@ export default function Reviews() {
         gsap.to(prev, { autoAlpha: 0, y: -20, duration: 0.8, ease: "power2.in" });
         gsap.fromTo(slides[i], { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 1.2, delay: 0.6, ease: "expo.out" });
       };
-      const timer = gsap.timeline({ repeat: -1 }).to({}, { duration: 6 }).call(next);
+      const timer = gsap.timeline({ repeat: -1, paused: true }).to({}, { duration: 6 }).call(next);
       // Only rotate while the section is on screen.
       gsap.timeline({
         scrollTrigger: {
@@ -65,7 +65,7 @@ export default function Reviews() {
               {r.text}
               <span className="text-gold">”</span>
             </blockquote>
-            <figcaption className="mt-8 text-xs tracking-[0.3em] text-cream/50 uppercase">
+            <figcaption className="mt-8 text-[0.8rem] font-medium tracking-[0.14em] text-cream/65 uppercase">
               {r.author} · Google
             </figcaption>
           </figure>

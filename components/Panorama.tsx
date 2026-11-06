@@ -13,7 +13,7 @@ const strip = [
   { src: "/images/dish-pickled-fish.webp", label: "Sichuan pickled fish" },
   { src: "/images/night-cheers.webp", label: "Saturday, 11 pm" },
   { src: "/images/dish-short-rib.webp", label: "Short rib, dry ice" },
-  { src: "/images/private-table.webp", label: "Private dining" },
+  { src: "/images/night-energy.webp", label: "Late nights" },
 ];
 
 /**
@@ -33,11 +33,10 @@ export default function Panorama() {
         const distance = () => track.scrollWidth - window.innerWidth;
         const split = SplitText.create(q("[data-heading]"), { type: "words,chars" });
 
-        gsap.set(split.chars, { opacity: 0, y: "15%", filter: "blur(10px)" });
+        gsap.set(split.chars, { opacity: 0, y: "15%" });
         gsap.to(split.chars, {
           opacity: 1,
           y: "0%",
-          filter: "blur(0px)",
           duration: 0.6,
           stagger: 0.04,
           ease: "power1.out",
@@ -57,11 +56,11 @@ export default function Panorama() {
             },
           })
           .fromTo(track, { x: 0 }, { x: () => -distance(), ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='1']"), { left: "-=12%", ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='2']"), { left: "-=24%", ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='3']"), { left: "-=36%", ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-heading]"), { left: "-=10%", ease: "power1.inOut", duration: 1 }, 0)
-          .to(split.chars, { opacity: 0, scale: 0.7, filter: "blur(10px)", stagger: 0.04, ease: "power1.inOut", duration: 0.4 }, 0.3);
+          .to(q("[data-steam='1']"), { xPercent: -25, ease: "power1.inOut", duration: 1 }, 0)
+          .to(q("[data-steam='2']"), { xPercent: -55, ease: "power1.inOut", duration: 1 }, 0)
+          .to(q("[data-steam='3']"), { xPercent: -90, ease: "power1.inOut", duration: 1 }, 0)
+          .to(q("[data-heading]"), { x: () => -window.innerWidth * 0.1, ease: "power1.inOut", duration: 1 }, 0)
+          .to(split.chars, { opacity: 0, y: "-10%", stagger: 0.04, ease: "power1.inOut", duration: 0.4 }, 0.3);
         ScrollTrigger.refresh();
         return () => split.revert();
       });
@@ -75,13 +74,13 @@ export default function Panorama() {
         <div data-cover className="absolute top-0 left-0 z-10 hidden h-full w-1/2 bg-ink md:block" />
         <div data-cover className="absolute top-0 right-0 z-10 hidden h-full w-1/2 bg-ink md:block" />
 
-        <div data-track className="flex h-[78vh] w-max items-center gap-6 pl-[10vw] pr-[10vw] will-change-transform max-md:h-auto max-md:w-full max-md:flex-col max-md:px-5">
+        <div data-track className="flex h-[78vh] w-max items-center gap-6 pl-[10vw] pr-[10vw] will-change-transform max-md:h-auto max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-5 max-md:[scrollbar-width:none]">
           {strip.map((s, i) => (
-            <figure key={s.src} className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[60vh] max-md:w-full`}>
+            <figure key={s.src} className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[62svh] max-md:w-[78vw] max-md:snap-center`}>
               <div className="relative h-full w-full overflow-hidden rounded-[1.25rem]">
                 <Image src={s.src} alt={s.label} fill sizes="(min-width:768px) 40vh, 100vw" className="object-cover" />
               </div>
-              <figcaption className="mt-3 text-xs tracking-[0.18em] text-cream/60 uppercase">{s.label}</figcaption>
+              <figcaption className="mt-3 text-[0.8rem] font-medium tracking-[0.14em] text-cream/70 uppercase">{s.label}</figcaption>
             </figure>
           ))}
         </div>
@@ -92,14 +91,14 @@ export default function Panorama() {
             key={n}
             data-steam={n}
             aria-hidden
-            className="pointer-events-none absolute hidden rounded-full bg-[radial-gradient(closest-side,rgba(239,231,214,0.18),transparent)] blur-2xl md:block"
+            className="pointer-events-none absolute hidden rounded-full bg-[radial-gradient(closest-side,rgba(239,231,214,0.14),transparent)] md:block"
             style={{ left: `${20 + n * 22}%`, top: `${n % 2 ? 10 : 55}%`, width: `${60 - n * 8}vw`, height: `${45 - n * 6}vw` }}
           />
         ))}
 
         <h2
           data-heading
-          className="t-hero pointer-events-none absolute top-24 left-1/2 z-20 w-full -translate-x-1/2 text-center text-cream max-md:static max-md:mb-10 max-md:translate-x-0"
+          className="t-hero pointer-events-none absolute top-24 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-10"
         >
           From the table
         </h2>
@@ -108,7 +107,7 @@ export default function Panorama() {
           href={links.instagram}
           target="_blank"
           rel="noreferrer"
-          className="t-link absolute right-10 bottom-10 z-20 text-gold max-md:hidden"
+          className="t-link absolute right-10 bottom-10 z-20 text-gold max-md:static max-md:mt-10"
         >
           @lulu.modern ↗
         </a>

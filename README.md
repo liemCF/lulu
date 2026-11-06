@@ -23,7 +23,7 @@ npm run build
 
 ## Các section
 
-1. **Preloader + Hero:** chữ 品味 và bộ đếm, rèm mở ra, ảnh vịt quay bốc lửa thu nhỏ dần, tiêu đề hiện từng dòng.
+1. **Preloader + Hero:** chữ 品味 và bộ đếm, rèm mở ra, ảnh vịt quay với hơi nóng bốc lên, tiêu đề hiện từng dòng.
 2. **Marquee:** chạy nhanh hơn và nghiêng nhẹ theo tốc độ cuộn.
 3. **The Duck:** pin khi cuộn, 3 bước với ảnh hiện dần bằng clip-path (trên mobile hiển thị dạng xếp chồng).
 4. **Menu:** cuộn ngang khi pin, ảnh có parallax bên trong (trên mobile là swipe có scroll-snap).
@@ -37,7 +37,7 @@ npm run build
 **Lớp hiệu ứng cao cấp:**
 
 - **Intro** (`Hero.tsx`): logo hiện dần từ mờ trên nền đen, có vệt sáng vàng lướt qua. Đường chỉ vàng chạy theo tiến độ tải ảnh hero. Sau đó hai cánh cửa sơn mài trượt mở. Nếu đã xem trong phiên này thì chỉ chạy đoạn mở cửa.
-- **Hero WebGL** (`HeroCanvas.tsx`): shader tạo sóng nhiệt bốc từ lửa, gợn sóng theo chuột, tách màu RGB theo tốc độ cuộn. Nếu máy không hỗ trợ WebGL thì tự quay về ảnh tĩnh.
+- **Hero** (`HeroCanvas.tsx`): hơi nóng bốc lên từ chảo than quanh con vịt, chảo hồng lên nhè nhẹ và vài tàn lửa bay lên. Trên điện thoại hiệu ứng nhẹ hơn; bật giảm chuyển động thì chỉ còn ảnh tĩnh.
 - **Con trỏ custom và nút nam châm** (`Cursor.tsx`): thêm `data-cursor="Nhãn"` vào phần tử để con trỏ hiện nhãn đó.
 - **Ảnh nổi theo chuột** (`HoverPreview.tsx`): dùng ở danh sách dịp tiệc trong Private Dining.
 - **Chữ vàng ánh kim** (class `.gold-foil`) và ánh lửa chập chờn ở section The Duck.

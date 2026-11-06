@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { prefersReducedMotion } from "@/lib/reveal";
+import { gsap } from "@/lib/gsap";
+import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 
 const VERT = /* glsl */ `
 attribute vec2 aPos;
@@ -12,23 +12,17 @@ void main() {
   gl_Position = vec4(aPos, 0.0, 1.0);
 }`;
 
-// Fluted (reeded) glass over the photo: every vertical reed bends its own slice of the
-// image with a little colour fringing. The glass clears under the pointer, settles
-// after the intro and frosts up again as the hero scrolls away. A faint heat haze
-// still rises off the flame.
+// Heat off the roasting pan: the air above the coals shimmers upward around the duck,
+// the pan glows and breathes, and a few embers drift up and burn out. Everything is
+// placed in image space (y up) so it stays on the pan however the photo is cropped.
 const FRAG = /* glsl */ `
 precision highp float;
 uniform sampler2D uTex;
 uniform vec2 uRes;
 uniform vec2 uImg;
-uniform vec2 uMouse;
 uniform vec2 uFocus;
 uniform float uTime;
-uniform float uHover;
-uniform float uScroll;
-uniform float uShift;
-uniform float uGlass;
-uniform float uReeds;
+uniform float uStrength;
 varying vec2 vUv;
 
 vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -54,54 +48,61 @@ float snoise(vec2 v) {
   return 130.0 * dot(m, g);
 }
 
-vec2 cover(vec2 uv) {
+float hash(float n) { return fract(sin(n * 127.1) * 43758.5453); }
+
+// object-fit: cover, both ways.
+vec2 coverScale() {
   float rs = uRes.x / uRes.y;
   float ri = uImg.x / uImg.y;
-  vec2 scale = rs < ri ? vec2(rs / ri, 1.0) : vec2(1.0, ri / rs);
-  vec2 focus = clamp(uFocus, scale * 0.5, 1.0 - scale * 0.5);
-  return (uv - 0.5) * scale + focus;
+  return rs < ri ? vec2(rs / ri, 1.0) : vec2(1.0, ri / rs);
 }
+vec2 coverFocus(vec2 scale) { return clamp(uFocus, scale * 0.5, 1.0 - scale * 0.5); }
+vec2 toImage(vec2 uv, vec2 scale, vec2 focus) { return (uv - 0.5) * scale + focus; }
+vec2 toScreen(vec2 img, vec2 scale, vec2 focus) { return (img - focus) / scale + 0.5; }
 
 void main() {
-  vec2 uv = vUv;
-  float aspect = uRes.x / uRes.y;
+  vec2 scale = coverScale();
+  vec2 focus = coverFocus(scale);
+  vec2 img = toImage(vUv, scale, focus);
+  float t = uTime;
 
-  // Heat shimmer: strongest low in the frame where the flame sits.
-  float heat = smoothstep(0.85, 0.05, uv.y);
-  vec2 q = uv * vec2(3.0 * aspect, 5.0);
-  float n1 = snoise(q - vec2(0.0, uTime * 0.9));
-  float n2 = snoise(q * 1.7 + vec2(4.0, -uTime * 1.3));
-  vec2 offset = vec2(n1, n2) * vec2(0.0015, 0.003) * (0.35 + heat * 1.3);
+  // Where the heat is: a column rising off the pan (pan centre ~ x 0.49, y 0.16),
+  // strongest just above the coals and gone by the duck's shoulders.
+  float across = 1.0 - smoothstep(0.1, 0.3, abs(img.x - 0.49));
+  float up = smoothstep(0.08, 0.2, img.y) * (1.0 - smoothstep(0.3, 0.85, img.y));
+  float heat = across * up * uStrength;
 
-  // The pointer acts like a clear pane in the glass.
-  vec2 p = (uv - uMouse) * vec2(aspect, 1.0);
-  float lens = smoothstep(0.28, 0.04, length(p)) * uHover;
-  float glass = clamp(mix(uGlass, 1.0, uScroll * 0.85) * (1.0 - lens * 0.92), 0.0, 1.0);
+  // Rising shimmer: two layers of noise scrolling upward at different speeds.
+  float n1 = snoise(vec2(img.x * 16.0, img.y * 10.0 - t * 1.5));
+  float n2 = snoise(vec2(img.x * 26.0 + 7.0, img.y * 15.0 - t * 2.3));
+  vec2 offset = vec2(n1 * 0.0032, (n2 * 0.5 + 0.5) * 0.0042) * heat;
+  vec3 col = texture2D(uTex, img + offset).rgb;
 
-  // Each reed refracts a slice of the image sideways.
-  float f = fract(uv.x * uReeds);
-  float k = f - 0.5;
-  float bend = k * glass * 2.2 / uReeds;
+  // The coals glow and breathe, slowly.
+  float breathe = 0.82 + 0.18 * sin(t * 1.7) * sin(t * 2.9 + 1.3);
+  float pan = exp(-pow(length((img - vec2(0.49, 0.15)) * vec2(1.6, 3.2)), 2.0) * 9.0);
+  col += vec3(1.0, 0.42, 0.12) * pan * 0.16 * breathe * uStrength;
+  // A warm cast on the duck's skin above it.
+  col *= 1.0 + vec3(0.06, 0.025, 0.0) * across * up * breathe;
 
-  // Slow push-in as the hero scrolls away.
-  vec2 st = (uv - 0.5) * (1.0 - uScroll * 0.08) + 0.5 + offset;
-  float shift = uShift * 0.012;
-  vec3 col;
-  col.r = texture2D(uTex, cover(st + vec2(bend * 1.12 + shift, 0.0))).r;
-  col.g = texture2D(uTex, cover(st + vec2(bend, 0.0))).g;
-  col.b = texture2D(uTex, cover(st + vec2(bend * 0.88 - shift, 0.0))).b;
-
-  // Rounded reed shading and a thin highlight on each ridge.
-  col *= 1.0 - glass * 0.22 * pow(abs(k) * 2.0, 2.0);
-  col += smoothstep(0.88, 1.0, f) * glass * 0.09;
-
-  // Ember glow breathing with the noise.
-  float flicker = 0.5 + 0.5 * sin(uTime * 6.0 + n1 * 3.0);
-  col += vec3(1.0, 0.42, 0.12) * heat * 0.06 * flicker;
-
-  // Vignette.
-  float v = smoothstep(1.25, 0.35, length((uv - 0.5) * vec2(aspect * 0.9, 1.0)));
-  col *= mix(0.55, 1.0, v);
+  // Embers: born on the coals, drifting up and fading out. Only pixels near the pan pay for them.
+  vec3 embers = vec3(0.0);
+  bool nearPan = img.x > 0.24 && img.x < 0.76 && img.y > 0.1 && img.y < 0.66;
+  for (int i = 0; i < 22; i++) {
+    if (!nearPan) break;
+    float fi = float(i);
+    float life = 3.2 + hash(fi + 1.0) * 2.6;
+    float age = fract(t / life + hash(fi + 7.0));
+    vec2 origin = vec2(0.36 + hash(fi + 3.0) * 0.27, 0.15 + hash(fi + 5.0) * 0.03);
+    vec2 pos = origin + vec2(sin(age * 5.0 + fi * 2.1) * 0.018 + age * 0.02 * (hash(fi + 9.0) - 0.5), age * 0.42);
+    vec2 d = (vUv - toScreen(pos, scale, focus)) * uRes;
+    float r = (1.3 + hash(fi + 11.0) * 1.8) * (uRes.y / 900.0);
+    float glow = exp(-dot(d, d) / (r * r * 2.0));
+    float fade = smoothstep(0.0, 0.08, age) * (1.0 - smoothstep(0.45, 1.0, age));
+    float twinkle = 0.7 + 0.3 * sin(t * 9.0 + fi * 4.0);
+    embers += mix(vec3(1.0, 0.75, 0.35), vec3(1.0, 0.32, 0.08), age) * glow * fade * twinkle;
+  }
+  col += embers * 1.15 * uStrength;
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -120,14 +121,16 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
 type Props = {
   src: string;
   focus?: [number, number];
+  /** Focus below 768px, matching the photo's object-position there. */
+  mobileFocus?: [number, number];
   className?: string;
 };
 
 /**
- * WebGL layer drawn over the hero <Image>. If WebGL or the texture fails,
- * the canvas stays transparent and the plain image underneath shows.
+ * WebGL layer drawn over the hero <Image>. If WebGL or the texture fails, or the
+ * visitor prefers reduced motion, the canvas stays transparent and the photo shows.
  */
-export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Props) {
+export default function HeroCanvas({ src, focus = [0.62, 0.5], mobileFocus, className }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -156,15 +159,12 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
     const u = (name: string) => gl.getUniformLocation(program, name);
     const uRes = u("uRes");
     const uImg = u("uImg");
-    const uMouse = u("uMouse");
-    const uFocus = u("uFocus");
     const uTime = u("uTime");
-    const uHover = u("uHover");
-    const uScroll = u("uScroll");
-    const uShift = u("uShift");
-    const uGlass = u("uGlass");
-    const uReeds = u("uReeds");
-    gl.uniform2f(uFocus, focus[0], 1 - focus[1]);
+    const [fx, fy] = mobileFocus && window.matchMedia("(max-width: 767px)").matches ? mobileFocus : focus;
+    gl.uniform2f(u("uFocus"), fx, 1 - fy);
+    // Phones get a gentler shimmer, drawn at half rate.
+    const calm = prefersCalmMotion();
+    gl.uniform1f(u("uStrength"), calm ? 0.65 : 1);
 
     const texture = gl.createTexture();
     let ready = false;
@@ -187,65 +187,30 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
     img.src = src;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // The photo is soft, so the shader can run a little under full resolution.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       const { width, height } = canvas.getBoundingClientRect();
       canvas.width = Math.max(1, Math.round(width * dpr));
       canvas.height = Math.max(1, Math.round(height * dpr));
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
-      // Reeds roughly 56 CSS px wide, whatever the screen.
-      gl.uniform1f(uReeds, Math.max(6, Math.round(width / 56)));
     };
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
 
-    // Smoothed pointer + hover strength.
-    const state = { mx: 0.5, my: 0.5, hover: 0, shift: 0, scroll: 0, glass: 1 };
-
-    // Frosted while the doors open, then the glass settles to a light flute.
-    const settle = () => gsap.to(state, { glass: 0.45, duration: 2.8, ease: "power2.inOut" });
-    if (document.documentElement.classList.contains("intro-done")) settle();
-    else window.addEventListener("lulu:intro", settle, { once: true });
-    const target = { mx: 0.5, my: 0.5, hover: 0 };
-    const host = canvas.parentElement!.closest("section") ?? canvas;
-    const onMove = (e: PointerEvent) => {
-      const r = canvas.getBoundingClientRect();
-      target.mx = (e.clientX - r.left) / r.width;
-      target.my = 1 - (e.clientY - r.top) / r.height;
-      target.hover = 1;
-    };
-    const onLeave = () => (target.hover = 0);
-    host.addEventListener("pointermove", onMove as EventListener);
-    host.addEventListener("pointerleave", onLeave);
-
-    const st = ScrollTrigger.create({
-      trigger: host,
-      start: "top top",
-      end: "bottom top",
-      onUpdate: (self) => {
-        state.scroll = self.progress;
-        state.shift = gsap.utils.clamp(-1, 1, self.getVelocity() / 2500);
-      },
-    });
-
     let visible = true;
     const io = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting));
     io.observe(canvas);
 
+    const html = document.documentElement;
     const start = performance.now();
+    let frame = 0;
     const tick = () => {
-      if (!visible || !ready) return;
-      state.mx += (target.mx - state.mx) * 0.08;
-      state.my += (target.my - state.my) * 0.08;
-      state.hover += (target.hover - state.hover) * 0.05;
-      state.shift *= 0.9;
+      // Nothing to draw behind the intro doors, off screen or in a background tab.
+      if (!visible || !ready || document.hidden || !html.classList.contains("intro-done")) return;
+      if (calm && frame++ % 2) return;
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
-      gl.uniform2f(uMouse, state.mx, state.my);
-      gl.uniform1f(uHover, state.hover);
-      gl.uniform1f(uScroll, state.scroll);
-      gl.uniform1f(uShift, state.shift);
-      gl.uniform1f(uGlass, state.glass);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     gsap.ticker.add(tick);
@@ -253,19 +218,14 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], className }: Prop
     return () => {
       disposed = true;
       img.onload = null;
-      window.removeEventListener("lulu:intro", settle);
-      gsap.killTweensOf(state);
       gsap.ticker.remove(tick);
       ro.disconnect();
       io.disconnect();
-      st.kill();
-      host.removeEventListener("pointermove", onMove as EventListener);
-      host.removeEventListener("pointerleave", onLeave);
       gl.deleteTexture(texture);
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src, focus[0], focus[1]]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [src, focus[0], focus[1], mobileFocus?.[0], mobileFocus?.[1]]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <canvas ref={canvasRef} className={className} style={{ opacity: 0 }} aria-hidden />;
 }

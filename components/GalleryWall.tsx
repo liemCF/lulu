@@ -91,6 +91,8 @@ export default function GalleryWall() {
     { dependencies: [open] },
   );
 
+  useEffect(() => () => lenis?.start(), [lenis]);
+
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -115,15 +117,15 @@ export default function GalleryWall() {
               role="tab"
               aria-selected={f.id === filter}
               onClick={() => setFilter(f.id)}
-              className={`border px-4 py-2 text-[0.65rem] tracking-[0.22em] uppercase transition-colors ${
-                f.id === filter ? "border-gold/60 text-gold" : "border-cream/10 text-cream/55 hover:text-cream"
+              className={`border px-4 py-2 text-[0.78rem] tracking-[0.18em] uppercase transition-colors ${
+                f.id === filter ? "border-gold/60 text-gold" : "border-cream/10 text-cream/70 hover:text-cream"
               }`}
             >
               {f.label}
             </button>
           ))}
         </div>
-        <span className="text-xs tracking-[0.2em] text-cream/40 tabular-nums">{list.length} photographs</span>
+        <span className="text-sm tracking-[0.08em] text-cream/70 tabular-nums">{list.length} photographs</span>
       </div>
 
       <div data-wall key={filter} className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6">
@@ -141,14 +143,10 @@ export default function GalleryWall() {
                   className="group relative block w-full overflow-hidden text-left"
                   style={{ aspectRatio: `${p.w} / ${p.h}` }}
                 >
-                  <Image
-                    src={p.src}
-                    alt={p.alt}
-                    fill
-                    sizes="(min-width:768px) 30vw, 50vw"
-                    className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
-                  />
-                  <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-ink/90 to-transparent p-4 text-xs text-cream/80 transition-transform duration-500 group-hover:translate-y-0">
+                  <span className="absolute inset-0 transition-transform duration-[1.2s] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]">
+                    <Image src={p.src} alt={p.alt} fill sizes="(min-width:768px) 30vw, 50vw" className="object-cover" />
+                  </span>
+                  <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-ink/90 to-transparent p-4 text-sm text-cream/85 transition-transform duration-500 group-hover:translate-y-0">
                     {p.alt}
                   </span>
                 </button>
@@ -177,10 +175,10 @@ export default function GalleryWall() {
           onClick={() => show(null)}
         >
           <div className="flex items-center justify-between px-5 py-5 sm:px-10">
-            <span className="text-xs tracking-[0.25em] text-cream/50 tabular-nums">
+            <span className="text-[0.8rem] font-medium tracking-[0.14em] text-cream/65 tabular-nums">
               {String(open! + 1).padStart(2, "0")} / {String(list.length).padStart(2, "0")}
             </span>
-            <button type="button" onClick={() => show(null)} className="text-xs tracking-[0.25em] text-cream/70 uppercase hover:text-gold">
+            <button type="button" onClick={() => show(null)} className="text-[0.8rem] font-medium tracking-[0.14em] text-cream/70 uppercase hover:text-gold">
               Close ✕
             </button>
           </div>
@@ -196,7 +194,7 @@ export default function GalleryWall() {
             <button
               type="button"
               onClick={() => setOpen((open! - 1 + list.length) % list.length)}
-              className="text-xs tracking-[0.25em] text-cream/70 uppercase hover:text-gold"
+              className="text-[0.8rem] font-medium tracking-[0.14em] text-cream/70 uppercase hover:text-gold"
             >
               ← Prev
             </button>
@@ -204,7 +202,7 @@ export default function GalleryWall() {
             <button
               type="button"
               onClick={() => setOpen((open! + 1) % list.length)}
-              className="text-xs tracking-[0.25em] text-cream/70 uppercase hover:text-gold"
+              className="text-[0.8rem] font-medium tracking-[0.14em] text-cream/70 uppercase hover:text-gold"
             >
               Next →
             </button>

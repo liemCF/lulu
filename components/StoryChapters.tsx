@@ -237,7 +237,7 @@ export default function StoryChapters() {
           </p>
           <div data-fade className="lg:col-span-4 lg:col-start-9 lg:self-end">
             <p className="font-display text-4xl text-gold italic">Sunny Chang</p>
-            <p className="mt-2 text-xs tracking-[0.3em] text-cream/50 uppercase">Founder</p>
+            <p className="mt-2 text-[0.8rem] font-medium tracking-[0.14em] text-cream/65 uppercase">Founder</p>
           </div>
         </div>
       </section>

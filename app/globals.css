@@ -1,25 +1,24 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* Lacquer palette, sampled from the restaurant photos (lacquer red, oxblood, rice paper).
-   Token names are roles: "gold" is the accent, "navy" the raised section colour. */
+/* Lulu brand colours: royal blue and gold (#b79c5b is the gold from the original site). */
 @theme {
-  --color-ink: #0d0706;
-  --color-night: #140908;
-  --color-navy: #3a1411;
-  --color-navy-hi: #4c1a15;
-  --color-navy-lo: #210c0a;
-  --color-gold: #d24a2e;
-  --color-gold-soft: #eba48a;
-  --color-gold-deep: #a8321e;
-  --color-paper: #efe4d2;
-  --color-cream: #f1e5d1;
-  --color-mute: #a39385;
-  --color-cinnabar: #c8322b;
-  --color-neon: #ff2e7e;
+  --color-ink: #050a22;
+  --color-night: #08113a;
+  --color-navy: #1a3291;
+  --color-navy-hi: #2849b8;
+  --color-navy-lo: #0e1c5c;
+  --color-gold: #c4a865;
+  --color-gold-soft: #e3d09f;
+  --color-gold-deep: #7a6230;
+  --color-paper: #f3eee2;
+  --color-cream: #f2ede1;
+  --color-mute: #9ea3bb;
+  --color-cinnabar: #e2553f;
+  --color-neon: #f0cf86;
 
-  --font-display: var(--font-cormorant), "Times New Roman", serif;
-  --font-sans: var(--font-work-sans), system-ui, sans-serif;
+  --font-display: var(--font-bodoni), "Didot", "Times New Roman", serif;
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
   --font-cn: var(--font-noto-serif-sc), "Songti SC", serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -36,6 +35,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  /* Bodoni's display cut has hairlines that break up on screen; a text-size cut stays crisp. */
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 26;
 }
 
 ::selection {
@@ -66,51 +68,53 @@ body {
 
 /* Component classes live in a layer so Tailwind utilities (hidden, px-*, etc.) can override them. */
 @layer components {
-  /* Type scale: light serif at very large sizes, tight leading. */
-  .t-huge {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: clamp(5.5rem, 17vw, 20rem);
-    line-height: 0.9;
-    text-transform: uppercase;
-  }
-  .t-hero {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(3.4rem, 8.4vw, 10rem);
-    line-height: 0.95;
-    text-transform: uppercase;
-  }
-  .t-h1 {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: clamp(2.8rem, 5.2vw, 6.25rem);
-    line-height: 1;
-  }
-  .t-h2 {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: clamp(1.9rem, 2.9vw, 3.5rem);
-    line-height: 1.1;
-    letter-spacing: 0.01em;
-  }
+  /* Type scale: Bodoni in sentence case, tight tracking at large sizes, lining figures throughout. */
+  .t-huge,
+  .t-hero,
+  .t-h1,
+  .t-h2,
   .t-h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.5rem, 1.9vw, 2rem);
-    line-height: 1.1;
+    font-variant-numeric: lining-nums;
+  }
+  .t-huge {
+    font-size: clamp(4.5rem, 13vw, 16rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+  .t-hero {
+    font-size: clamp(3rem, 7vw, 8.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  .t-h1 {
+    font-size: clamp(2.6rem, 4.8vw, 5.75rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .t-h2 {
+    font-size: clamp(1.75rem, 2.6vw, 3.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  .t-h3 {
+    font-size: clamp(1.35rem, 1.6vw, 1.75rem);
+    line-height: 1.3;
   }
   .kicker {
     font-family: var(--font-sans);
-    font-size: clamp(0.85rem, 1vw, 1.05rem);
-    letter-spacing: 0.06em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-gold);
   }
   .t-link {
     font-family: var(--font-sans);
-    font-size: 0.85rem;
-    letter-spacing: 0.18em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     text-decoration: underline;
     text-underline-offset: 0.35em;
@@ -123,18 +127,19 @@ body {
 
   .eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.72rem;
-    letter-spacing: 0.32em;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-gold);
   }
 
   .neon-text {
-    color: #ffd6e6;
+    color: #fff3d6;
     text-shadow:
-      0 0 6px rgba(255, 46, 126, 0.9),
-      0 0 22px rgba(255, 46, 126, 0.7),
-      0 0 60px rgba(255, 46, 126, 0.45);
+      0 0 6px rgba(240, 207, 134, 0.85),
+      0 0 22px rgba(240, 207, 134, 0.5),
+      0 0 60px rgba(240, 207, 134, 0.3);
   }
 
   .btn {
@@ -143,8 +148,9 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.6rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.24em;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     border: 1px solid currentColor;
     overflow: hidden;
@@ -171,6 +177,14 @@ body {
   }
   .btn-solid::before {
     background: var(--color-cream);
+  }
+
+  /* Prices: text face, same-width figures so columns line up. */
+  .price {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: 0.01em;
   }
 
   .link-line {
@@ -238,7 +252,7 @@ html.has-cursor button {
 
 /* Sticky bars sit under the nav and slide up when the nav hides on scroll. */
 .sticky-under-nav {
-  top: 68px;
+  top: 64px;
   transition: top 0.6s var(--ease-out-expo);
 }
 html.nav-hidden .sticky-under-nav {
