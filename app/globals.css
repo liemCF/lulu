@@ -4,12 +4,14 @@
 /* Royal blue & gold, the client's brand colours (Nov 2026).
    Token names are roles: "gold" is the accent, "navy" the raised section colour. */
 @theme {
-  --color-ink: #050a1f;
-  --color-night: #08112e;
+  --color-ink: #0b1638;
+  --color-night: #111f47;
+  --color-royal: #2441c2;
+  --color-porcelain: #f1f2f6;
   --color-navy: #142a78;
   --color-navy-hi: #1f3fa8;
   --color-navy-lo: #0a1645;
-  --color-gold: #d4af37;
+  --color-gold: #c9ab62;
   --color-gold-soft: #ecd593;
   --color-gold-deep: #a8862a;
   --color-paper: #f4ecd8;
@@ -18,9 +20,9 @@
   --color-cinnabar: #c8322b;
   --color-neon: #ff2e7e;
 
-  --font-display: var(--font-cormorant), "Times New Roman", serif;
-  --font-sans: var(--font-work-sans), system-ui, sans-serif;
-  --font-cn: var(--font-noto-serif-sc), "Songti SC", serif;
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-cn: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -253,4 +255,19 @@ html.nav-hidden .sticky-under-nav {
   .hero-glow { animation: none; }
   .gold-foil { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+/* v2 home: expanded black display type. */
+.t-wide {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 125%;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+}
+.t-wide-light {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 112%;
+  font-weight: 500;
 }

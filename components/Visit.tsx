@@ -66,7 +66,7 @@ export default function Visit() {
           >
             <span
               data-big-word
-              className="block font-display text-[clamp(4.5rem,19vw,20rem)] leading-[0.85] tracking-[-0.04em] italic transition-colors duration-700 group-hover:text-gold"
+              className="t-wide block text-[clamp(3rem,12.5vw,13rem)] transition-colors duration-700 group-hover:text-gold"
             >
               Reserve
             </span>
@@ -151,9 +151,9 @@ export default function Visit() {
         <div className="absolute inset-0 bg-gradient-to-b from-night via-night/30 to-ink/40" />
         <p
           aria-hidden
-          className="absolute inset-x-0 bottom-6 text-center font-display text-[13vw] leading-none font-light text-cream uppercase"
+          className="t-wide absolute inset-x-0 bottom-6 text-center text-[16vw] text-gold"
         >
-          Lulu Modern
+          Lulu
         </p>
       </div>
     </footer>
