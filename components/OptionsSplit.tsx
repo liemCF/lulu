@@ -11,6 +11,8 @@ type Props = {
   id: string;
   kicker: string;
   heading: ReactNode;
+  /** Short paragraph under the heading. */
+  intro?: ReactNode;
   options: Option[];
   imageSide: "left" | "right";
   tone: "light" | "dark";
@@ -23,7 +25,7 @@ type Props = {
  * On arrival the photo opens downward while the text opens upward; hovering a name
  * rolls it to an italic gold twin and swaps the photo and details.
  */
-export default function OptionsSplit({ id, kicker, heading, options, imageSide, tone, tag, cta }: Props) {
+export default function OptionsSplit({ id, kicker, heading, intro, options, imageSide, tone, tag, cta }: Props) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [bar, setBar] = useState({ top: 0, height: 0, visible: false });
@@ -97,6 +99,11 @@ export default function OptionsSplit({ id, kicker, heading, options, imageSide, 
               <h2 data-anim className="t-h2 mt-6">
                 {heading}
               </h2>
+              {intro && (
+                <div data-anim className="mt-6 max-w-lg space-y-4 text-[1.05rem] leading-relaxed opacity-85">
+                  {intro}
+                </div>
+              )}
             </div>
 
             <div

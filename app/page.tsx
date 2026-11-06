@@ -1,11 +1,14 @@
-import AfterDarkBand from "@/components/AfterDarkBand";
 import Hero from "@/components/Hero";
 import IntroScroller from "@/components/IntroScroller";
+import MeetChef from "@/components/MeetChef";
 import OptionsSplit, { type Option } from "@/components/OptionsSplit";
 import Panorama from "@/components/Panorama";
 import Reviews from "@/components/Reviews";
 import TwoWorlds from "@/components/TwoWorlds";
 import { TLink } from "@/components/PageTransition";
+
+// Homepage order follows the client's "Recommended Homepage Structure" doc:
+// experience → signature dish → menu → chef → story → social proof → private dining → Instagram → reservation.
 
 // Dishes and prices from the restaurant's Toast menu.
 const dishes: Option[] = [
@@ -86,40 +89,67 @@ const occasions: Option[] = [
 export default function Home() {
   return (
     <main>
+      {/* 1. Hero */}
       <Hero />
+      {/* 2. The Signature Experience */}
       <IntroScroller />
+      {/* 3. New Asian Menu */}
       <OptionsSplit
         id="menu"
         tone="light"
         imageSide="right"
-        kicker="New Asian menu"
-        heading="Inspired by Asia. Designed for today."
+        kicker="New Asian Menu"
+        heading="Inspired by Asia. Designed for Today."
+        intro={
+          <>
+            <p>
+              Lulu Modern celebrates the flavors, traditions, and culinary techniques found across Asia while honoring
+              the roots that inspired our journey.
+            </p>
+            <p>
+              From signature duck and dim sum favorites to chef-driven creations, every dish reflects our commitment to
+              quality ingredients, bold flavors, and elevated hospitality.
+            </p>
+          </>
+        }
         options={dishes}
         tag="The menu"
         cta={
-          <TLink href="/menu" className="t-link">
-            View the full menu
+          <TLink href="/menu" className="btn text-ink">
+            View Menu
           </TLink>
         }
       />
+      {/* 4. Meet the Chef */}
+      <MeetChef />
+      {/* 5. Our Story */}
       <TwoWorlds />
-      <AfterDarkBand />
+      {/* 6. Featured Recognition */}
+      <Reviews />
+      {/* 7. Private Dining & Celebrations */}
       <OptionsSplit
         id="private"
         tone="dark"
         imageSide="left"
-        kicker="Private dining & celebrations"
-        heading="Celebrations deserve something extraordinary."
+        kicker="Private Dining & Celebrations"
+        heading="Celebrations Deserve Something Extraordinary"
+        intro={
+          <p>
+            From birthdays and anniversaries to corporate gatherings and holiday events, Lulu Modern creates memorable
+            dining experiences for every occasion.
+          </p>
+        }
         options={occasions}
         tag="Private dining"
         cta={
-          <TLink href="/private-dining" className="btn text-cream">
-            Plan your event
+          <TLink href="/private-dining" className="btn btn-solid">
+            Plan Your Event
           </TLink>
         }
       />
-      <Reviews />
+      {/* 8. Instagram Gallery */}
       <Panorama />
+      {/* 9. Final CTA lives in the site footer (Visit): "Experience Lulu Modern" */}
     </main>
   );
 }

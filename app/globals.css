@@ -1,21 +1,21 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* Lulu brand colours: royal blue and gold (#b79c5b is the gold from the original site). */
+/* Lulu brand colours from the original site: deep navy (#1b294f, #141f3b, #263763) and gold (#b79c5b). */
 @theme {
-  --color-ink: #050a22;
-  --color-night: #08113a;
-  --color-navy: #1a3291;
-  --color-navy-hi: #2849b8;
-  --color-navy-lo: #0e1c5c;
-  --color-gold: #c4a865;
-  --color-gold-soft: #e3d09f;
-  --color-gold-deep: #7a6230;
+  --color-ink: #0b1329;
+  --color-night: #141f3b;
+  --color-navy: #1b294f;
+  --color-navy-hi: #263763;
+  --color-navy-lo: #111a33;
+  --color-gold: #b79c5b;
+  --color-gold-soft: #dcc68f;
+  --color-gold-deep: #7a6635;
   --color-paper: #f3eee2;
   --color-cream: #f2ede1;
-  --color-mute: #9ea3bb;
+  --color-mute: #a2a8b6;
   --color-cinnabar: #e2553f;
-  --color-neon: #f0cf86;
+  --color-neon: #e2c784;
 
   --font-display: var(--font-bodoni), "Didot", "Times New Roman", serif;
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
@@ -137,9 +137,9 @@ body {
   .neon-text {
     color: #fff3d6;
     text-shadow:
-      0 0 6px rgba(240, 207, 134, 0.85),
-      0 0 22px rgba(240, 207, 134, 0.5),
-      0 0 60px rgba(240, 207, 134, 0.3);
+      0 0 6px rgba(226, 199, 132, 0.85),
+      0 0 22px rgba(226, 199, 132, 0.5),
+      0 0 60px rgba(226, 199, 132, 0.3);
   }
 
   .btn {

@@ -159,9 +159,9 @@ export default function MenuBoard() {
   };
 
   return (
-    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#03061a]" : "bg-ink"}`}>
+    <div ref={root} className={`relative transition-colors duration-700 ${neon ? "bg-[#02080c]" : "bg-ink"}`}>
       {neon && (
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_30%_at_80%_10%,rgba(240,207,134,0.1),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_30%_at_80%_10%,rgba(226,199,132,0.1),transparent_70%)]" />
       )}
 
       {/* Sticky tabs + section chips */}

@@ -6,7 +6,6 @@ import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { links } from "@/lib/content";
 import { frameA, frameB } from "@/lib/shapes";
-import { TLink } from "./PageTransition";
 
 // Shown / hidden states shared by every piece of text in the intro.
 const SHOW = { opacity: 1, y: 0, ease: "power1.inOut", pointerEvents: "auto", overwrite: "auto" } as const;
@@ -28,11 +27,11 @@ type Shot = { src: string; w: number; h: number };
 const frameImages: Record<"a" | "b", [Shot, Shot]> = {
   a: [
     { src: "/images/duck-chef-flame.webp", w: 600, h: 900 },
-    { src: "/images/story-lulu.webp", w: 600, h: 850 },
+    { src: "/images/duck-carving.webp", w: 600, h: 900 },
   ],
   b: [
     { src: "/images/duck-torch.webp", w: 840, h: 560 },
-    { src: "/images/night-room.webp", w: 560, h: 560 },
+    { src: "/images/duck-plated.webp", w: 840, h: 560 },
   ],
 };
 
@@ -92,10 +91,9 @@ export default function IntroScroller() {
         const k1 = split("[data-k1]", "chars");
         const h1 = split("[data-h1]", "words");
         const h2 = split("[data-h2]", "words");
-        const h3 = split("[data-h3]", "chars");
-        const p3 = split("[data-p3]", "words");
+        const h3 = split("[data-h3]", "words");
 
-        gsap.set([k1, h1, h2, h3, p3, q("[data-b1]"), q("[data-b2]"), q("[data-b3]")], HIDE);
+        gsap.set([k1, h1, h2, h3, q("[data-b1]"), q("[data-b2]"), q("[data-b3]")], HIDE);
         // The frames are already in place as the section arrives, rather than fading in on scroll.
         gsap.fromTo(
           q("[data-morph]"),
@@ -159,7 +157,6 @@ export default function IntroScroller() {
           gsap
             .timeline({ paused: true })
             .to(h3, { ...SHOW, duration: 0.7, stagger: 0.04 }, 0)
-            .to(p3, { ...SHOW, duration: 0.9, stagger: 0.04 }, 0.2)
             .to(q("[data-b3]"), { ...SHOW, duration: 0.9 }, 0.4),
         );
 
@@ -187,7 +184,7 @@ export default function IntroScroller() {
   return (
     <section ref={root} id="duck" className="relative">
       {/* Desktop: 900vh of scroll played inside one sticky screen */}
-      <div data-scroller className="relative hidden h-[900vh] overflow-clip text-cream lg:block">
+      <div data-scroller className="relative hidden h-[700vh] overflow-clip text-cream lg:block">
         <div className="sticky top-0 flex h-screen w-full items-center overflow-clip bg-[radial-gradient(at_bottom_right,var(--color-navy-hi)_0%,var(--color-navy-lo)_45%,var(--color-ink)_100%)]">
           <div
             data-lattice
@@ -203,53 +200,35 @@ export default function IntroScroller() {
               </div>
             </div>
 
-            {/* Screen 1: the duck */}
+            {/* Screen 1: the headline */}
             <div className="absolute inset-0 px-24 pt-28">
               <div className="w-5/12 space-y-10">
-                <p data-k1 className="kicker">The signature experience</p>
-                <h2 data-h1 className="t-h2">
+                <p data-k1 className="kicker">The Signature Experience</p>
+                <h2 data-h1 className="t-h1">The Dish Everyone Talks About</h2>
+                <p data-b1 className="t-h3 max-w-md text-cream/85">At Lulu Modern, every visit begins with an experience.</p>
+              </div>
+            </div>
+
+            {/* Screen 2: why it's talked about */}
+            <div className="absolute inset-0 flex justify-end px-24 pt-28">
+              <div className="w-5/12 space-y-10">
+                <h2 data-h2 className="t-h2">
                   Our signature Flaming Peking Duck has become one of the most talked-about dishes in Dallas-Fort Worth,
                   combining tableside theatrics with authentic craftsmanship.
                 </h2>
-                <div data-b1>
-                  <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn text-cream">
-                    Reserve the duck
-                  </a>
-                </div>
+                <div data-b2 aria-hidden className="h-px w-24 bg-gold/60" />
               </div>
             </div>
 
-            {/* Screen 2: the people behind it */}
-            <div className="absolute inset-0 flex justify-end px-24 pt-28">
-              <div className="w-5/12 space-y-10">
-                {/* Lightly edited from the site's "Our Story" copy. */}
-                <h2 data-h2 className="t-h2">
-                  Lulu Modern was born from the Asian American experience: tradition and innovation side by side, in a
-                  dining room designed to be shared.
-                </h2>
-                <div data-b2>
-                  <TLink href="/story" className="btn text-cream">
-                    Our story
-                  </TLink>
-                </div>
-              </div>
-            </div>
-
-            {/* Screen 3: the tagline */}
+            {/* Screen 3: the promise, and where to book it */}
             <div className="absolute inset-0 flex flex-col justify-center px-24">
-              <h2 data-h3 className="t-hero">Where tradition meets innovation</h2>
-              <div className="mt-10 flex justify-end">
-                <div className="w-4/12 space-y-8">
-                  <p data-p3 className="text-lg leading-snug text-cream/85">
-                    From signature duck and dim sum favorites to chef-driven creations, every dish reflects our
-                    commitment to quality ingredients, bold flavors, and elevated hospitality.
-                  </p>
-                  <div data-b3>
-                    <TLink href="/menu" className="t-link text-gold">
-                      Explore the menu
-                    </TLink>
-                  </div>
-                </div>
+              <h2 data-h3 className="t-h1 max-w-[20ch]">
+                Crispy skin. Hand-carved service. Unforgettable presentation.
+              </h2>
+              <div data-b3 className="mt-12">
+                <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn btn-solid">
+                  Explore the Duck Experience
+                </a>
               </div>
             </div>
 
@@ -272,35 +251,19 @@ export default function IntroScroller() {
 
       {/* Phones and tablets: the same three screens, stacked */}
       <div className="bg-[radial-gradient(at_bottom_right,var(--color-navy-hi)_0%,var(--color-navy-lo)_45%,var(--color-ink)_100%)] px-5 py-24 text-cream sm:px-10 lg:hidden">
-        <p data-anim="chars" className="kicker">The signature experience</p>
-        <h2 data-anim className="t-h2 mt-6">
-          Our signature Flaming Peking Duck has become one of the most talked-about dishes in Dallas-Fort Worth,
-          combining tableside theatrics with authentic craftsmanship.
-        </h2>
-        <a href={links.reserve} target="_blank" rel="noreferrer" className="btn mt-8 text-cream">
-          Reserve the duck
-        </a>
+        <p data-anim="chars" className="kicker">The Signature Experience</p>
+        <h2 data-anim className="t-h1 mt-6">The Dish Everyone Talks About</h2>
+        <p data-anim className="mt-6 text-[1.05rem] leading-relaxed text-cream/85">
+          At Lulu Modern, every visit begins with an experience. Our signature Flaming Peking Duck has become one of the
+          most talked-about dishes in Dallas-Fort Worth, combining tableside theatrics with authentic craftsmanship.
+        </p>
         <div data-clip className="relative mt-12 aspect-[4/5] overflow-hidden rounded-[1rem_4rem_1rem_4rem]">
           <Image src="/images/duck-carving.webp" alt="Peking duck carved tableside" fill sizes="90vw" className="object-cover" />
         </div>
-        <h2 data-anim className="t-h2 mt-16">
-          Lulu Modern was born from the Asian American experience: tradition and innovation side by side, in a dining
-          room designed to be shared.
-        </h2>
-        <TLink href="/story" className="btn mt-8 text-cream">
-          Our story
-        </TLink>
-        <div data-clip className="relative mt-12 ml-auto aspect-[3/4] w-[85%] overflow-hidden rounded-[4rem_1rem_4rem_1rem]">
-          <Image src="/images/story-lulu.webp" alt="Lulu, the muse of the restaurant" fill sizes="85vw" className="object-cover" />
-        </div>
-        <h2 data-anim="chars" className="t-hero mt-16">Where tradition meets innovation</h2>
-        <p data-anim className="mt-8 text-lg leading-snug text-cream/85">
-          From signature duck and dim sum favorites to chef-driven creations, every dish reflects our commitment to
-          quality ingredients, bold flavors, and elevated hospitality.
-        </p>
-        <TLink href="/menu" className="t-link mt-8 inline-block text-gold">
-          Explore the menu
-        </TLink>
+        <h3 data-anim className="t-h2 mt-12">Crispy skin. Hand-carved service. Unforgettable presentation.</h3>
+        <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn btn-solid mt-8">
+          Explore the Duck Experience
+        </a>
       </div>
     </section>
   );

@@ -40,13 +40,17 @@ export const schedule: ([number, number] | null)[] = [
 ];
 export const timeZone = "America/Chicago";
 
-export const nav = [
+// Main navigation, in the order the client asked for. Reservations goes straight to OpenTable.
+export type NavItem = { label: string; href: string; external?: boolean };
+export const nav: NavItem[] = [
+  { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
-  { label: "The Duck", href: "/#duck" },
-  { label: "After Dark", href: "/#after-dark" },
-  { label: "Our Story", href: "/story" },
+  { label: "About", href: "/about" },
   { label: "Private Dining", href: "/private-dining" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Press", href: "/press" },
+  { label: "Contact", href: "/contact" },
+  { label: "Reservations", href: links.reserve, external: true },
 ];
 
 export const duckSteps = [
@@ -117,6 +121,11 @@ export const cocktails = [
   { name: "The Great Old Fashioned", price: "20" },
   { name: "Once Upon a Flame", price: "22" },
 ];
+
+// Press logos, awards, media mentions and notable visits for "What People Are Saying" and the
+// Press page. Empty until the restaurant sends them; the press row stays hidden while it is empty.
+export type PressItem = { outlet: string; headline?: string; url?: string; logo?: string };
+export const press: PressItem[] = [];
 
 export const reviews = [
   {

@@ -6,14 +6,16 @@ import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/reveal";
 import { links } from "@/lib/content";
 
+// The Instagram feed: food and the room only, no flyers or photos with text on them.
 const strip = [
-  { src: "/images/gallery-spread.webp", label: "Dim sum for the table" },
-  { src: "/images/duck-carving.webp", label: "Carved tableside" },
-  { src: "/images/night-bar.webp", label: "The back bar" },
-  { src: "/images/dish-pickled-fish.webp", label: "Sichuan pickled fish" },
-  { src: "/images/night-cheers.webp", label: "Saturday, 11 pm" },
-  { src: "/images/dish-short-rib.webp", label: "Short rib, dry ice" },
-  { src: "/images/night-energy.webp", label: "Late nights" },
+  { src: "/images/duck-neon.webp", label: "The Flaming Peking Duck, set alight tableside" },
+  { src: "/images/night-cocktail.webp", label: "A signature cocktail being poured" },
+  { src: "/images/gallery-spread.webp", label: "Dim sum and duck for the table" },
+  { src: "/images/night-sparklers.webp", label: "A birthday celebration with sparklers" },
+  { src: "/images/duck-carving.webp", label: "Peking duck carved by hand" },
+  { src: "/images/night-bar.webp", label: "The back bar at night" },
+  { src: "/images/dish-wagyu-xlb.webp", label: "Wagyu soup dumplings" },
+  { src: "/images/night-cheers.webp", label: "A table raising a toast" },
 ];
 
 /**
@@ -80,7 +82,6 @@ export default function Panorama() {
               <div className="relative h-full w-full overflow-hidden rounded-[1.25rem]">
                 <Image src={s.src} alt={s.label} fill sizes="(min-width:768px) 40vh, 100vw" className="object-cover" />
               </div>
-              <figcaption className="mt-3 text-[0.8rem] font-medium tracking-[0.14em] text-cream/70 uppercase">{s.label}</figcaption>
             </figure>
           ))}
         </div>
@@ -100,7 +101,7 @@ export default function Panorama() {
           data-heading
           className="t-hero pointer-events-none absolute top-24 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-10"
         >
-          From the table
+          On Instagram
         </h2>
 
         <a
@@ -109,7 +110,7 @@ export default function Panorama() {
           rel="noreferrer"
           className="t-link absolute right-10 bottom-10 z-20 text-gold max-md:static max-md:mt-10"
         >
-          @lulu.modern ↗
+          Follow @lulu.modern ↗
         </a>
       </div>
     </section>

@@ -4,19 +4,36 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { info, links, nav } from "@/lib/content";
+import { info, links, nav, type NavItem } from "@/lib/content";
 import { INTRO_EVENT } from "./Hero";
 import { TLink } from "./PageTransition";
 import { useLenis } from "./SmoothScroll";
 
+// Desktop splits the page links around the logo; Reservations is the gold button on the right.
+const pageLinks = nav.filter((item) => !item.external);
+const leftLinks = pageLinks.slice(0, 4);
+const rightLinks = pageLinks.slice(4);
+const reservations = nav.find((item) => item.external) ?? { label: "Reservations", href: links.reserve };
+
 export default function Nav() {
   const bar = useRef<HTMLElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
+  const booking = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
   const lenis = useLenis();
   const pathname = usePathname();
-  const isActive = (href: string) => (href.includes("#") ? false : pathname === href);
+  const isActive = (href: string) => pathname === href;
+  const barLink = (item: NavItem) => (
+    <TLink
+      key={item.href}
+      href={item.href}
+      aria-current={isActive(item.href) ? "page" : undefined}
+      className="link-line py-1 text-[0.8rem] font-medium tracking-[0.14em] whitespace-nowrap text-cream/85 uppercase transition-colors hover:text-cream aria-[current=page]:text-gold"
+    >
+      {item.label}
+    </TLink>
+  );
 
   useEffect(() => {
     openRef.current = open;
@@ -27,6 +44,13 @@ export default function Nav() {
       gsap.set(bar.current, { yPercent: -100, autoAlpha: 0 });
       const show = () => gsap.to(bar.current, { yPercent: 0, autoAlpha: 1, duration: 1.2, ease: "expo.out" });
       window.addEventListener(INTRO_EVENT, show);
+
+      // The phone booking bar waits until the visitor is past the first screen, where the hero has its own buttons.
+      ScrollTrigger.create({
+        start: () => window.innerHeight * 0.6,
+        end: "max",
+        onToggle: (self) => booking.current?.setAttribute("data-show", String(self.isActive)),
+      });
 
       // Transparent over the hero, a solid hairlined bar once the page moves.
       ScrollTrigger.create({
@@ -128,7 +152,7 @@ export default function Nav() {
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="site-menu"
-              className="group -ml-1 flex h-11 items-center gap-3 px-1 text-[0.8rem] font-medium tracking-[0.14em] text-cream uppercase transition-colors hover:text-gold lg:hidden"
+              className="group -ml-1 flex h-11 items-center gap-3 px-1 text-[0.8rem] font-medium tracking-[0.14em] text-cream uppercase transition-colors hover:text-gold xl:hidden"
             >
               <span className="relative flex h-3 w-6 flex-col justify-between">
                 <span className={`h-px w-full bg-current transition-transform duration-500 ${open ? "translate-y-[5.5px] rotate-45" : ""}`} />
@@ -136,19 +160,8 @@ export default function Nav() {
               </span>
               {open ? "Close" : "Menu"}
             </button>
-            <nav aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-9">
-              {nav
-                .filter((item) => !item.href.includes("#"))
-                .map((item) => (
-                  <TLink
-                    key={item.href}
-                    href={item.href}
-                    aria-current={isActive(item.href) ? "page" : undefined}
-                    className="link-line py-1 text-[0.8rem] font-medium tracking-[0.14em] whitespace-nowrap text-cream/85 uppercase transition-colors hover:text-cream aria-[current=page]:text-gold"
-                  >
-                    {item.label}
-                  </TLink>
-                ))}
+            <nav aria-label="Main" className="hidden items-center gap-7 xl:flex 2xl:gap-10">
+              {leftLinks.map(barLink)}
             </nav>
           </div>
 
@@ -163,18 +176,15 @@ export default function Nav() {
             />
           </TLink>
 
-          <div className="flex items-center justify-end gap-7">
-            <a
-              href={links.phone}
-              className="link-line hidden py-1 text-[0.8rem] font-medium tracking-[0.08em] text-cream/85 tabular-nums transition-colors hover:text-cream xl:inline"
-            >
-              {info.phone}
-            </a>
+          <div className="flex items-center justify-end gap-7 2xl:gap-10">
+            <nav aria-label="More" className="hidden items-center gap-7 xl:flex 2xl:gap-10">
+              {rightLinks.map(barLink)}
+            </nav>
             <a href={links.phone} className="py-2 text-[0.8rem] font-medium tracking-[0.14em] text-cream uppercase sm:hidden">
               Call
             </a>
-            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid hidden !px-6 !py-3 sm:inline-flex">
-              Reserve
+            <a href={reservations.href} target="_blank" rel="noreferrer" className="btn btn-solid hidden !px-6 !py-3 sm:inline-flex">
+              {reservations.label}
             </a>
           </div>
         </div>
@@ -195,20 +205,32 @@ export default function Nav() {
           味
         </span>
         <ul className="flex flex-col gap-1">
-          {nav.map((item, i) => (
-            <li key={item.href} className="overflow-hidden">
-              <TLink
-                data-menu-item
-                href={item.href}
-                onClick={close}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className="flex items-baseline gap-4 py-1 font-display text-[clamp(2.2rem,min(10vw,7.5svh),5.5rem)] leading-[1.08] transition-colors hover:text-gold aria-[current=page]:text-gold"
-              >
-                <span className="price font-sans text-sm text-gold">0{i + 1}</span>
-                {item.label}
-              </TLink>
-            </li>
-          ))}
+          {nav.map((item, i) => {
+            const cls =
+              "flex items-baseline gap-4 py-0.5 font-display text-[clamp(2rem,min(9vw,6.2svh),4.75rem)] leading-[1.08] transition-colors hover:text-gold aria-[current=page]:text-gold";
+            const num = <span className="price font-sans text-sm text-gold">0{i + 1}</span>;
+            return (
+              <li key={item.href} className="overflow-hidden">
+                {item.external ? (
+                  <a data-menu-item href={item.href} target="_blank" rel="noreferrer" onClick={close} className={cls}>
+                    {num}
+                    {item.label} <span className="text-[0.5em] text-gold">↗</span>
+                  </a>
+                ) : (
+                  <TLink
+                    data-menu-item
+                    href={item.href}
+                    onClick={close}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className={cls}
+                  >
+                    {num}
+                    {item.label}
+                  </TLink>
+                )}
+              </li>
+            );
+          })}
         </ul>
         <div data-menu-meta className="flex flex-col gap-5 lg:max-w-md lg:justify-self-end">
           <div className="flex gap-3">
@@ -230,7 +252,11 @@ export default function Nav() {
       </div>
 
       {/* Mobile sticky booking bar */}
-      <div className="intro-hide fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 flex gap-2 transition-opacity duration-700 sm:hidden">
+      <div
+        ref={booking}
+        data-show="false"
+        className="intro-hide fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 flex gap-2 transition-[opacity,translate] duration-500 data-[show=false]:pointer-events-none data-[show=false]:translate-y-4 data-[show=false]:!opacity-0 sm:hidden"
+      >
         <a
           href={links.reserve}
           target="_blank"

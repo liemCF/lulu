@@ -4,9 +4,10 @@ import Image, { getImageProps } from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
-import { info } from "@/lib/content";
+import { info, links } from "@/lib/content";
 import HeroCanvas, { HERO_MOBILE_QUERY, type HeroScene } from "./HeroCanvas";
 import OpenStatus from "./OpenStatus";
+import { TLink } from "./PageTransition";
 import { useLenis } from "./SmoothScroll";
 
 export const INTRO_EVENT = "lulu:intro";
@@ -89,7 +90,7 @@ export default function Hero() {
       // Act 1: the mark surfaces from the dark, a band of light passes over it,
       // and a hairline tracks the hero photo loading. Act 2: lacquer doors part.
       let ready = false;
-      const wordmark = SplitText.create(q("[data-wordmark]"), { type: "words,chars" });
+      const headline = SplitText.create(q("[data-wordmark]"), { type: "words" });
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
       tl.fromTo(
         q("[data-loader-logo]"),
@@ -131,15 +132,20 @@ export default function Hero() {
         .add(finish, "doors+=0.6")
         .set(q("[data-loader]"), { display: "none" }, "doors+=1.5")
         .fromTo(q("[data-hero-veil]"), { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" }, "doors+=0.3")
-        // The wordmark rises letter by letter once the doors are open.
+        // The headline rises word by word once the doors are open, then the subheadline and buttons.
         .set(q("[data-wordmark]"), { opacity: 1 }, "doors+=0.8")
         .fromTo(
-          wordmark.chars,
-          { opacity: 0, y: calm ? "0.5rem" : "2rem" },
-          { opacity: 1, y: 0, duration: 0.9, stagger: 0.05, ease: "power2.out" },
+          headline.words,
+          { opacity: 0, y: calm ? "0.4rem" : "1.5rem" },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.07, ease: "power2.out" },
           "doors+=0.8",
         )
-        .fromTo(q("[data-hero-fade]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, "doors+=1.4");
+        .fromTo(
+          q("[data-hero-fade]"),
+          { autoAlpha: 0, y: calm ? 0 : 12 },
+          { autoAlpha: 1, y: 0, duration: 1, stagger: 0.12 },
+          "doors+=1.3",
+        );
 
       // Returning in the same session: skip straight to the doors.
       if (seen) tl.seek(tl.labels.doors - 0.15);
@@ -155,8 +161,8 @@ export default function Hero() {
         ease: "none",
         scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: true },
       });
-      gsap.to(q("[data-wordmark]"), {
-        yPercent: -40,
+      gsap.to(q("[data-hero-copy]"), {
+        yPercent: -20,
         opacity: 0,
         ease: "none",
         scrollTrigger: { trigger: section, start: "top top", end: "bottom 30%", scrub: true },
@@ -172,8 +178,8 @@ export default function Hero() {
 
   return (
     <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink">
-      {/* Media. On phones the photo stops short of the foot so the duck sits clear of the wordmark. */}
-      <div className="absolute inset-0 max-md:bottom-[24%]">
+      {/* Media. On phones the photo takes the top of the screen so the duck sits clear of the copy. */}
+      <div className="absolute inset-0 max-md:bottom-[42%]">
         <div data-hero-parallax className="absolute inset-0 will-change-transform">
           <picture>
             <source media={HERO_MOBILE_QUERY} srcSet={mobileSrcSet} sizes="70vh" />
@@ -185,6 +191,8 @@ export default function Hero() {
         </div>
         <div data-hero-veil className="intro-hide absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70 max-md:via-transparent max-md:via-30% max-md:to-ink/40" />
+          {/* Desktop: darken the left, where the copy sits, and leave the duck in the light */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/20 via-45% to-transparent max-md:hidden" />
           <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,color-mix(in_srgb,var(--color-navy-hi)_35%,transparent),transparent_70%)]" />
         </div>
         <div data-hero-dim className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
@@ -241,18 +249,34 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Wordmark, centred at the foot of the frame */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-sm:pb-24">
-        <div data-hero-fade className="intro-hide mb-4 flex items-center gap-6 text-cream/80">
-          <OpenStatus />
+      {/* What Lulu is, why it's different and how to book: bottom-left on desktop, under the photo on phones */}
+      <div
+        data-hero-copy
+        className="absolute inset-x-0 bottom-0 z-10 px-5 pb-10 max-md:text-center sm:px-10 md:pb-16 lg:px-16 lg:pb-20"
+      >
+        <div className="max-w-[46rem] max-md:mx-auto">
+          <div data-hero-fade className="intro-hide mb-5 flex text-cream/80 max-md:mb-3 max-md:justify-center">
+            <OpenStatus />
+          </div>
+          <h1
+            data-wordmark
+            className="intro-hide font-display text-[clamp(2.5rem,5.6vw,6.25rem)] leading-[1.02] tracking-[-0.02em] text-cream max-md:text-[clamp(1.9rem,8.4vw,2.9rem)]"
+          >
+            Modern Asian Dining. <em className="text-gold-soft">Unforgettable Experiences.</em>
+          </h1>
+          <p data-hero-fade className="intro-hide mt-5 max-w-[36rem] text-[1.05rem] leading-relaxed text-cream/85 max-md:mx-auto max-md:mt-3 max-md:text-[0.95rem] max-md:leading-normal lg:text-[1.15rem]">
+            Home of the iconic Flaming Peking Duck and chef-driven Asian cuisine inspired by tradition, innovation, and
+            the Asian American experience.
+          </p>
+          <div data-hero-fade className="intro-hide mt-8 flex flex-wrap gap-3 max-md:mt-5 max-md:grid max-md:grid-cols-2">
+            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid max-md:justify-center max-md:!px-2">
+              Reserve a Table
+            </a>
+            <TLink href="/menu" className="btn text-cream max-md:justify-center max-md:!px-2">
+              View Menu
+            </TLink>
+          </div>
         </div>
-        <h1
-          data-wordmark
-          aria-label="Lulu Modern Chinese"
-          className="intro-hide text-center font-display text-[9.5vw] leading-[0.9] tracking-[0.01em] text-cream uppercase max-md:text-[14vw]"
-        >
-          Lulu Modern
-        </h1>
       </div>
     </section>
   );

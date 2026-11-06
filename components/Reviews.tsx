@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
-import { reviews } from "@/lib/content";
+import { press, reviews } from "@/lib/content";
 
 export default function Reviews() {
   const root = useRef<HTMLElement>(null);
@@ -71,6 +71,19 @@ export default function Reviews() {
           </figure>
         ))}
       </div>
+
+      {press.length > 0 && (
+        <ul data-fade className="mt-20 flex flex-wrap items-center gap-x-12 gap-y-8 border-t border-gold/15 pt-10">
+          {press.map((p) => (
+            <li key={p.outlet} className="text-cream/70">
+              <a href={p.url} target="_blank" rel="noreferrer" className="flex flex-col gap-1 transition-colors hover:text-cream">
+                <span className="font-display text-xl">{p.outlet}</span>
+                {p.headline && <span className="max-w-xs text-sm text-cream/60">{p.headline}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="mt-10 flex gap-2" aria-hidden>
         {reviews.map((r, i) => (

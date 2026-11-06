@@ -42,24 +42,27 @@ export default function Visit() {
     <footer ref={root} id="visit" className="relative overflow-hidden bg-night">
       <div className="pt-28 pb-28 sm:pb-10 lg:pt-36">
         <div className="px-5 sm:px-10 lg:pl-24">
-          <p data-fade className="eyebrow mb-4">
-            Reserve your table
-          </p>
-          <a
-            href={links.reserve}
-            target="_blank"
-            rel="noreferrer"
-            className="group block overflow-hidden"
-            data-cursor="Book"
-            aria-label="Reserve a table on OpenTable"
-          >
+          <h2 className="overflow-hidden">
             <span
               data-big-word
-              className="block font-display text-[clamp(4.5rem,19vw,20rem)] leading-[0.85] tracking-[-0.04em] italic transition-colors duration-700 group-hover:text-gold"
+              className="block font-display text-[clamp(3.25rem,10.5vw,11rem)] leading-[0.95] tracking-[-0.03em]"
             >
-              Reserve
+              Experience <em className="text-gold">Lulu Modern</em>
             </span>
-          </a>
+          </h2>
+          <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <p data-fade className="max-w-md text-[1.15rem] leading-relaxed text-cream/85">
+              Dallas-Fort Worth’s destination for modern Asian dining.
+            </p>
+            <div data-fade className="flex flex-wrap gap-3">
+              <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid" data-cursor="Book">
+                Reserve a Table
+              </a>
+              <a href={links.order} target="_blank" rel="noreferrer" className="btn text-cream">
+                Order Online
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="mt-20 grid gap-12 border-t border-gold/15 px-5 pt-14 sm:grid-cols-2 sm:px-10 lg:grid-cols-12 lg:pl-24">

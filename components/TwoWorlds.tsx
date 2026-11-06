@@ -31,7 +31,7 @@ const photos = [
   {
     src: "/images/dish-pork-xlb.webp",
     alt: "Soup dumplings in a bamboo steamer",
-    cls: "top-[8%] right-[18%] w-[12rem] aspect-square z-[2]",
+    cls: "bottom-[9%] right-[32%] w-[12rem] aspect-square z-[2]",
     mask: mask([[20, 30], [300, 0], [280, 260], [120, 300], [0, 230]], 300, 300, 40),
     strength: 0.035,
   },
@@ -49,7 +49,7 @@ export default function TwoWorlds() {
       const split = SplitText.create(q("[data-huge]"), { type: "chars,words" });
       gsap.from(split.chars, {
         x: "100vw",
-        stagger: 0.1,
+        stagger: 0.035,
         duration: 1.7,
         ease: "power2.inOut",
         scrollTrigger: { trigger: root.current, start: "top 75%" },
@@ -92,7 +92,7 @@ export default function TwoWorlds() {
       <div className="relative flex min-h-screen flex-col justify-center py-32 lg:py-40">
         <div data-kicker-wrap className="relative z-[3] px-5 text-center sm:px-10 lg:px-24">
           <p data-anim="chars" className="kicker">
-            Our roots
+            Our Story
           </p>
         </div>
 
@@ -124,19 +124,30 @@ export default function TwoWorlds() {
         ))}
 
         <div className="pointer-events-none relative z-[4] mt-10 flex justify-center px-5">
-          <h2 data-huge className="t-huge text-center max-lg:text-[17vw] lg:text-[12.5vw] whitespace-nowrap text-cream/95 max-lg:whitespace-normal">
-            Two worlds
+          <h2 data-huge className="t-hero text-center text-cream/95 max-lg:text-[12vw] lg:text-[7vw]">
+            Rooted in Culture.
+            <br />
+            <em className="text-gold-soft">Inspired by Evolution.</em>
           </h2>
         </div>
 
         <div className="relative z-[3] mt-16 px-5 sm:px-10 lg:mt-24 lg:px-24">
           <div className="max-w-xl space-y-8 lg:ml-[8%]">
-            <p data-anim className="t-h3 text-cream/90">
-              The Asian American identity is its own world: not the same as growing up in Asia, and not quite the
-              same as traditional American culture. It’s a blend. A balance. A story of duality.
+            <p data-anim className="t-h3 text-cream">
+              Lulu Modern was born from the Asian American experience.
             </p>
-            <TLink href="/story" className="t-link text-gold">
-              Read our story
+            <div data-fade className="space-y-5 text-[1.05rem] leading-relaxed text-cream/85">
+              <p>
+                Growing up between cultures taught us that tradition and innovation can exist side by side. Our
+                restaurant reflects that belief, bringing together authentic flavors, modern creativity, and a dining
+                experience designed to be shared.
+              </p>
+              <p>
+                This is more than a restaurant. It’s our interpretation of what modern Asian hospitality can become.
+              </p>
+            </div>
+            <TLink href="/about" className="btn text-cream">
+              Read Our Story
             </TLink>
           </div>
         </div>
