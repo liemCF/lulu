@@ -1,22 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Noto_Serif_SC, Work_Sans } from "next/font/google";
-import Cursor from "@/components/Cursor";
+import { Bodoni_Moda, Hanken_Grotesk, Noto_Serif_SC } from "next/font/google";
 import Nav from "@/components/Nav";
 import PageTransition from "@/components/PageTransition";
 import SmoothScroll from "@/components/SmoothScroll";
 import Visit from "@/components/Visit";
 import "./globals.css";
 
-// Light editorial serif + Work Sans, the pairing Belgrade Arbor-style layouts are built on.
-const cormorant = Cormorant_Garamond({
+// Bodoni Moda (high-contrast fashion serif) for display, Hanken Grotesk for reading.
+// Variable names kept so the other pages pick up the new faces without edits.
+const cormorant = Bodoni_Moda({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const workSans = Work_Sans({
+const workSans = Hanken_Grotesk({
   variable: "--font-work-sans",
   subsets: ["latin"],
   display: "swap",
@@ -36,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050a1f",
+  themeColor: "#0a1640",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -45,9 +44,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${cormorant.variable} ${workSans.variable} ${notoSerifSC.variable} antialiased`}
     >
-      <body className="grain">
+      <body>
         <noscript>
-          <style>{`.intro-hide{opacity:1!important}[data-loader]{display:none}`}</style>
+          <style>{`.intro-hide,.after-light{opacity:1!important}.hero-light{clip-path:none!important}[data-loader]{display:none}`}</style>
         </noscript>
         <SmoothScroll>
           <PageTransition>
@@ -56,7 +55,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Visit />
           </PageTransition>
         </SmoothScroll>
-        <Cursor />
       </body>
     </html>
   );

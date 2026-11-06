@@ -4,17 +4,21 @@
 /* Royal blue & gold, the client's brand colours (Nov 2026).
    Token names are roles: "gold" is the accent, "navy" the raised section colour. */
 @theme {
-  --color-ink: #050a1f;
-  --color-night: #08112e;
-  --color-navy: #142a78;
-  --color-navy-hi: #1f3fa8;
+  /* Test redesign: blue-and-white porcelain (the plates in Lulu's own photos) in the client's royal blue,
+     gold kept for the flame: the Reserve button and the duck's price. */
+  --color-ink: #0a1640;
+  --color-night: #0e1d52;
+  --color-navy: #1c3a9e;
+  --color-navy-hi: #2a4cbc;
   --color-navy-lo: #0a1645;
+  --color-cobalt: #1c3a9e;
+  --color-porcelain: #f3f4f8;
   --color-gold: #d4af37;
   --color-gold-soft: #ecd593;
-  --color-gold-deep: #a8862a;
-  --color-paper: #f4ecd8;
-  --color-cream: #f3ead6;
-  --color-mute: #9ca3bd;
+  --color-gold-deep: #8a6a14;
+  --color-paper: #f3f4f8;
+  --color-cream: #f3f4f8;
+  --color-mute: #a9b3d6;
   --color-cinnabar: #c8322b;
   --color-neon: #ff2e7e;
 
@@ -59,6 +63,32 @@ body {
 @keyframes hero-glow {
   from { opacity: 0.55; }
   to { opacity: 1; }
+}
+
+/* Test redesign buttons live in the components layer so utilities like hidden still win. */
+@layer components {
+.pbtn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.15s;
+}
+.pbtn:active { transform: translateY(1px); }
+.pbtn:focus-visible, [tabindex="0"]:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
+.pbtn-gold { background: var(--color-gold); color: var(--color-ink); }
+.pbtn-gold:hover { background: var(--color-gold-soft); }
+.pbtn-cobalt { background: var(--color-cobalt); color: var(--color-porcelain); }
+.pbtn-cobalt:hover { background: var(--color-ink); }
+.pbtn-porcelain { background: var(--color-porcelain); color: var(--color-cobalt); }
+.pbtn-porcelain:hover { background: #fff; }
+.pbtn-line { border-color: currentColor; }
+.pbtn-line:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+
 }
 
 /* Component classes live in a layer so Tailwind utilities (hidden, px-*, etc.) can override them. */
@@ -253,4 +283,14 @@ html.nav-hidden .sticky-under-nav {
   .hero-glow { animation: none; }
   .gold-foil { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+/* Photos answer the pointer with a small zoom inside their frame. */
+.photo-zoom { transition: transform 0.8s var(--ease-out-expo); }
+*:hover > .photo-zoom { transform: scale(1.025); }
+
+/* The hero's flame-light moment starts dark only where it will play (HeroFlame.tsx adds .lit). */
+@media (min-width: 768px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not(.lit) .hero-light { clip-path: circle(0% at 48% 87%); }
+  html:not(.lit) .after-light { opacity: 0; }
 }

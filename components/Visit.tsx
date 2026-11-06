@@ -11,8 +11,9 @@ export default function Visit() {
 
   useGSAP(
     () => {
+      // Test redesign: the footer sits still, no scroll-linked surfacing or letter rise.
+      if (prefersReducedMotion() || root.current) return;
       setupReveals(root.current!);
-      if (prefersReducedMotion()) return;
       const q = gsap.utils.selector(root);
 
       SplitText.create(q("[data-big-word]"), {
