@@ -281,7 +281,7 @@ export default function IntroScroller() {
           Reserve the duck
         </a>
         <div data-clip className="relative mt-12 aspect-[4/5] overflow-hidden rounded-[1rem_4rem_1rem_4rem]">
-          <Image src="/images/duck-chef-flame.webp" alt="The chef flambéing a whole duck" fill sizes="100vw" className="object-cover" />
+          <Image src="/images/duck-carving.webp" alt="Peking duck carved tableside" fill sizes="90vw" className="object-cover" />
         </div>
         <h2 data-anim className="t-h2 mt-16">
           Lulu Modern was born from the Asian American experience: tradition and innovation side by side, in a dining

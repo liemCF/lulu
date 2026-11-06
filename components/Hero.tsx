@@ -1,17 +1,22 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 import { info } from "@/lib/content";
-import HeroCanvas from "./HeroCanvas";
+import HeroCanvas, { HERO_MOBILE_QUERY, type HeroScene } from "./HeroCanvas";
 import OpenStatus from "./OpenStatus";
 import { useLenis } from "./SmoothScroll";
 
 export const INTRO_EVENT = "lulu:intro";
 
 const HERO_SRC = "/images/hero-duck-flame.webp";
+// Phones get a portrait shot of the same moment instead of a sliver of the landscape one.
+const HERO_MOBILE_SRC = "/images/duck-chef-flame.webp";
+const HERO_ALT = "Flaming Peking Duck being finished tableside";
+const DESKTOP_SCENE: HeroScene = { src: HERO_SRC, focus: [0.62, 0.5], pan: [0.49, 0.85] };
+const MOBILE_SCENE: HeroScene = { src: HERO_MOBILE_SRC, focus: [0.5, 0.8], pan: [0.51, 0.85] };
 const LOGO_SRC = "/images/logo-lulu.png";
 const SEEN_KEY = "lulu:intro-seen";
 
@@ -19,11 +24,22 @@ const SEEN_KEY = "lulu:intro-seen";
 function heroReady(timeout = 3500) {
   return new Promise<void>((resolve) => {
     const img = new window.Image();
-    img.src = HERO_SRC;
+    img.src = window.matchMedia(HERO_MOBILE_QUERY).matches ? HERO_MOBILE_SRC : HERO_SRC;
     img.decode().then(resolve, resolve);
     window.setTimeout(resolve, timeout);
   });
 }
+
+// Art-directed hero photo: landscape on desktop, portrait on phones.
+const { props: { srcSet: mobileSrcSet } } = getImageProps({ src: HERO_MOBILE_SRC, alt: "", fill: true, quality: 85, sizes: "70vh" });
+const { props: heroImg } = getImageProps({
+  src: HERO_SRC,
+  alt: HERO_ALT,
+  fill: true,
+  quality: 85,
+  // Cover-cropped: on tall screens the landscape photo needs more than the viewport width.
+  sizes: "(max-aspect-ratio: 3/2) 150vh, 100vw",
+});
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -156,23 +172,19 @@ export default function Hero() {
 
   return (
     <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink">
-      {/* Media */}
-      <div className="absolute inset-0">
+      {/* Media. On phones the photo stops short of the foot so the duck sits clear of the wordmark. */}
+      <div className="absolute inset-0 max-md:bottom-[24%]">
         <div data-hero-parallax className="absolute inset-0 will-change-transform">
-          <Image
-            src={HERO_SRC}
-            alt="Flaming Peking Duck being carved tableside"
-            fill
-            preload
-            quality={85}
-            sizes="100vw"
-            className="object-cover object-[62%_50%] max-md:object-[46%_50%]"
-          />
+          <picture>
+            <source media={HERO_MOBILE_QUERY} srcSet={mobileSrcSet} sizes="70vh" />
+            {/* eslint-disable-next-line jsx-a11y/alt-text -- alt comes from getImageProps */}
+            <img {...heroImg} loading="eager" fetchPriority="high" className="object-cover object-[62%_50%] max-md:object-[50%_80%]" />
+          </picture>
           {/* Heat haze and embers rising off the pan */}
-          <HeroCanvas src={HERO_SRC} focus={[0.62, 0.5]} mobileFocus={[0.46, 0.5]} className="absolute inset-0 h-full w-full" />
+          <HeroCanvas desktop={DESKTOP_SCENE} mobile={MOBILE_SCENE} className="absolute inset-0 h-full w-full" />
         </div>
         <div data-hero-veil className="intro-hide absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70 max-md:via-transparent max-md:via-30% max-md:to-ink/40" />
           <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_85%_20%,color-mix(in_srgb,var(--color-navy-hi)_35%,transparent),transparent_70%)]" />
         </div>
         <div data-hero-dim className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
@@ -230,14 +242,14 @@ export default function Hero() {
       </div>
 
       {/* Wordmark, centred at the foot of the frame */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-sm:pb-28">
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-end px-4 pb-16 max-sm:pb-24">
         <div data-hero-fade className="intro-hide mb-4 flex items-center gap-6 text-cream/80">
           <OpenStatus />
         </div>
         <h1
           data-wordmark
           aria-label="Lulu Modern Chinese"
-          className="intro-hide text-center font-display text-[9.5vw] leading-[0.9] tracking-[0.01em] text-cream uppercase max-md:text-[16vw]"
+          className="intro-hide text-center font-display text-[9.5vw] leading-[0.9] tracking-[0.01em] text-cream uppercase max-md:text-[14vw]"
         >
           Lulu Modern
         </h1>

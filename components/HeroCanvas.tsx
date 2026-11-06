@@ -23,6 +23,7 @@ uniform vec2 uImg;
 uniform vec2 uFocus;
 uniform float uTime;
 uniform float uStrength;
+uniform vec2 uPan;
 varying vec2 vUv;
 
 vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -65,11 +66,13 @@ void main() {
   vec2 focus = coverFocus(scale);
   vec2 img = toImage(vUv, scale, focus);
   float t = uTime;
+  // Shift so the pan sits at (0.49, 0.15) whichever photo is loaded.
+  vec2 p = img - (uPan - vec2(0.49, 0.15));
 
-  // Where the heat is: a column rising off the pan (pan centre ~ x 0.49, y 0.16),
+  // Where the heat is: a column rising off the pan,
   // strongest just above the coals and gone by the duck's shoulders.
-  float across = 1.0 - smoothstep(0.1, 0.3, abs(img.x - 0.49));
-  float up = smoothstep(0.08, 0.2, img.y) * (1.0 - smoothstep(0.3, 0.85, img.y));
+  float across = 1.0 - smoothstep(0.1, 0.3, abs(p.x - 0.49));
+  float up = smoothstep(0.08, 0.2, p.y) * (1.0 - smoothstep(0.3, 0.85, p.y));
   float heat = across * up * uStrength;
 
   // Rising shimmer: two layers of noise scrolling upward at different speeds.
@@ -80,21 +83,21 @@ void main() {
 
   // The coals glow and breathe, slowly.
   float breathe = 0.82 + 0.18 * sin(t * 1.7) * sin(t * 2.9 + 1.3);
-  float pan = exp(-pow(length((img - vec2(0.49, 0.15)) * vec2(1.6, 3.2)), 2.0) * 9.0);
+  float pan = exp(-pow(length((p - vec2(0.49, 0.15)) * vec2(1.6, 3.2)), 2.0) * 9.0);
   col += vec3(1.0, 0.42, 0.12) * pan * 0.16 * breathe * uStrength;
   // A warm cast on the duck's skin above it.
   col *= 1.0 + vec3(0.06, 0.025, 0.0) * across * up * breathe;
 
   // Embers: born on the coals, drifting up and fading out. Only pixels near the pan pay for them.
   vec3 embers = vec3(0.0);
-  bool nearPan = img.x > 0.24 && img.x < 0.76 && img.y > 0.1 && img.y < 0.66;
+  bool nearPan = p.x > 0.24 && p.x < 0.76 && p.y > 0.1 && p.y < 0.66;
   for (int i = 0; i < 22; i++) {
     if (!nearPan) break;
     float fi = float(i);
     float life = 3.2 + hash(fi + 1.0) * 2.6;
     float age = fract(t / life + hash(fi + 7.0));
     vec2 origin = vec2(0.36 + hash(fi + 3.0) * 0.27, 0.15 + hash(fi + 5.0) * 0.03);
-    vec2 pos = origin + vec2(sin(age * 5.0 + fi * 2.1) * 0.018 + age * 0.02 * (hash(fi + 9.0) - 0.5), age * 0.42);
+    vec2 pos = origin + (uPan - vec2(0.49, 0.15)) + vec2(sin(age * 5.0 + fi * 2.1) * 0.018 + age * 0.02 * (hash(fi + 9.0) - 0.5), age * 0.42);
     vec2 d = (vUv - toScreen(pos, scale, focus)) * uRes;
     float r = (1.3 + hash(fi + 11.0) * 1.8) * (uRes.y / 900.0);
     float glow = exp(-dot(d, d) / (r * r * 2.0));
@@ -118,19 +121,28 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
   return shader;
 }
 
-type Props = {
+export type HeroScene = {
   src: string;
-  focus?: [number, number];
-  /** Focus below 768px, matching the photo's object-position there. */
-  mobileFocus?: [number, number];
+  /** Matches the photo's object-position (0-1, top-left origin). */
+  focus: [number, number];
+  /** Centre of the coals in the photo (0-1, top-left origin). */
+  pan: [number, number];
+};
+
+type Props = {
+  desktop: HeroScene;
+  /** Used below 768px, where the hero shows a portrait photo. */
+  mobile?: HeroScene;
   className?: string;
 };
+
+export const HERO_MOBILE_QUERY = "(max-width: 767px)";
 
 /**
  * WebGL layer drawn over the hero <Image>. If WebGL or the texture fails, or the
  * visitor prefers reduced motion, the canvas stays transparent and the photo shows.
  */
-export default function HeroCanvas({ src, focus = [0.62, 0.5], mobileFocus, className }: Props) {
+export default function HeroCanvas({ desktop, mobile, className }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -160,8 +172,9 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], mobileFocus, clas
     const uRes = u("uRes");
     const uImg = u("uImg");
     const uTime = u("uTime");
-    const [fx, fy] = mobileFocus && window.matchMedia("(max-width: 767px)").matches ? mobileFocus : focus;
-    gl.uniform2f(u("uFocus"), fx, 1 - fy);
+    const scene = mobile && window.matchMedia(HERO_MOBILE_QUERY).matches ? mobile : desktop;
+    gl.uniform2f(u("uFocus"), scene.focus[0], 1 - scene.focus[1]);
+    gl.uniform2f(u("uPan"), scene.pan[0], 1 - scene.pan[1]);
     // Phones get a gentler shimmer, drawn at half rate.
     const calm = prefersCalmMotion();
     gl.uniform1f(u("uStrength"), calm ? 0.65 : 1);
@@ -184,7 +197,7 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], mobileFocus, clas
       ready = true;
       gsap.to(canvas, { opacity: 1, duration: 0.6 });
     };
-    img.src = src;
+    img.src = scene.src;
 
     const resize = () => {
       // The photo is soft, so the shader can run a little under full resolution.
@@ -225,7 +238,8 @@ export default function HeroCanvas({ src, focus = [0.62, 0.5], mobileFocus, clas
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src, focus[0], focus[1], mobileFocus?.[0], mobileFocus?.[1]]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Scenes are static per page; re-running on identity changes would only rebuild the GL context.
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <canvas ref={canvasRef} className={className} style={{ opacity: 0 }} aria-hidden />;
 }
