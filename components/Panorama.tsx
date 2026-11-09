@@ -86,17 +86,23 @@ export default function Panorama() {
             <figure
               key={s.src}
               data-frame
-              className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[62svh] max-md:w-[78vw] max-md:snap-center`}
+              className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[58svh] max-md:w-[76vw] max-md:snap-center`}
             >
-              <div className="relative h-full w-full overflow-hidden rounded-[1.25rem]">
+              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-cream/10 bg-night">
                 <Image
                   data-shot
                   src={s.src}
                   alt={s.label}
                   fill
                   sizes="(min-width:768px) 40vh, 100vw"
-                  className="object-cover md:scale-[1.22]"
+                  className="object-cover md:scale-[1.22] transition-transform duration-700 hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+                  <p className="text-[0.78rem] font-medium tracking-wide text-cream/90">
+                    {s.label}
+                  </p>
+                </div>
               </div>
             </figure>
           ))}
@@ -113,12 +119,28 @@ export default function Panorama() {
           />
         ))}
 
-        <h2
+        <div
           data-heading
-          className="t-hero pointer-events-none absolute top-24 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-10"
+          className="absolute top-12 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-8 px-5"
         >
-          Instagram Gallery
-        </h2>
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-ink/80 px-3.5 py-1 text-[0.72rem] font-medium tracking-[0.2em] text-gold uppercase backdrop-blur-md mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            Instagram Gallery
+          </div>
+          <h2 className="t-hero text-cream leading-none">
+            Atmosphere &amp; <em className="text-gold-soft font-serif italic">Craft</em>
+          </h2>
+          <div className="mt-3">
+            <a
+              href="https://www.instagram.com/lulu.modern/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-[0.78rem] font-medium tracking-[0.16em] text-gold hover:text-cream uppercase transition-colors"
+            >
+              @lulu.modern · Follow Us ↗
+            </a>
+          </div>
+        </div>
 
       </div>
     </section>

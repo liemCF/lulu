@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
-import { useGSAP } from "@/lib/gsap";
-import { setupReveals } from "@/lib/reveal";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { TLink } from "./PageTransition";
 
 type Props = {
@@ -11,41 +12,104 @@ type Props = {
   showCta?: boolean;
 };
 
-/** Section 4 of the homepage doc: Meet the Chef. Headline, copy and CTA only, as written. */
+/** Section 4 of the homepage doc: Meet the Chef. Executive Chef Natalie Deprez. */
 export default function MeetChef({ id = "chef", showCta = true }: Props) {
   const root = useRef<HTMLElement>(null);
 
-  useGSAP(() => setupReveals(root.current!), { scope: root });
+  useGSAP(
+    () => {
+      setupReveals(root.current!);
+      if (prefersReducedMotion()) return;
+      const q = gsap.utils.selector(root);
+
+      gsap.fromTo(
+        q("[data-chef-photo]"),
+        { scale: 1.08, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 1.4,
+          ease: "expo.out",
+          scrollTrigger: { trigger: root.current, start: "top 75%" },
+        },
+      );
+    },
+    { scope: root },
+  );
 
   return (
-    <section ref={root} id={id} className="relative bg-ink px-5 py-28 text-cream sm:px-10 lg:px-24 lg:py-40">
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-6">
-          <p data-anim="chars" className="kicker">
-            Meet the Chef
-          </p>
-          <h2 data-split className="t-hero mt-6">
-            Leading the Next Chapter of Lulu Modern
-          </h2>
-        </div>
-        <div className="lg:col-span-5 lg:col-start-8 lg:pt-16">
-          <div data-fade className="space-y-6 text-[1.1rem] leading-relaxed text-cream/85 lg:text-[1.2rem]">
-            <p>
-              Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering a new era of culinary
-              creativity.
-            </p>
-            <p>
-              Discover a menu that honors tradition while pushing Asian cuisine forward through innovation, premium
-              ingredients, and unforgettable presentation.
-            </p>
-          </div>
-          {showCta && (
-            <div data-fade className="mt-10">
-              <TLink href="/about#chef" className="btn text-cream">
-                Meet Our Chef
-              </TLink>
+    <section
+      ref={root}
+      id={id}
+      className="relative overflow-hidden bg-ink px-5 py-24 text-cream sm:px-10 lg:px-20 lg:py-36"
+    >
+      {/* Subtle ambient glow in background */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 left-0 h-[500px] w-[500px] -translate-y-1/2 -translate-x-1/3 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-navy-hi)_40%,transparent),transparent_70%)]"
+      />
+
+      <div className="relative mx-auto max-w-7xl">
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Chef Image Frame */}
+          <div className="order-2 lg:order-1 lg:col-span-5">
+            <div
+              data-chef-photo
+              className="group relative aspect-[4/5] w-full max-w-md mx-auto overflow-hidden rounded-2xl border border-gold/20 bg-night shadow-2xl shadow-ink/80 lg:max-w-none"
+            >
+              <Image
+                src="/images/duck-chef-flame.webp"
+                alt="Executive Chef Natalie Deprez plating with flame"
+                fill
+                sizes="(min-width: 1024px) 40vw, 90vw"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/20" />
+
+              {/* Overlay Badge */}
+              <div className="absolute bottom-5 inset-x-5 rounded-xl border border-gold/25 bg-ink/85 p-4 backdrop-blur-md">
+                <p className="text-[0.7rem] font-medium tracking-[0.2em] text-gold uppercase">
+                  Executive Chef
+                </p>
+                <p className="font-display text-xl text-cream">Natalie Deprez</p>
+                <p className="mt-1 text-[0.8rem] text-cream/70">
+                  Culinary Direction &amp; Innovation · Lulu Modern
+                </p>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Text Content */}
+          <div className="order-1 lg:order-2 lg:col-span-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.72rem] font-medium tracking-[0.2em] text-gold uppercase">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+              Meet the Chef
+            </div>
+
+            <h2 data-split className="t-hero mt-5 text-cream">
+              Leading the Next Chapter <br className="hidden sm:inline" />
+              <em className="text-gold-soft font-serif italic">of Lulu Modern</em>
+            </h2>
+
+            <div data-fade className="mt-8 space-y-5 text-[1.05rem] leading-relaxed text-cream/80 lg:text-[1.12rem]">
+              <p>
+                Under the direction of <strong className="font-medium text-cream">Executive Chef Natalie Deprez</strong>, Lulu Modern is entering a new era of culinary
+                creativity.
+              </p>
+              <p>
+                Discover a menu that honors tradition while pushing Asian cuisine forward through innovation, premium
+                ingredients, and unforgettable presentation.
+              </p>
+            </div>
+
+            {showCta && (
+              <div data-fade className="mt-10">
+                <TLink href="/about#chef" className="btn text-cream hover:border-gold">
+                  Meet Our Chef
+                </TLink>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>

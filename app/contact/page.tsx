@@ -41,6 +41,12 @@ export default function ContactPage() {
             </a>
           </div>
           <div>
+            <p className="eyebrow mb-3">Email</p>
+            <a href={links.email} className="link-line font-display text-xl text-gold-soft hover:text-gold transition-colors">
+              {info.email}
+            </a>
+          </div>
+          <div>
             <p className="eyebrow mb-3">Hours</p>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5">
               {hours.map((h) => (

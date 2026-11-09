@@ -7,15 +7,21 @@ export const links = {
   directions: "https://maps.app.goo.gl/nzhzDW9sRxwtE45r8?g_st=ic",
   instagram: "https://www.instagram.com/lulu.modern/",
   tiktok: "https://www.tiktok.com/@lulumodern",
+  facebook: "https://www.facebook.com/lulumodernchinese/",
   phone: "tel:+12145014430",
+  email: "mailto:info@lulu-modern.com",
   privateInquiry: "https://lulu-modern.com/index.php/private-events-catering/",
 };
 
 export const info = {
   name: "Lulu Modern Chinese",
-  address: "3310 Dallas Pkwy Suite 121",
-  city: "Plano, TX 75093",
+  owner: "Sunny Chang",
+  email: "info@lulu-modern.com",
   phone: "(214) 501-4430",
+  phoneRaw: "214-501-4430",
+  address: "3310 Dallas Pkwy Ste 121",
+  city: "Plano, TX 75093",
+  instagram: "@lulu.modern",
   region: "Plano · Dallas-Fort Worth",
 };
 

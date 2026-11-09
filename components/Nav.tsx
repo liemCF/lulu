@@ -4,7 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { links, nav, type NavItem } from "@/lib/content";
+import { info, links, nav, type NavItem } from "@/lib/content";
 import { INTRO_EVENT } from "./Hero";
 import { TLink } from "./PageTransition";
 import { useLenis } from "./SmoothScroll";
@@ -214,6 +214,22 @@ export default function Nav() {
             );
           })}
         </ul>
+
+        {/* Mobile menu bottom action & concierge details */}
+        <div className="border-t border-cream/15 pt-6 flex flex-col gap-3">
+          <a
+            href={reservations.href}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-solid w-full justify-center text-center !py-3.5 shadow-lg shadow-gold/10"
+          >
+            Reserve a Table on OpenTable ↗
+          </a>
+          <div className="text-center text-[0.78rem] text-cream/65">
+            <p>3310 Dallas Pkwy Suite 121, Plano, TX</p>
+            <p className="mt-0.5 text-gold">{info.phone}</p>
+          </div>
+        </div>
       </div>
     </>
   );
