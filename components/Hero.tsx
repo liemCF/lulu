@@ -175,9 +175,9 @@ export default function Hero() {
   );
 
   return (
-    <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink">
-      {/* Media. On phones the photo takes the top of the screen so the duck sits clear of the copy. */}
-      <div className="absolute inset-0 max-md:bottom-[42%]">
+    <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink max-md:flex max-md:flex-col">
+      {/* Media. On phones the photo fills whatever height the copy leaves, so the duck sits clear of the text on any screen. */}
+      <div className="absolute inset-0 max-md:relative max-md:inset-auto max-md:min-h-0 max-md:flex-1">
         <div data-hero-parallax className="absolute inset-0 will-change-transform">
           <picture>
             <source media={HERO_MOBILE_QUERY} srcSet={mobileSrcSet} sizes="70vh" />
@@ -244,12 +244,12 @@ export default function Hero() {
       {/* What Lulu is, why it's different and how to book: bottom-left on desktop, under the photo on phones */}
       <div
         data-hero-copy
-        className="absolute inset-x-0 bottom-0 z-10 px-5 pb-10 max-md:text-center sm:px-10 md:pb-16 lg:px-16 lg:pb-20"
+        className="absolute inset-x-0 bottom-0 z-10 px-5 pb-10 max-md:relative max-md:-mt-14 max-md:text-center sm:px-10 md:pb-16 lg:px-16 lg:pb-20"
       >
         <div className="max-w-[46rem] max-md:mx-auto">
           <h1
             data-wordmark
-            className="intro-hide font-display text-[clamp(2.5rem,5.6vw,6.25rem)] leading-[1.02] tracking-[-0.02em] text-cream max-md:text-[clamp(1.9rem,8.4vw,2.9rem)]"
+            className="intro-hide font-display text-[clamp(2.5rem,5.6vw,6.25rem)] leading-[1.02] tracking-[-0.02em] text-cream max-md:text-[clamp(1.75rem,7.9vw,2.9rem)]"
           >
             Modern Asian Dining. <em className="text-gold-soft">Unforgettable Experiences.</em>
           </h1>
@@ -258,10 +258,10 @@ export default function Hero() {
             the Asian American experience.
           </p>
           <div data-hero-fade className="intro-hide mt-8 flex flex-wrap gap-3 max-md:mt-5 max-md:grid max-md:grid-cols-2">
-            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid max-md:justify-center max-md:!px-2">
+            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid min-w-0 max-md:justify-center max-md:!px-2 max-md:text-center">
               Reserve a Table
             </a>
-            <TLink href="/menu" className="btn text-cream max-md:justify-center max-md:!px-2">
+            <TLink href="/menu" className="btn min-w-0 text-cream max-md:justify-center max-md:!px-2 max-md:text-center">
               View Menu
             </TLink>
           </div>
