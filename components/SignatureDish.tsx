@@ -13,7 +13,21 @@ export default function SignatureDish() {
     () => {
       setupReveals(root.current!);
       if (prefersReducedMotion()) return;
-      gsap.to(gsap.utils.selector(root)("[data-lattice]"), { rotate: 4, duration: 6, ease: "power1.inOut", yoyo: true, repeat: -1 });
+      const q = gsap.utils.selector(root);
+      gsap.to(q("[data-lattice]"), { rotate: 4, duration: 6, ease: "power1.inOut", yoyo: true, repeat: -1 });
+      // "Crispy skin. Hand-carved service. Unforgettable presentation." lands one beat at a time with the scroll.
+      gsap.fromTo(
+        q("[data-beat]"),
+        { opacity: 0.08, yPercent: 35, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          yPercent: 0,
+          filter: "blur(0px)",
+          ease: "power2.out",
+          stagger: 0.6,
+          scrollTrigger: { trigger: q("[data-beats]")[0], start: "top 88%", end: "top 50%", scrub: 0.8 },
+        },
+      );
     },
     { scope: root },
   );
@@ -47,8 +61,10 @@ export default function SignatureDish() {
               Our signature Flaming Peking Duck has become one of the most talked-about dishes in Dallas-Fort Worth,
               combining tableside theatrics with authentic craftsmanship.
             </p>
-            <p className="font-display text-[clamp(1.4rem,2vw,1.9rem)] leading-snug text-gold-soft italic">
-              Crispy skin. Hand-carved service. Unforgettable presentation.
+            <p data-beats className="font-display text-[clamp(1.4rem,2vw,1.9rem)] leading-snug text-gold-soft italic">
+              <span data-beat className="inline-block">Crispy skin.</span>{" "}
+              <span data-beat className="inline-block">Hand-carved service.</span>{" "}
+              <span data-beat className="inline-block">Unforgettable presentation.</span>
             </p>
           </div>
           <div data-fade className="mt-10">

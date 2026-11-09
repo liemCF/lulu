@@ -26,13 +26,15 @@ export default function MenuShowcase() {
       setupReveals(root.current!);
       if (prefersReducedMotion()) return;
       const q = gsap.utils.selector(root);
-      gsap.from(q("[data-plate]"), {
-        clipPath: "inset(100% 0% 0% 0%)",
-        duration: 1.2,
-        stagger: 0.08,
-        ease: "power3.inOut",
-        scrollTrigger: { trigger: q("[data-plates]")[0], start: "top 80%" },
-      });
+      // Tiles open like curtains, alternating from above and below, while each photo settles from a close crop.
+      const reveal = gsap.timeline({ scrollTrigger: { trigger: q("[data-plates]")[0], start: "top 80%" } });
+      reveal
+        .fromTo(
+          q("[data-plate]"),
+          { clipPath: (i: number) => (i % 2 ? "inset(0% 0% 100% 0%)" : "inset(100% 0% 0% 0%)") },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, stagger: 0.09, ease: "expo.inOut" },
+        )
+        .from(q("[data-plate] img"), { scale: 1.35, duration: 1.8, stagger: 0.09, ease: "expo.out" }, 0.25);
       if (prefersCalmMotion()) return;
       gsap.fromTo(
         q("[data-plate] img"),

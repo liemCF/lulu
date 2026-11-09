@@ -59,6 +59,14 @@ export default function Panorama() {
           .to(q("[data-steam='2']"), { xPercent: -55, ease: "power1.inOut", duration: 1 }, 0)
           .to(q("[data-steam='3']"), { xPercent: -90, ease: "power1.inOut", duration: 1 }, 0)
           .to(q("[data-heading]"), { x: () => -window.innerWidth * 0.1, ease: "power1.inOut", duration: 1 }, 0)
+          // Inside each frame the photo drifts against the travel, and the frames sway gently as they pass.
+          .fromTo(q("[data-shot]"), { xPercent: 9 }, { xPercent: -9, ease: "none", duration: 1 }, 0)
+          .fromTo(
+            q("[data-frame]"),
+            { rotate: (i: number) => (i % 2 ? -2.5 : 2.5), y: (i: number) => (i % 2 ? 30 : -30) },
+            { rotate: (i: number) => (i % 2 ? 2.5 : -2.5), y: (i: number) => (i % 2 ? -30 : 30), ease: "none", duration: 1 },
+            0,
+          )
           .to(split.chars, { opacity: 0, y: "-10%", stagger: 0.04, ease: "power1.inOut", duration: 0.4 }, 0.3);
         ScrollTrigger.refresh();
         return () => split.revert();
@@ -75,9 +83,20 @@ export default function Panorama() {
 
         <div data-track className="flex h-[78vh] w-max items-center gap-6 pl-[10vw] pr-[10vw] will-change-transform max-md:h-auto max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-5 max-md:[scrollbar-width:none]">
           {strip.map((s, i) => (
-            <figure key={s.src} className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[62svh] max-md:w-[78vw] max-md:snap-center`}>
+            <figure
+              key={s.src}
+              data-frame
+              className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[62svh] max-md:w-[78vw] max-md:snap-center`}
+            >
               <div className="relative h-full w-full overflow-hidden rounded-[1.25rem]">
-                <Image src={s.src} alt={s.label} fill sizes="(min-width:768px) 40vh, 100vw" className="object-cover" />
+                <Image
+                  data-shot
+                  src={s.src}
+                  alt={s.label}
+                  fill
+                  sizes="(min-width:768px) 40vh, 100vw"
+                  className="object-cover md:scale-[1.22]"
+                />
               </div>
             </figure>
           ))}

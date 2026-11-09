@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { press, reviews } from "@/lib/content";
 
@@ -14,26 +14,57 @@ export default function Reviews() {
       setupReveals(root.current!);
       const q = gsap.utils.selector(root);
       const slides = q("[data-slide]");
+      const bars = q("[data-bar]");
       gsap.set(slides, { autoAlpha: 0 });
       gsap.set(slides[0], { autoAlpha: 1 });
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion()) {
+        gsap.set(bars[0], { scaleX: 1 });
+        return;
+      }
+
+      // Each quote arrives word by word out of a soft blur; the gold bar under it fills while it is read.
+      const words = slides.map((s) => SplitText.create(s.querySelector("blockquote"), { type: "words" }).words);
+      const showWords = (n: number, delay = 0) =>
+        gsap.fromTo(
+          words[n],
+          { opacity: 0, yPercent: 40, filter: "blur(10px)" },
+          { opacity: 1, yPercent: 0, filter: "blur(0px)", duration: 1, stagger: 0.03, ease: "expo.out", delay },
+        );
 
       let i = 0;
-      const next = () => {
+      let visible = false;
+      let bar: gsap.core.Tween;
+      const fill = () => {
+        gsap.set(bars, { scaleX: 0 });
+        bar = gsap.to(bars[i], { scaleX: 1, duration: 7, ease: "none", onComplete: next, paused: !visible });
+      };
+      function next() {
         const prev = slides[i];
         i = (i + 1) % slides.length;
         setActive(i);
-        gsap.to(prev, { autoAlpha: 0, y: -20, duration: 0.8, ease: "power2.in" });
-        gsap.fromTo(slides[i], { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 1.2, delay: 0.6, ease: "expo.out" });
-      };
-      const timer = gsap.timeline({ repeat: -1, paused: true }).to({}, { duration: 6 }).call(next);
-      // Only rotate while the section is on screen.
+        gsap.to(prev, { autoAlpha: 0, y: -24, filter: "blur(6px)", duration: 0.7, ease: "power2.in" });
+        gsap.set(slides[i], { autoAlpha: 1, y: 0, filter: "blur(0px)" });
+        showWords(i, 0.55);
+        fill();
+      }
+      gsap.set(words[0], { opacity: 0 });
+      fill();
+
+      // Only rotate while the section is on screen; the first quote writes itself in on arrival.
+      let started = false;
       gsap.timeline({
         scrollTrigger: {
           trigger: root.current,
-          start: "top bottom",
+          start: "top 70%",
           end: "bottom top",
-          onToggle: (self) => timer.paused(!self.isActive),
+          onToggle: (self) => {
+            visible = self.isActive;
+            if (visible && !started) {
+              started = true;
+              showWords(0);
+            }
+            bar.paused(!visible);
+          },
         },
       });
     },
@@ -94,8 +125,10 @@ export default function Reviews() {
         {reviews.map((r, i) => (
           <span
             key={r.author}
-            className={`h-px transition-all duration-700 ${i === active ? "w-14 bg-gold" : "w-6 bg-cream/20"}`}
-          />
+            className={`relative h-px overflow-hidden bg-cream/20 transition-[width] duration-700 ${i === active ? "w-16" : "w-6"}`}
+          >
+            <span data-bar className="absolute inset-0 origin-left scale-x-0 bg-gold" />
+          </span>
         ))}
       </div>
     </section>
