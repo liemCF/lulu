@@ -15,11 +15,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Contact"
         cn="访"
-        title={
-          <>
-            Visit <em className="gold-foil">Lulu Modern</em>
-          </>
-        }
+        title="Contact"
         intro={
           <>
             {info.address}, {info.city}

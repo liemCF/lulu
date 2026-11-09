@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/reveal";
-import { links } from "@/lib/content";
 
 // The Instagram feed: food and the room only, no flyers or photos with text on them.
 const strip = [
@@ -99,17 +98,9 @@ export default function Panorama() {
           data-heading
           className="t-hero pointer-events-none absolute top-24 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-10"
         >
-          On Instagram
+          Instagram Gallery
         </h2>
 
-        <a
-          href={links.instagram}
-          target="_blank"
-          rel="noreferrer"
-          className="t-link absolute right-10 bottom-10 z-20 text-gold max-md:static max-md:mt-10"
-        >
-          Follow @lulu.modern ↗
-        </a>
       </div>
     </section>
   );

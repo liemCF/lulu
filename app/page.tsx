@@ -2,10 +2,10 @@ import Celebrations from "@/components/Celebrations";
 import Hero from "@/components/Hero";
 import MeetChef from "@/components/MeetChef";
 import MenuShowcase from "@/components/MenuShowcase";
+import OurStory from "@/components/OurStory";
 import Panorama from "@/components/Panorama";
 import Reviews from "@/components/Reviews";
 import SignatureDish from "@/components/SignatureDish";
-import TwoWorlds from "@/components/TwoWorlds";
 
 // Homepage order and copy follow the client's "Recommended Homepage Structure" doc exactly:
 // Experience → Signature Dish → Menu → Chef → Story → Social Proof → Private Dining → Instagram → Reservation.
@@ -21,7 +21,7 @@ export default function Home() {
       {/* 4. Meet the Chef */}
       <MeetChef />
       {/* 5. Our Story */}
-      <TwoWorlds />
+      <OurStory />
       {/* 6. Featured Recognition: What People Are Saying */}
       <Reviews />
       {/* 7. Private Dining & Celebrations */}

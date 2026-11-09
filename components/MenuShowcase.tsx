@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion, setupReveals } from "@/lib/reveal";
-import { TLink } from "./PageTransition";
 
 // "Beautiful food photography featuring multiple dishes across the menu."
 const plates = [
@@ -64,9 +63,6 @@ export default function MenuShowcase() {
             From signature duck and dim sum favorites to chef-driven creations, every dish reflects our commitment to
             quality ingredients, bold flavors, and elevated hospitality.
           </p>
-          <TLink href="/menu" className="btn mt-3 text-ink">
-            View Menu
-          </TLink>
         </div>
       </div>
 
@@ -80,9 +76,6 @@ export default function MenuShowcase() {
               sizes="(min-width:1024px) 40vw, 50vw"
               className="scale-[1.1] object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.16]"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pt-10 pb-3 text-[0.78rem] font-medium tracking-[0.14em] text-cream uppercase">
-              {p.name}
-            </figcaption>
           </figure>
         ))}
       </div>

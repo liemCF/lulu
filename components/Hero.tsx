@@ -4,7 +4,7 @@ import Image, { getImageProps } from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
-import { info, links } from "@/lib/content";
+import { links } from "@/lib/content";
 import HeroCanvas, { HERO_MOBILE_QUERY, type HeroScene } from "./HeroCanvas";
 import { TLink } from "./PageTransition";
 import { useLenis } from "./SmoothScroll";
@@ -98,7 +98,6 @@ export default function Hero() {
         0.15,
       )
         .fromTo(q("[data-loader-glow]"), { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out" }, 0.1)
-        .fromTo(q("[data-loader-sub]"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 1.2 }, 0.7)
         .fromTo(q("[data-loader-bar]"), { scaleX: 0 }, { scaleX: 0.7, duration: 1.6, ease: "power2.out" }, 0.5)
         .fromTo(
           q("[data-loader-shine]"),
@@ -112,7 +111,7 @@ export default function Hero() {
         })
         .to(q("[data-loader-bar]"), { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, "hold")
         .to(
-          q("[data-loader-logo], [data-loader-sub], [data-loader-track]"),
+          q("[data-loader-logo], [data-loader-track]"),
           { autoAlpha: 0, y: -10, duration: 0.6, ease: "power2.in", stagger: 0.05 },
           "hold+=0.4",
         )
@@ -239,12 +238,6 @@ export default function Hero() {
           <div data-loader-track className="mt-12 h-px w-[120px] bg-gold/15">
             <div data-loader-bar className="h-px origin-left scale-x-0 bg-gold" />
           </div>
-          <p
-            data-loader-sub
-            className="mt-5 text-[0.78rem] tracking-[0.18em] text-cream/60 uppercase opacity-0"
-          >
-            {info.region}
-          </p>
         </div>
       </div>
 

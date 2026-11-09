@@ -42,25 +42,19 @@ export default function Reviews() {
 
   return (
     <section ref={root} className="relative bg-night px-5 py-28 sm:px-10 lg:py-36 lg:pl-24">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p data-fade className="eyebrow mb-4">
-            Featured Recognition
-          </p>
-          <h2 data-split className="font-display text-[clamp(2.4rem,4.4vw,4.4rem)] leading-none">
-            What People Are Saying
-          </h2>
-        </div>
-        <div data-fade className="flex items-center gap-4">
-          <span className="gold-foil font-display text-3xl italic">Excellent</span>
-          <span className="text-sm text-cream/60">Based on 529 Google reviews</span>
-        </div>
+      <div>
+        <p data-fade className="eyebrow mb-4">
+          Featured Recognition
+        </p>
+        <h2 data-split className="font-display text-[clamp(2.4rem,4.4vw,4.4rem)] leading-none">
+          What People Are Saying
+        </h2>
       </div>
 
       {/* Media mentions: the press row the doc asks for, above the guest reviews */}
       {press.length > 0 && (
         <div data-fade className="mt-14 border-y border-gold/15 py-8">
-          <p className="eyebrow mb-6">As featured in</p>
+          <p className="eyebrow mb-6">Media mentions</p>
           <ul className="grid gap-8 sm:grid-cols-3">
             {press.map((p) => (
               <li key={p.outlet}>
@@ -80,7 +74,8 @@ export default function Reviews() {
         </div>
       )}
 
-      <div className="relative mt-16 grid min-h-[16rem] sm:min-h-[14rem]">
+      <p data-fade className="eyebrow mt-14">Guest testimonials</p>
+      <div className="relative mt-8 grid min-h-[16rem] sm:min-h-[14rem]">
         {reviews.map((r) => (
           <figure key={r.author} data-slide className="col-start-1 row-start-1 max-w-5xl">
             <blockquote className="font-display text-[clamp(1.7rem,3.4vw,3.2rem)] leading-[1.15]">
