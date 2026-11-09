@@ -57,6 +57,29 @@ export default function Reviews() {
         </div>
       </div>
 
+      {/* Media mentions: the press row the doc asks for, above the guest reviews */}
+      {press.length > 0 && (
+        <div data-fade className="mt-14 border-y border-gold/15 py-8">
+          <p className="eyebrow mb-6">As featured in</p>
+          <ul className="grid gap-8 sm:grid-cols-3">
+            {press.map((p) => (
+              <li key={p.outlet}>
+                <a href={p.url} target="_blank" rel="noreferrer" className="group block">
+                  <span className="font-display text-[1.6rem] leading-none text-cream transition-colors group-hover:text-gold">
+                    {p.outlet}
+                  </span>
+                  {p.headline && (
+                    <span className="mt-3 block text-[0.95rem] leading-snug text-cream/65">
+                      “{p.headline}” <span className="text-gold">↗</span>
+                    </span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="relative mt-16 grid min-h-[16rem] sm:min-h-[14rem]">
         {reviews.map((r) => (
           <figure key={r.author} data-slide className="col-start-1 row-start-1 max-w-5xl">
@@ -71,19 +94,6 @@ export default function Reviews() {
           </figure>
         ))}
       </div>
-
-      {press.length > 0 && (
-        <ul data-fade className="mt-20 flex flex-wrap items-center gap-x-12 gap-y-8 border-t border-gold/15 pt-10">
-          {press.map((p) => (
-            <li key={p.outlet} className="text-cream/70">
-              <a href={p.url} target="_blank" rel="noreferrer" className="flex flex-col gap-1 transition-colors hover:text-cream">
-                <span className="font-display text-xl">{p.outlet}</span>
-                {p.headline && <span className="max-w-xs text-sm text-cream/60">{p.headline}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
 
       <div className="mt-10 flex gap-2" aria-hidden>
         {reviews.map((r, i) => (

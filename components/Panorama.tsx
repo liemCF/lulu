@@ -8,14 +8,12 @@ import { links } from "@/lib/content";
 
 // The Instagram feed: food and the room only, no flyers or photos with text on them.
 const strip = [
-  { src: "/images/duck-neon.webp", label: "The Flaming Peking Duck, set alight tableside" },
+  { src: "/images/duck-torch.webp", label: "Finishing the Flaming Peking Duck with a torch" },
   { src: "/images/night-cocktail.webp", label: "A signature cocktail being poured" },
-  { src: "/images/gallery-spread.webp", label: "Dim sum and duck for the table" },
-  { src: "/images/night-sparklers.webp", label: "A birthday celebration with sparklers" },
-  { src: "/images/duck-carving.webp", label: "Peking duck carved by hand" },
-  { src: "/images/night-bar.webp", label: "The back bar at night" },
-  { src: "/images/dish-wagyu-xlb.webp", label: "Wagyu soup dumplings" },
+  { src: "/images/duck-plated.webp", label: "Carved duck with pancakes and condiments" },
   { src: "/images/night-cheers.webp", label: "A table raising a toast" },
+  { src: "/images/night-bar.webp", label: "The back bar at night" },
+  { src: "/images/story-lulu.webp", label: "Lulu, the muse of the restaurant" },
 ];
 
 /**

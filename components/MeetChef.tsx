@@ -55,9 +55,6 @@ export default function MeetChef({ id = "chef", showCta = true }: Props) {
           <h2 data-split className="t-h1 mt-6">
             Leading the Next Chapter of Lulu Modern
           </h2>
-          <p data-fade className="mt-8 font-display text-[clamp(1.5rem,2.2vw,2.1rem)] text-gold italic">
-            Executive Chef Natalie Deprez
-          </p>
           <div data-fade className="mt-8 max-w-xl space-y-5 text-[1.05rem] leading-relaxed text-cream/85">
             <p>
               Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering a new era of culinary

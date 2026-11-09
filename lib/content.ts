@@ -122,10 +122,26 @@ export const cocktails = [
   { name: "Once Upon a Flame", price: "22" },
 ];
 
-// Press logos, awards, media mentions and notable visits for "What People Are Saying" and the
-// Press page. Empty until the restaurant sends them; the press row stays hidden while it is empty.
+// Media mentions for "What People Are Saying" and the Press page. Each link was checked live.
+// Add press logos, awards and notable visits here as the restaurant sends them.
 export type PressItem = { outlet: string; headline?: string; url?: string; logo?: string };
-export const press: PressItem[] = [];
+export const press: PressItem[] = [
+  {
+    outlet: "CultureMap Dallas",
+    headline: "Lulu Modern Chinese restaurant to bring NY vibe to West Plano Village",
+    url: "https://dallas.culturemap.com/news/restaurants-bars/lulu-modern-chinese-plano/",
+  },
+  {
+    outlet: "CraveDFW",
+    headline: "Lulu Modern Chinese Brings a Big-City Edge to Plano",
+    url: "https://cravedfw.com/2026/04/13/lulu-modern-chinese-more-than-the-duck/",
+  },
+  {
+    outlet: "EscapeHatchDallas",
+    headline: "Lulu Modern Chinese Brings New York Nerve and Flaming Peking Duck to Plano",
+    url: "https://escapehatchdallas.com/2026/04/lulu-modern-chinese-brings-new-york-nerve-and-flaming-peking-duck-to-plano/",
+  },
+];
 
 export const reviews = [
   {
@@ -150,7 +166,7 @@ export const occasions = [
   { name: "Birthdays", image: "/images/night-sparklers.webp" },
   { name: "Anniversaries", image: "/images/night-table.webp" },
   { name: "Corporate Gatherings", image: "/images/private-room.webp" },
-  { name: "Holiday Events", image: "/images/private-guest.webp" },
+  { name: "Holiday Events", image: "/images/private-table.webp" },
 ];
 
 export const gallery = [

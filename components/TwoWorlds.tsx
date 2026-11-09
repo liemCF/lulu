@@ -142,9 +142,8 @@ export default function TwoWorlds() {
                 restaurant reflects that belief, bringing together authentic flavors, modern creativity, and a dining
                 experience designed to be shared.
               </p>
-              <p>
-                This is more than a restaurant. It’s our interpretation of what modern Asian hospitality can become.
-              </p>
+              <p className="font-display text-[1.35rem] text-cream">This is more than a restaurant.</p>
+              <p>It’s our interpretation of what modern Asian hospitality can become.</p>
             </div>
             <TLink href="/about" className="btn text-cream">
               Read Our Story

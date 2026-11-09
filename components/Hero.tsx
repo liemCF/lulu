@@ -6,7 +6,6 @@ import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersCalmMotion, prefersReducedMotion } from "@/lib/reveal";
 import { info, links } from "@/lib/content";
 import HeroCanvas, { HERO_MOBILE_QUERY, type HeroScene } from "./HeroCanvas";
-import OpenStatus from "./OpenStatus";
 import { TLink } from "./PageTransition";
 import { useLenis } from "./SmoothScroll";
 
@@ -255,9 +254,6 @@ export default function Hero() {
         className="absolute inset-x-0 bottom-0 z-10 px-5 pb-10 max-md:text-center sm:px-10 md:pb-16 lg:px-16 lg:pb-20"
       >
         <div className="max-w-[46rem] max-md:mx-auto">
-          <div data-hero-fade className="intro-hide mb-5 flex text-cream/80 max-md:mb-3 max-md:justify-center">
-            <OpenStatus />
-          </div>
           <h1
             data-wordmark
             className="intro-hide font-display text-[clamp(2.5rem,5.6vw,6.25rem)] leading-[1.02] tracking-[-0.02em] text-cream max-md:text-[clamp(1.9rem,8.4vw,2.9rem)]"
