@@ -24,6 +24,7 @@ uniform vec2 uFocus;
 uniform float uTime;
 uniform float uStrength;
 uniform vec2 uPan;
+uniform vec2 uPointer;
 varying vec2 vUv;
 
 vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -68,6 +69,12 @@ void main() {
   float t = uTime;
   // Shift so the pan sits at (0.49, 0.15) whichever photo is loaded.
   vec2 p = img - (uPan - vec2(0.49, 0.15));
+
+  // Depth: the duck and the pan stand nearer than the room, so they slide further than the
+  // background as the pointer moves. A slight zoom keeps the shifted edges inside the photo.
+  float near = exp(-pow(length((p - vec2(0.49, 0.4)) * vec2(2.3, 1.25)), 2.0) * 2.6);
+  img = (img - focus) * 0.965 + focus - uPointer * (0.0035 + 0.0125 * near);
+  p = img - (uPan - vec2(0.49, 0.15));
 
   // Where the heat is: a column rising off the pan,
   // strongest just above the coals and gone by the duck's shoulders.
@@ -172,6 +179,7 @@ export default function HeroCanvas({ desktop, mobile, className }: Props) {
     const uRes = u("uRes");
     const uImg = u("uImg");
     const uTime = u("uTime");
+    const uPointer = u("uPointer");
     const scene = mobile && window.matchMedia(HERO_MOBILE_QUERY).matches ? mobile : desktop;
     gl.uniform2f(u("uFocus"), scene.focus[0], 1 - scene.focus[1]);
     gl.uniform2f(u("uPan"), scene.pan[0], 1 - scene.pan[1]);
@@ -216,13 +224,29 @@ export default function HeroCanvas({ desktop, mobile, className }: Props) {
     const io = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting));
     io.observe(canvas);
 
+    // Pointer for the depth shift: fine pointers only, eased so the scene glides.
+    let tx = 0;
+    let ty = 0;
+    let px = 0;
+    let py = 0;
+    const onMove = (e: PointerEvent) => {
+      tx = (e.clientX / window.innerWidth) * 2 - 1;
+      ty = 1 - (e.clientY / window.innerHeight) * 2;
+    };
+    if (!calm) window.addEventListener("pointermove", onMove);
+
     const html = document.documentElement;
     const start = performance.now();
     let frame = 0;
     const tick = () => {
       // Nothing to draw behind the intro doors, off screen or in a background tab.
       if (!visible || !ready || document.hidden || !html.classList.contains("intro-done")) return;
+      // The hero film has taken over.
+      if (html.classList.contains("hero-video")) return;
       if (calm && frame++ % 2) return;
+      px += (tx - px) * 0.045;
+      py += (ty - py) * 0.045;
+      gl.uniform2f(uPointer, px, py);
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -232,6 +256,7 @@ export default function HeroCanvas({ desktop, mobile, className }: Props) {
       disposed = true;
       img.onload = null;
       gsap.ticker.remove(tick);
+      window.removeEventListener("pointermove", onMove);
       ro.disconnect();
       io.disconnect();
       gl.deleteTexture(texture);

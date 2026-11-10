@@ -98,7 +98,10 @@ export default function Nav() {
       lenis?.stop();
       behind.forEach((el) => el.setAttribute("inert", ""));
       tl.timeScale(1).play();
-      overlay.current?.querySelector<HTMLElement>("[data-menu-item]")?.focus({ preventScroll: true });
+      // The overlay is still visibility:hidden on this tick; move focus in once it has been switched on.
+      requestAnimationFrame(() =>
+        overlay.current?.querySelector<HTMLElement>("[data-menu-item]")?.focus({ preventScroll: true }),
+      );
     } else if (tl.progress() > 0) {
       lenis?.start();
       behind.forEach((el) => el.removeAttribute("inert"));
@@ -156,7 +159,7 @@ export default function Nav() {
             </nav>
           </div>
 
-          <TLink href="/" onClick={close} aria-label="Lulu Modern Chinese — home" className="justify-self-center">
+          <TLink href="/" onClick={close} aria-label="Lulu Modern Chinese, home" className="justify-self-center">
             <Image
               src="/images/logo-lulu.png"
               alt="Lulu Modern Chinese"
@@ -227,7 +230,9 @@ export default function Nav() {
           </a>
           <div className="text-center text-[0.78rem] text-cream/65">
             <p>3310 Dallas Pkwy Suite 121, Plano, TX</p>
-            <p className="mt-0.5 text-gold">{info.phone}</p>
+            <a href={links.phone} className="mt-0.5 inline-block py-2 text-gold">
+              {info.phone}
+            </a>
           </div>
         </div>
       </div>

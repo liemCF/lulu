@@ -2,141 +2,90 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
-import { prefersReducedMotion } from "@/lib/reveal";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
+import { info, links } from "@/lib/content";
+import Scene from "./Scene";
 
-// The Instagram feed: food and the room only, no flyers or photos with text on them.
-const strip = [
-  { src: "/images/duck-torch.webp", label: "Finishing the Flaming Peking Duck with a torch" },
-  { src: "/images/night-cocktail.webp", label: "A signature cocktail being poured" },
-  { src: "/images/duck-plated.webp", label: "Carved duck with pancakes and condiments" },
-  { src: "/images/night-cheers.webp", label: "A table raising a toast" },
-  { src: "/images/night-bar.webp", label: "The back bar at night" },
-  { src: "/images/story-lulu.webp", label: "Lulu, the muse of the restaurant" },
+// "Large, clean feed": the duck, chef moments, the room, cocktails, guests celebrating. No graphics or flyers.
+const feed = [
+  { src: "/images/duck-plated.webp", alt: "Carved Peking duck with pancakes and condiments" },
+  { src: "/images/duck-chef-flame.webp", alt: "The chef setting the Peking duck alight" },
+  { src: "/images/film-party-wide.webp", alt: "A table celebrating with sparkler candles" },
+  { src: "/images/night-cocktail.webp", alt: "A signature cocktail being poured" },
+  { src: "/images/duck-torch.webp", alt: "The Peking duck finished with a torch" },
+  { src: "/images/night-bar.webp", alt: "The back bar at night" },
 ];
 
-/**
- * Pinned horizontal strip of photos. Two panels part from the centre to open it,
- * steam drifts past at three speeds, and the heading dissolves as the strip moves.
- */
+/** Section 8 of the homepage doc: Instagram Gallery. A large, clean feed. */
 export default function Panorama() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      setupReveals(root.current!);
       if (prefersReducedMotion()) return;
       const q = gsap.utils.selector(root);
-      const mm = gsap.matchMedia();
-      mm.add("(min-width: 768px)", () => {
-        const track = q("[data-track]")[0] as HTMLElement;
-        const distance = () => track.scrollWidth - window.innerWidth;
-        const split = SplitText.create(q("[data-heading]"), { type: "words,chars" });
-
-        gsap.set(split.chars, { opacity: 0, y: "15%" });
-        gsap.to(split.chars, {
-          opacity: 1,
-          y: "0%",
-          duration: 0.6,
-          stagger: 0.04,
-          ease: "power1.out",
-          scrollTrigger: { trigger: root.current, start: "top 80%" },
-        });
-        gsap.to(q("[data-cover]"), { width: "0%", ease: "power1.inOut", duration: 1, scrollTrigger: { trigger: root.current, start: "top 70%" } });
-
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: root.current,
-              start: "top top",
-              end: () => `+=${distance() * 1.6}`,
-              scrub: true,
-              pin: true,
-              invalidateOnRefresh: true,
-            },
-          })
-          .fromTo(track, { x: 0 }, { x: () => -distance(), ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='1']"), { xPercent: -25, ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='2']"), { xPercent: -55, ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-steam='3']"), { xPercent: -90, ease: "power1.inOut", duration: 1 }, 0)
-          .to(q("[data-heading]"), { x: () => -window.innerWidth * 0.1, ease: "power1.inOut", duration: 1 }, 0)
-          // Inside each frame the photo drifts against the travel, and the frames sway gently as they pass.
-          .fromTo(q("[data-shot]"), { xPercent: 9 }, { xPercent: -9, ease: "none", duration: 1 }, 0)
-          .fromTo(
-            q("[data-frame]"),
-            { rotate: (i: number) => (i % 2 ? -2.5 : 2.5), y: (i: number) => (i % 2 ? 30 : -30) },
-            { rotate: (i: number) => (i % 2 ? 2.5 : -2.5), y: (i: number) => (i % 2 ? -30 : 30), ease: "none", duration: 1 },
-            0,
-          )
-          .to(split.chars, { opacity: 0, y: "-10%", stagger: 0.04, ease: "power1.inOut", duration: 0.4 }, 0.3);
-        ScrollTrigger.refresh();
-        return () => split.revert();
-      });
+      const tl = gsap.timeline({ scrollTrigger: { trigger: q("[data-feed]")[0], start: "top 86%" } });
+      tl.fromTo(
+        q("[data-tile]"),
+        { clipPath: "inset(0% 0% 100% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, stagger: 0.08, ease: "expo.inOut" },
+      ).fromTo(q("[data-tile-img]"), { scale: 1.3 }, { scale: 1, duration: 1.8, stagger: 0.08, ease: "expo.out" }, 0.1);
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} className="relative z-[1] overflow-clip bg-ink">
-      <div className="relative flex h-screen w-full items-center max-md:h-auto max-md:flex-col max-md:py-20">
-        <div data-cover className="absolute top-0 left-0 z-10 hidden h-full w-1/2 bg-ink md:block" />
-        <div data-cover className="absolute top-0 right-0 z-10 hidden h-full w-1/2 bg-ink md:block" />
-
-        <div data-track className="flex h-[78vh] w-max items-center gap-6 pl-[10vw] pr-[10vw] will-change-transform max-md:h-auto max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-5 max-md:[scrollbar-width:none]">
-          {strip.map((s, i) => (
-            <figure
-              key={s.src}
-              data-frame
-              className={`relative shrink-0 ${i % 2 ? "h-[62vh] w-[38vh]" : "h-[78vh] w-[56vh]"} max-md:h-[58svh] max-md:w-[76vw] max-md:snap-center`}
-            >
-              <div className="relative h-full w-full overflow-hidden rounded-2xl border border-cream/10 bg-night">
-                <Image
-                  data-shot
-                  src={s.src}
-                  alt={s.label}
-                  fill
-                  sizes="(min-width:768px) 40vh, 100vw"
-                  className="object-cover md:scale-[1.22] transition-transform duration-700 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent to-transparent opacity-80" />
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                  <p className="text-[0.78rem] font-medium tracking-wide text-cream/90">
-                    {s.label}
-                  </p>
-                </div>
-              </div>
-            </figure>
-          ))}
+    <Scene
+      ref={root}
+      desktop={{ src: "/images/film-plated-wide.webp", focus: [0.5, 0.5] }}
+      mobile={{ src: "/images/film-pour-tall.webp", focus: [0.5, 0.5] }}
+      alt="A table raising a toast at Lulu Modern"
+      video={{ desktop: "/video/plated-wide.mp4", mobile: "/video/pour-tall.mp4" }}
+      dim={0.8}
+      shade="full"
+    >
+      <div className="shell pt-28 pb-14 lg:pt-36 lg:pb-24">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+          <div>
+            <p data-fade className="scene-label">
+              <span>08</span>
+            </p>
+            <h2 data-split className="t-scene mt-6">
+              Instagram Gallery
+            </h2>
+          </div>
+          <a href={links.instagram} target="_blank" rel="noreferrer" data-fade className="t-link py-2 text-cream">
+            {info.instagram} · Follow Us ↗
+          </a>
         </div>
 
-        {/* Steam, three layers at three speeds */}
-        {[1, 2, 3].map((n) => (
-          <div
-            key={n}
-            data-steam={n}
-            aria-hidden
-            className="pointer-events-none absolute hidden rounded-full bg-[radial-gradient(closest-side,rgba(239,231,214,0.14),transparent)] md:block"
-            style={{ left: `${20 + n * 22}%`, top: `${n % 2 ? 10 : 55}%`, width: `${60 - n * 8}vw`, height: `${45 - n * 6}vw` }}
-          />
-        ))}
-
-        <div
-          data-heading
-          className="absolute top-12 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-8 px-5"
-        >
-          <h2 className="t-hero text-cream leading-none">Instagram Gallery</h2>
-          <div className="mt-3">
+        <div data-feed className="mt-10 grid grid-cols-2 gap-2 lg:mt-14 lg:grid-cols-3 lg:gap-3">
+          {feed.map((s) => (
             <a
-              href="https://www.instagram.com/lulu.modern/"
+              key={s.src}
+              href={links.instagram}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[0.78rem] font-medium tracking-[0.16em] text-gold hover:text-cream uppercase transition-colors"
+              data-tile
+              data-cursor="Follow"
+              aria-label={`${s.alt}. Open Lulu Modern on Instagram`}
+              className="group relative block aspect-square overflow-hidden bg-night lg:aspect-[3/2]"
             >
-              @lulu.modern · Follow Us ↗
+              <div data-tile-img className="absolute inset-0">
+                <Image
+                  src={s.src}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 31vw, 50vw"
+                  className="object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-[1.06]"
+                />
+              </div>
             </a>
-          </div>
+          ))}
         </div>
-
       </div>
-    </section>
+    </Scene>
   );
 }

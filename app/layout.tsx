@@ -30,7 +30,7 @@ const notoSerifSC = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
-  title: "Lulu Modern Chinese — Plano, Dallas-Fort Worth",
+  title: "Lulu Modern Chinese | Plano, Dallas-Fort Worth",
   description:
     "Modern Asian dining in Plano, TX. Home of the iconic Flaming Peking Duck, chef-driven dim sum and signature cocktails.",
 };

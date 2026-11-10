@@ -4,8 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
-import { links } from "@/lib/content";
-import { TLink } from "./PageTransition";
 
 // Copy from lulu-modern.com/about-lulu, lightly re-punctuated.
 const forms = [
@@ -107,7 +105,7 @@ export default function StoryChapters() {
       {/* Chapter 1 */}
       <section className="grid gap-12 px-5 py-24 sm:px-10 lg:grid-cols-12 lg:gap-10 lg:py-36 lg:pl-24">
         <div className="lg:col-span-3">
-          <p className="eyebrow">01 — Two cultures</p>
+          <p className="eyebrow">01 · Two cultures</p>
         </div>
         <div className="lg:col-span-8">
           <p data-scrub className="font-display text-[clamp(1.6rem,2.8vw,2.7rem)] leading-snug">
@@ -137,7 +135,7 @@ export default function StoryChapters() {
       <section className="px-5 py-24 sm:px-10 lg:py-36 lg:pl-24">
         <div className="grid gap-6 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-3">
-            <p className="eyebrow">02 — Our muse</p>
+            <p className="eyebrow">02 · Our muse</p>
           </div>
           <div className="lg:col-span-8">
             <h2 data-split className="font-display text-[clamp(2.6rem,5vw,5rem)] leading-[0.98]">
@@ -167,7 +165,7 @@ export default function StoryChapters() {
         </div>
 
         <div className="mt-24 grid gap-2 lg:mt-32 lg:pl-[25%]">
-          {["Lulu is both — just like us.", "Rooted in tradition, but unafraid to evolve.", "Grounded in culture, yet expressive and modern."].map(
+          {["Lulu is both, just like us.", "Rooted in tradition, but unafraid to evolve.", "Grounded in culture, yet expressive and modern."].map(
             (line, i) => (
               <p
                 key={line}
@@ -185,14 +183,14 @@ export default function StoryChapters() {
       <section className="bg-night px-5 py-24 sm:px-10 lg:py-36 lg:pl-24">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-3">
-            <p className="eyebrow">03 — The table</p>
+            <p className="eyebrow">03 · The table</p>
           </div>
           <div className="lg:col-span-8">
             <h2 data-split className="font-display text-[clamp(2.4rem,4.6vw,4.6rem)] leading-[1]">
               Our cuisine follows the same philosophy.
             </h2>
             <p data-scrub className="mt-10 font-display text-[clamp(1.4rem,2.2vw,2.1rem)] leading-snug">
-              We honor authentic Chinese flavors — dim sum, Peking duck, wok dishes — while bringing an elevated
+              We honor authentic Chinese flavors, from dim sum and Peking duck to wok dishes, while bringing an elevated
               Asian American voice to every plate. Premium ingredients, dramatic presentation, bold flavors, modern
               cocktails, curated music: all reflect the Asian American experience of blending past and present into
               something uniquely ours.
@@ -238,42 +236,6 @@ export default function StoryChapters() {
           <div data-fade className="lg:col-span-4 lg:col-start-9 lg:self-end">
             <p className="font-display text-4xl text-gold italic">Sunny Chang</p>
             <p className="mt-2 text-[0.8rem] font-medium tracking-[0.14em] text-cream/65 uppercase">Founder</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Chef */}
-      <section className="grid gap-12 border-t border-gold/10 px-5 py-24 sm:px-10 lg:grid-cols-12 lg:gap-10 lg:py-32 lg:pl-24">
-        <div className="lg:col-span-5">
-          <div data-clip className="relative aspect-[4/5] overflow-hidden">
-            <Image
-              src="/images/duck-chef-flame.webp"
-              alt="Flambéing a whole duck in the kitchen"
-              fill
-              sizes="(min-width:1024px) 40vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-        <div className="flex flex-col justify-center lg:col-span-6 lg:col-start-7">
-          <p data-fade className="eyebrow mb-5">
-            Meet the Chef
-          </p>
-          <h2 data-split className="font-display text-[clamp(2.4rem,4.4vw,4.4rem)] leading-[1]">
-            Leading the Next Chapter of <em className="gold-foil">Lulu Modern</em>
-          </h2>
-          <p data-fade className="mt-8 max-w-lg leading-relaxed text-cream/65">
-            Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering a new era of culinary
-            creativity. Discover a menu that honors tradition while pushing Asian cuisine forward through innovation,
-            premium ingredients, and unforgettable presentation.
-          </p>
-          <div data-fade className="mt-10 flex flex-wrap gap-3">
-            <TLink href="/menu" className="btn btn-solid">
-              Explore the Menu
-            </TLink>
-            <a href={links.reserve} target="_blank" rel="noreferrer" className="btn text-cream">
-              Reserve a Table
-            </a>
           </div>
         </div>
       </section>

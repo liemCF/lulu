@@ -4,7 +4,7 @@ import PrivateEvents from "@/components/PrivateEvents";
 import { links } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Private Dining & Events — Lulu Modern Chinese",
+  title: "Private Dining & Events | Lulu Modern Chinese",
   description:
     "Private dining, full buy-outs and cocktail receptions in Plano: seated dinners up to 120 guests, standing events for 150+.",
 };
@@ -21,7 +21,10 @@ export default function PrivateDiningPage() {
           </>
         }
         intro="Host your next celebration at Lulu. From corporate dinners to private parties, we offer tailored menus, flexible layouts, and attentive service."
-        image={{ src: "/images/private-table.webp", alt: "A long table set for a celebration" }}
+        image={{ src: "/images/film-party-wide.webp", alt: "A table celebrating with sparkler candles", focus: [0.6, 0.45] }}
+        mobileImage={{ src: "/images/film-party-wide.webp", focus: [0.62, 0.45] }}
+        video={{ desktop: "/video/party-wide.mp4", mobile: "/video/party-wide.mp4", position: "62% 45%" }}
+        dim={0.22}
       >
         <div className="flex flex-wrap gap-3">
           <a href={links.phone} className="btn btn-solid">

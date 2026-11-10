@@ -41,6 +41,63 @@ const { props: heroImg } = getImageProps({
   sizes: "(max-aspect-ratio: 3/2) 150vh, 100vw",
 });
 
+/**
+ * The hero photo brought to life: the same frame as a silent loop in which only the flames and embers move.
+ * It loads after the intro so it never competes with the photo, and stays off for reduced motion or data saver.
+ */
+function HeroVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || prefersReducedMotion()) return;
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (connection?.saveData) return;
+    const html = document.documentElement;
+
+    const start = () => {
+      video.src = window.matchMedia(HERO_MOBILE_QUERY).matches ? "/video/hero-tall.mp4" : "/video/hero-wide.mp4";
+      video.play().catch(() => {});
+    };
+    const onPlaying = () => {
+      // The heat-haze canvas underneath stops drawing once the film is on screen.
+      html.classList.add("hero-video");
+      gsap.to(video, { opacity: 1, duration: 1.4, ease: "power2.out" });
+    };
+    video.addEventListener("playing", onPlaying, { once: true });
+    if (html.classList.contains("intro-done")) start();
+    else window.addEventListener(INTRO_EVENT, start, { once: true });
+
+    // No decoding while the hero is scrolled away.
+    const io = new IntersectionObserver(([entry]) => {
+      if (!video.getAttribute("src")) return;
+      if (entry.isIntersecting) video.play().catch(() => {});
+      else video.pause();
+    });
+    io.observe(video);
+
+    return () => {
+      window.removeEventListener(INTRO_EVENT, start);
+      video.removeEventListener("playing", onPlaying);
+      io.disconnect();
+      html.classList.remove("hero-video");
+    };
+  }, []);
+
+  return (
+    <video
+      ref={ref}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden
+      tabIndex={-1}
+      className="absolute inset-0 h-full w-full object-cover object-[62%_50%] opacity-0 max-md:object-[50%_66%]"
+    />
+  );
+}
+
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const lenis = useLenis();
@@ -186,6 +243,7 @@ export default function Hero() {
           </picture>
           {/* Heat haze and embers rising off the pan */}
           <HeroCanvas desktop={DESKTOP_SCENE} mobile={MOBILE_SCENE} className="absolute inset-0 h-full w-full" />
+          <HeroVideo />
         </div>
         <div data-hero-veil className="intro-hide absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/70 max-md:via-transparent max-md:via-30% max-md:to-ink/40" />

@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import { hours, info, links } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Contact — Lulu Modern Chinese",
+  title: "Contact | Lulu Modern Chinese",
   description: `Find Lulu Modern Chinese at ${info.address}, ${info.city}. Hours, directions, phone and reservations.`,
 };
 
@@ -16,6 +16,10 @@ export default function ContactPage() {
         eyebrow="Contact"
         cn="访"
         title="Contact"
+        image={{ src: "/images/film-plated-wide.webp", alt: "Carved Peking duck with pancakes and condiments", focus: [0.5, 0.5] }}
+        mobileImage={{ src: "/images/film-feast-tall.webp", focus: [0.5, 0.5] }}
+        video={{ desktop: "/video/plated-wide.mp4", mobile: "/video/feast-tall.mp4" }}
+        dim={0.5}
         intro={
           <>
             {info.address}, {info.city}

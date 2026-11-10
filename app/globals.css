@@ -110,6 +110,73 @@ body {
     text-transform: uppercase;
     color: var(--color-gold);
   }
+  /* Section label with a short gold rule in front: replaces boxed badges. */
+  .kicker-rule::before {
+    content: "";
+    display: inline-block;
+    width: 2.75rem;
+    height: 1px;
+    margin-right: 1rem;
+    vertical-align: middle;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  /* Page gutter: sections run edge to edge and only keep this fluid side margin. */
+  .shell {
+    padding-inline: clamp(1.25rem, 5vw, 7rem);
+  }
+  /* The largest headings, sized to span most of the screen on any monitor. */
+  .t-mega {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.9rem, 8.4vw, 13rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+  /* Scene heading: one calm serif voice, cream only, sized well under the hero. */
+  .t-scene {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 4.9vw, 6.5rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  /* Scene label: gold index number, a hairline, then the section name in small tracked caps. */
+  .scene-label {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-cream) 80%, transparent);
+  }
+  .scene-label > span:first-child {
+    color: var(--color-gold);
+    font-variant-numeric: tabular-nums;
+  }
+  .scene-label > span:first-child::after {
+    content: "";
+    display: inline-block;
+    width: 2.5rem;
+    height: 1px;
+    margin-left: 0.9rem;
+    vertical-align: middle;
+    background: color-mix(in srgb, var(--color-gold) 70%, transparent);
+  }
+  .scene-copy {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--color-cream) 82%, transparent);
+  }
+  @media (min-width: 1024px) {
+    .scene-copy {
+      font-size: clamp(1.02rem, 1.08vw, 1.3rem);
+    }
+  }
   .t-link {
     font-family: var(--font-sans);
     font-size: 0.8rem;
@@ -204,6 +271,11 @@ body {
   color: var(--color-ink);
 }
 
+/* Once the WebGL stage is drawing, each scene's own photo steps aside and the fixed canvas shows through. */
+html.stage-on [data-scene-fallback] {
+  display: none;
+}
+
 /* Intro start state, applied before hydration so nothing flashes. Hero.tsx adds .intro-done. */
 html:not(.intro-done) .intro-hide {
   opacity: 0;
@@ -235,6 +307,8 @@ html:not(.intro-done) .intro-hide {
 
 /* Custom cursor: only on fine pointers. */
 .cursor {
+  /* Hidden until Cursor.tsx switches it on, so it never sits in the corner for reduced motion or before hydration. */
+  visibility: hidden;
   position: fixed;
   top: 0;
   left: 0;

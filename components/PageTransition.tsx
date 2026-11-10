@@ -85,7 +85,12 @@ export default function PageTransition({ children }: { children: ReactNode }) {
 
   // New page is in: reset scroll, then open the doors (unless the page has its own intro).
   useEffect(() => {
-    if (!pending.current) return;
+    if (!pending.current) {
+      // Back/Forward and reduced-motion links skip the doors, but the nav and footer triggers
+      // still hold the previous page's measurements: measure again.
+      const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+      return () => cancelAnimationFrame(id);
+    }
     pending.current = false;
     const q = gsap.utils.selector(root);
     lenis?.scrollTo(0, { immediate: true, force: true });

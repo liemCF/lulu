@@ -227,7 +227,7 @@ export default function MenuBoard() {
         ))}
         <p className="border-t border-cream/10 pt-8 text-sm leading-relaxed text-cream/65">
           Prices in USD, before tax. Menu and prices may change.{" "}
-          <a href={links.order} target="_blank" rel="noreferrer" className="link-line text-gold">
+          <a href={links.order} target="_blank" rel="noreferrer" className="link-line inline-block py-2 text-gold">
             Order pickup & takeout on Toast ↗
           </a>
         </p>

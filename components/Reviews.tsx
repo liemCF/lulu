@@ -4,9 +4,17 @@ import { useRef, useState } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { press, reviews } from "@/lib/content";
+import Scene from "./Scene";
+
+type Props = {
+  /** On the homepage this is one of the full-screen scenes; on the Press page it is a plain section. */
+  scene?: boolean;
+  /** The Press page already carries this heading in its header. */
+  heading?: boolean;
+};
 
 /** Section 6 of the homepage doc: What People Are Saying. */
-export default function Reviews() {
+export default function Reviews({ scene = false, heading = true }: Props) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
 
@@ -19,11 +27,13 @@ export default function Reviews() {
       gsap.set(slides, { autoAlpha: 0 });
       gsap.set(slides[0], { autoAlpha: 1 });
       if (prefersReducedMotion()) {
-        gsap.set(bars[0], { scaleX: 1 });
+        // No rotation: lay every quote out one under another so all of them can be read.
+        gsap.set(slides, { autoAlpha: 1, gridRowStart: "auto" });
+        gsap.set(q("[data-bars]"), { display: "none" });
         return;
       }
 
-      // Each quote arrives word by word out of a soft blur
+      // Each quote arrives word by word out of a soft blur; the gold bar under it fills while it is read.
       const words = slides.map((s) => SplitText.create(s.querySelector("blockquote"), { type: "words" }).words);
       const showWords = (n: number, delay = 0) =>
         gsap.fromTo(
@@ -54,8 +64,8 @@ export default function Reviews() {
       let started = false;
       gsap.timeline({
         scrollTrigger: {
-          trigger: root.current,
-          start: "top 70%",
+          trigger: q("[data-quotes]")[0],
+          start: "top 80%",
           end: "bottom top",
           onToggle: (self) => {
             visible = self.isActive;
@@ -67,78 +77,87 @@ export default function Reviews() {
           },
         },
       });
+
+      gsap.from(q("[data-press-row]"), {
+        y: 40,
+        autoAlpha: 0,
+        duration: 1.1,
+        stagger: 0.12,
+        ease: "expo.out",
+        scrollTrigger: { trigger: q("[data-press]")[0], start: "top 85%" },
+      });
     },
     { scope: root },
   );
 
-  return (
-    <section ref={root} className="relative overflow-hidden bg-night px-5 py-24 sm:px-10 lg:px-20 lg:py-36">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.72rem] font-medium tracking-[0.2em] text-gold uppercase">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-            Featured Recognition
+  const body = (
+      <div className={`shell grid gap-x-10 gap-y-12 lg:grid-cols-12 lg:gap-y-16 ${scene ? "pt-32 pb-14 lg:pt-40 lg:pb-24" : ""}`}>
+        {heading && (
+          <div className="lg:col-span-7">
+            <p data-fade className="scene-label">
+              <span>06</span>Featured Recognition
+            </p>
+            <h2 data-split className="t-scene mt-6">
+              What People Are Saying
+            </h2>
           </div>
-          <h2 data-split className="t-hero mt-5 text-cream">
-            What People <br className="hidden sm:inline" />
-            <em className="text-gold-soft font-serif italic">Are Saying</em>
-          </h2>
-        </div>
+        )}
 
-        {/* Media mentions */}
+        {/* Media mentions: a plain ruled list, read before the guest quotes */}
         {press.length > 0 && (
-          <div data-fade className="mt-14 rounded-2xl border border-cream/10 bg-ink/40 p-6 sm:p-8">
-            <p className="eyebrow mb-6 text-gold">Press &amp; Media Coverage</p>
-            <ul className="grid gap-6 sm:grid-cols-3 sm:gap-8">
+          <aside data-press className={heading ? "lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:pt-2" : "lg:col-span-4 lg:col-start-9 lg:pt-2"}>
+            <p className="eyebrow">Media mentions</p>
+            <ul className="mt-6 border-t border-cream/15">
               {press.map((p) => (
-                <li key={p.outlet} className="group border-t border-cream/10 pt-4 sm:border-t-0 sm:pt-0">
-                  <a href={p.url} target="_blank" rel="noreferrer" className="block">
-                    <span className="font-display text-xl text-cream transition-colors group-hover:text-gold flex items-center gap-1.5">
-                      {p.outlet}
-                      <span className="text-xs text-gold opacity-75">↗</span>
-                    </span>
-                    {p.headline && (
-                      <span className="mt-2 block text-[0.88rem] leading-snug text-cream/70 group-hover:text-cream/90 transition-colors">
-                        “{p.headline}”
+                <li key={p.outlet} data-press-row className="border-b border-cream/15">
+                  <a href={p.url} target="_blank" rel="noreferrer" className="group flex items-start justify-between gap-6 py-7 lg:py-9">
+                    <span>
+                      <span className="block font-display text-[clamp(1.6rem,2.2vw,2.75rem)] leading-none transition-colors duration-500 group-hover:text-gold">
+                        {p.outlet}
                       </span>
-                    )}
+                      {p.headline && (
+                        <span className="mt-3 block max-w-[28rem] text-[0.98rem] leading-snug text-cream/65 lg:text-[clamp(0.98rem,1.05vw,1.2rem)]">
+                          “{p.headline}”
+                        </span>
+                      )}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="mt-1 text-xl text-gold transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
+                    >
+                      ↗
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </aside>
         )}
 
-        {/* Guest testimonials quote slider */}
-        <div className="mt-16 sm:mt-20">
-          <p data-fade className="eyebrow mb-6 text-gold">Guest Dining Experiences</p>
-          <div className="relative grid min-h-[16rem] sm:min-h-[13rem]">
+        <div data-quotes className="lg:col-span-7">
+          <p data-fade className="eyebrow">
+            Guest testimonials
+          </p>
+          <div className="relative mt-7 grid min-h-[15rem] sm:min-h-[13rem] lg:min-h-[clamp(12rem,16vw,20rem)]">
             {reviews.map((r) => (
-              <figure key={r.author} data-slide className="col-start-1 row-start-1 max-w-4xl">
-                <div className="mb-4 text-gold flex gap-1">
-                  {"★★★★★".split("").map((star, idx) => (
-                    <span key={idx} className="text-sm">{star}</span>
-                  ))}
-                </div>
-                <blockquote className="font-display text-[clamp(1.5rem,3.2vw,2.8rem)] leading-[1.2] text-cream">
+              <figure key={r.author} data-slide className="col-start-1 row-start-1">
+                <blockquote className="font-display text-[clamp(1.5rem,2.5vw,3.4rem)] leading-[1.16] tracking-[-0.01em]">
                   <span className="text-gold">“</span>
                   {r.text}
                   <span className="text-gold">”</span>
                 </blockquote>
-                <figcaption className="mt-6 text-[0.8rem] font-medium tracking-[0.16em] text-cream/60 uppercase">
+                <figcaption className="mt-7 text-[0.8rem] font-medium tracking-[0.16em] text-cream/60 uppercase">
                   {r.author} · <span className="text-gold">Google</span>
                 </figcaption>
               </figure>
             ))}
           </div>
 
-          {/* Progress Indicators */}
-          <div className="mt-8 flex gap-2" aria-hidden>
+          <div data-bars className="mt-8 flex gap-2" aria-hidden>
             {reviews.map((r, i) => (
               <span
                 key={r.author}
-                className={`relative h-1 rounded-full overflow-hidden bg-cream/15 transition-[width] duration-700 ${i === active ? "w-14" : "w-5"}`}
+                className={`relative h-px overflow-hidden bg-cream/20 transition-[width] duration-700 ${i === active ? "w-16" : "w-6"}`}
               >
                 <span data-bar className="absolute inset-0 origin-left scale-x-0 bg-gold" />
               </span>
@@ -146,6 +165,23 @@ export default function Reviews() {
           </div>
         </div>
       </div>
+  );
+
+  return scene ? (
+    <Scene
+      ref={root}
+      desktop={{ src: "/images/film-bar-wide.webp", focus: [0.4, 0.5] }}
+      alt="The back bar at Lulu Modern at night"
+      video={{ desktop: "/video/bar-wide.mp4", mobile: "/video/bar-wide.mp4", position: "40% 50%" }}
+      dim={0.72}
+      shade="full"
+      className="!justify-center"
+    >
+      {body}
+    </Scene>
+  ) : (
+    <section ref={root} className="relative overflow-clip bg-night py-20 text-cream lg:py-36">
+      {body}
     </section>
   );
 }

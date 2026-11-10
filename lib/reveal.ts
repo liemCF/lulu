@@ -44,7 +44,8 @@ export function setupReveals(root: HTMLElement) {
   root.querySelectorAll<HTMLElement>("[data-fade]").forEach((el) => {
     gsap.from(el, {
       y: 48,
-      autoAlpha: 0,
+      // opacity, not autoAlpha: the buttons inside must stay reachable by keyboard before they are revealed
+      opacity: 0,
       duration: 1.2,
       ease: "expo.out",
       delay: Number(el.dataset.fade) || 0,

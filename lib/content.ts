@@ -26,12 +26,12 @@ export const info = {
 };
 
 export const hours = [
-  { day: "Sunday", time: "11:00 AM – 10:00 PM" },
-  { day: "Monday", time: "4:30 PM – 10:00 PM" },
+  { day: "Sunday", time: "11:00 AM - 10:00 PM" },
+  { day: "Monday", time: "4:30 PM - 10:00 PM" },
   { day: "Tuesday", time: "Closed" },
-  { day: "Wed – Thu", time: "4:30 PM – 10:00 PM" },
-  { day: "Friday", time: "4:30 PM – 11:30 PM", late: true },
-  { day: "Saturday", time: "11:00 AM – 12:00 AM", late: true },
+  { day: "Wed - Thu", time: "4:30 PM - 10:00 PM" },
+  { day: "Friday", time: "4:30 PM - 11:30 PM", late: true },
+  { day: "Saturday", time: "11:00 AM - 12:00 AM", late: true },
 ];
 
 // Same hours as minutes-from-midnight, indexed Sunday = 0. Restaurant time is America/Chicago.
