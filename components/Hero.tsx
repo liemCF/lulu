@@ -175,7 +175,7 @@ export default function Hero() {
   );
 
   return (
-    <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] md:min-h-[680px] overflow-hidden bg-ink max-md:flex max-md:flex-col">
+    <section ref={root} id="top" className="relative h-[100svh] min-h-[560px] max-md:h-[82svh] max-md:min-h-[500px] md:min-h-[680px] overflow-hidden bg-ink max-md:flex max-md:flex-col">
       {/* Media. On phones the photo fills whatever height the copy leaves, so the duck sits clear of the text on any screen. */}
       <div className="absolute inset-0 max-md:relative max-md:inset-auto max-md:min-h-0 max-md:flex-1">
         <div data-hero-parallax className="absolute inset-0 will-change-transform">
