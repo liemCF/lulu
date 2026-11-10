@@ -65,9 +65,6 @@ export default function Visit() {
             <p className="font-display text-2xl text-cream">
               Dallas-Fort Worth’s destination for modern Asian dining.
             </p>
-            <p className="text-[1rem] leading-relaxed text-cream/70">
-              Join us for iconic tableside Peking duck, artisanal dim sum, and craft cocktails in West Plano Village.
-            </p>
           </div>
 
           <div data-fade className="flex flex-wrap gap-4">

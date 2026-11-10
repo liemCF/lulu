@@ -123,13 +123,7 @@ export default function Panorama() {
           data-heading
           className="absolute top-12 left-0 z-20 w-full text-center text-cream max-md:static max-md:order-first max-md:mb-8 px-5"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-ink/80 px-3.5 py-1 text-[0.72rem] font-medium tracking-[0.2em] text-gold uppercase backdrop-blur-md mb-3">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-            Instagram Gallery
-          </div>
-          <h2 className="t-hero text-cream leading-none">
-            Atmosphere &amp; <em className="text-gold-soft font-serif italic">Craft</em>
-          </h2>
+          <h2 className="t-hero text-cream leading-none">Instagram Gallery</h2>
           <div className="mt-3">
             <a
               href="https://www.instagram.com/lulu.modern/"

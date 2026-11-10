@@ -57,25 +57,15 @@ export default function MeetChef({ id = "chef", showCta = true }: Props) {
               data-chef-photo
               className="group relative aspect-[4/5] w-full max-w-md mx-auto overflow-hidden rounded-2xl border border-gold/20 bg-night shadow-2xl shadow-ink/80 lg:max-w-none"
             >
+              {/* A dish from the kitchen, not a person: swap in Chef Natalie's portrait once the client sends one. */}
               <Image
-                src="/images/duck-chef-flame.webp"
-                alt="Executive Chef Natalie Deprez plating with flame"
+                src="/images/gallery-duck-platter.webp"
+                alt="A Peking duck platter from the Lulu Modern kitchen"
                 fill
                 sizes="(min-width: 1024px) 40vw, 90vw"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/20" />
-
-              {/* Overlay Badge */}
-              <div className="absolute bottom-5 inset-x-5 rounded-xl border border-gold/25 bg-ink/85 p-4 backdrop-blur-md">
-                <p className="text-[0.7rem] font-medium tracking-[0.2em] text-gold uppercase">
-                  Executive Chef
-                </p>
-                <p className="font-display text-xl text-cream">Natalie Deprez</p>
-                <p className="mt-1 text-[0.8rem] text-cream/70">
-                  Culinary Direction &amp; Innovation · Lulu Modern
-                </p>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
             </div>
           </div>
 

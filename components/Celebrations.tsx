@@ -6,12 +6,6 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { TLink } from "./PageTransition";
 
-const perks = [
-  { label: "Private Dining Suite", cap: "Up to 30 Guests", desc: "Intimate and secluded" },
-  { label: "Full Venue Buyout", cap: "Up to 150 Guests", desc: "Exclusive experience" },
-  { label: "Bespoke Chef Menus", cap: "Custom Pairings", desc: "Tableside service" },
-];
-
 /** Section 7 of the homepage doc: Private Dining & Celebrations. */
 export default function Celebrations() {
   const root = useRef<HTMLElement>(null);
@@ -75,20 +69,6 @@ export default function Celebrations() {
               dining experiences for every occasion.
             </p>
 
-            {/* Event Specs / Perks */}
-            <div data-fade className="mt-8 grid gap-3 sm:grid-cols-3">
-              {perks.map((p) => (
-                <div
-                  key={p.label}
-                  className="rounded-xl border border-cream/10 bg-night/50 p-3.5 backdrop-blur-sm transition-colors hover:border-gold/30"
-                >
-                  <p className="font-display text-base text-cream">{p.label}</p>
-                  <p className="mt-1 text-[0.78rem] font-medium text-gold">{p.cap}</p>
-                  <p className="text-[0.72rem] text-cream/60">{p.desc}</p>
-                </div>
-              ))}
-            </div>
-
             <div data-fade className="mt-10">
               <TLink href="/private-dining" className="btn btn-solid">
                 Plan Your Event
@@ -110,10 +90,7 @@ export default function Celebrations() {
                 sizes="(min-width: 1024px) 45vw, 90vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 rounded-md bg-ink/80 px-3 py-1 text-[0.75rem] tracking-wider text-cream backdrop-blur-md">
-                The Private Dining Suite
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
             </div>
 
             {/* Inset Accent Shot */}
@@ -128,10 +105,6 @@ export default function Celebrations() {
                 sizes="220px"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-              <div className="absolute bottom-2.5 left-2.5 text-[0.7rem] font-medium tracking-widest text-gold uppercase">
-                Toasts &amp; Moments
-              </div>
             </div>
           </div>
         </div>

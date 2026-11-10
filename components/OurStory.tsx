@@ -82,22 +82,6 @@ export default function OurStory() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
 
-              {/* Muse Portrait Inset */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-xl border border-gold/20 bg-ink/85 p-3 backdrop-blur-md">
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-gold/40">
-                  <Image
-                    src="/images/story-lulu.webp"
-                    alt="Lulu, the muse"
-                    fill
-                    sizes="48px"
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="text-[0.68rem] tracking-[0.18em] text-gold uppercase">Cultural Muse</p>
-                  <p className="font-display text-sm text-cream">The Spirit of Lulu</p>
-                </div>
-              </div>
             </div>
           </div>
 

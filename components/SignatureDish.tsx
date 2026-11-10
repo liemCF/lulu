@@ -6,28 +6,11 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { links } from "@/lib/content";
 
+// Photos only: the copy for this section is exactly what the doc gives, above.
 const ritualSteps = [
-  {
-    no: "01",
-    label: "Crispy Skin",
-    cn: "金黄酥脆",
-    desc: "Lacquered, roasted and set alight tableside until the skin turns glass-crisp.",
-    image: "/images/duck-torch.webp",
-  },
-  {
-    no: "02",
-    label: "Hand-Carved Service",
-    cn: "片皮精工",
-    desc: "Carved live before your eyes into thin, glistening slices with master knife technique.",
-    image: "/images/duck-carving.webp",
-  },
-  {
-    no: "03",
-    label: "Tableside Presentation",
-    cn: "宴飨之礼",
-    desc: "Served warm with steamed lotus-leaf pancakes, julienned scallions, and house hoisin sauce.",
-    image: "/images/duck-plated.webp",
-  },
+  { no: "01", alt: "The Flaming Peking Duck finished with a torch", image: "/images/duck-torch.webp" },
+  { no: "02", alt: "The duck being hand-carved tableside", image: "/images/duck-carving.webp" },
+  { no: "03", alt: "Carved duck plated with pancakes and condiments", image: "/images/duck-plated.webp" },
 ];
 
 /** Section 2 of the homepage doc: The Signature Experience. */
@@ -120,9 +103,8 @@ export default function SignatureDish() {
                 rel="noreferrer"
                 className="btn btn-solid shadow-lg shadow-gold/10"
               >
-                Reserve on OpenTable
+                Explore the Duck Experience
               </a>
-              <span className="text-[0.8rem] tracking-widest text-cream/50 uppercase">Limited Daily Quantities</span>
             </div>
           </div>
         </div>
@@ -136,41 +118,16 @@ export default function SignatureDish() {
             <div
               key={step.no}
               data-ritual-card
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-cream/10 bg-night/70 p-4 transition-all duration-500 hover:border-gold/40 hover:bg-night hover:shadow-2xl hover:shadow-gold/5"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-cream/10 bg-night/70 p-3 transition-all duration-500 hover:border-gold/40 hover:bg-night hover:shadow-2xl hover:shadow-gold/5"
             >
-              {/* Photo Frame */}
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-ink">
                 <Image
                   src={step.image}
-                  alt={step.label}
+                  alt={step.alt}
                   fill
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/20 to-transparent" />
-                
-                {/* Chinese Calligraphy Accent Badge */}
-                <div className="absolute top-3 right-3 rounded-md bg-ink/75 px-2 py-1 font-serif text-[0.8rem] tracking-widest text-gold backdrop-blur-md">
-                  {step.cn}
-                </div>
-
-                {/* Step Numeral */}
-                <div className="absolute bottom-3 left-3 flex items-baseline gap-2">
-                  <span className="font-display text-2xl font-normal text-gold">{step.no}</span>
-                  <span className="text-[0.7rem] tracking-[0.2em] text-cream/70 uppercase">Step</span>
-                </div>
-              </div>
-
-              {/* Text Description */}
-              <div className="mt-4 flex flex-1 flex-col justify-between">
-                <div>
-                  <h3 className="font-display text-xl text-cream transition-colors group-hover:text-gold-soft">
-                    {step.label}
-                  </h3>
-                  <p className="mt-2 text-[0.92rem] leading-relaxed text-cream/75">
-                    {step.desc}
-                  </p>
-                </div>
               </div>
             </div>
           ))}

@@ -127,7 +127,7 @@ export default function Reviews() {
                   <span className="text-gold">”</span>
                 </blockquote>
                 <figcaption className="mt-6 text-[0.8rem] font-medium tracking-[0.16em] text-cream/60 uppercase">
-                  {r.author} · <span className="text-gold">Verified Diner</span>
+                  {r.author} · <span className="text-gold">Google</span>
                 </figcaption>
               </figure>
             ))}
