@@ -312,8 +312,12 @@ export default function Hero() {
             Modern Asian Dining. <em className="text-gold-soft">Unforgettable Experiences.</em>
           </h1>
           <p data-hero-fade className="intro-hide mt-5 max-w-[36rem] text-[1.05rem] leading-relaxed text-cream/85 max-md:mx-auto max-md:mt-3 max-md:text-[0.95rem] max-md:leading-normal lg:text-[1.15rem]">
-            Home of the iconic Flaming Peking Duck and chef-driven Asian cuisine inspired by tradition, innovation, and
-            the Asian American experience.
+            Home of the iconic Flaming Peking Duck and a chef-driven menu inspired by the flavors, traditions, and
+            cultures of Asia.
+          </p>
+          <p data-hero-fade className="intro-hide mt-3 max-w-[36rem] text-[0.98rem] leading-relaxed text-cream/75 max-md:mx-auto max-md:mt-2 max-md:text-[0.86rem] max-md:leading-normal">
+            At Lulu Modern, every dish is crafted to surprise, every table is meant for gathering, and every visit is
+            designed to be remembered.
           </p>
           <div data-hero-fade className="intro-hide mt-8 flex flex-wrap gap-3 max-md:mt-5 max-md:grid max-md:grid-cols-2">
             <a href={links.reserve} target="_blank" rel="noreferrer" className="btn btn-solid min-w-0 max-md:justify-center max-md:!px-2 max-md:text-center">

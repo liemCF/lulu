@@ -13,7 +13,7 @@ type Props = {
   heading?: boolean;
 };
 
-/** Section 6 of the homepage doc: What People Are Saying. */
+/** Section 6 of the homepage doc: A Dallas-Fort Worth Favorite (featured press and guest reviews). */
 export default function Reviews({ scene = false, heading = true }: Props) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
@@ -98,8 +98,18 @@ export default function Reviews({ scene = false, heading = true }: Props) {
               <span>06</span>Featured Recognition
             </p>
             <h2 data-split className="t-scene mt-6">
-              What People Are Saying
+              A Dallas-Fort Worth Favorite
             </h2>
+            <div data-fade className="scene-copy mt-7 max-w-[36rem] space-y-4">
+              <p>
+                Known for its signature Flaming Peking Duck, elevated hospitality, and modern approach to Asian
+                cuisine, Lulu Modern continues to become one of the region’s most talked-about dining destinations.
+              </p>
+              <p>
+                As we grow, our mission remains the same: create experiences worth celebrating, sharing, and
+                returning for.
+              </p>
+            </div>
           </div>
         )}
 

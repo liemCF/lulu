@@ -50,11 +50,15 @@ export default function Panorama() {
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
           <div>
             <p data-fade className="scene-label">
-              <span>08</span>
+              <span>08</span>Instagram Gallery
             </p>
             <h2 data-split className="t-scene mt-6">
-              Instagram Gallery
+              Follow the Experience
             </h2>
+            <p data-fade className="scene-copy mt-6 max-w-[36rem]">
+              Explore new dishes, behind-the-scenes moments, chef features, special events, and signature tableside
+              presentations.
+            </p>
           </div>
           <a href={links.instagram} target="_blank" rel="noreferrer" data-fade className="t-link py-2 text-cream">
             {info.instagram} · Follow Us ↗

@@ -38,22 +38,25 @@ export default function OurStory() {
           </h2>
           <div data-fade className="mt-7 max-w-[34rem] space-y-4">
             <p className="font-display text-[clamp(1.35rem,1.7vw,2.1rem)] leading-snug">
-              Lulu Modern was born from the Asian American experience.
+              Lulu Modern was created from a simple belief: the best dining experiences honor where we come from
+              while embracing where we’re going.
             </p>
             <div className="scene-copy space-y-4">
               <p>
-                Growing up between cultures taught us that tradition and innovation can exist side by side. Our
-                restaurant reflects that belief, bringing together authentic flavors, modern creativity, and a dining
-                experience designed to be shared.
+                Inspired by the Asian American experience, we celebrate the traditions, cultures, and flavors that
+                shaped us while creating something uniquely our own.
               </p>
-              <p className="text-gold-soft italic font-serif">This is more than a restaurant.</p>
-              <p>It’s our interpretation of what modern Asian hospitality can become.</p>
+              <p>
+                The result is a restaurant where heritage and innovation exist side by side, creating memorable
+                experiences built around exceptional food and hospitality.
+              </p>
+              <p className="text-gold-soft italic font-serif">This is modern Asian dining, reimagined.</p>
             </div>
           </div>
           <div data-fade className="mt-9">
             <Magnetic strength={0.35}>
               <TLink href="/about" className="btn text-cream hover:border-gold">
-                Read Our Story
+                Learn More
               </TLink>
             </Magnetic>
           </div>

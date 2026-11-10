@@ -68,13 +68,13 @@ export default function SignatureDish() {
             <CipherScramble text="The Signature Experience" />
           </p>
           <h2 data-split className="t-scene mt-6">
-            The Dish Everyone Talks About
+            The Dish That Put Us on the Map
           </h2>
           <div data-fade className="scene-copy mt-7 max-w-[34rem] space-y-4">
-            <p>At Lulu Modern, every visit begins with an experience.</p>
+            <p>Our Flaming Peking Duck is more than a dish. It’s an experience.</p>
             <p>
-              Our signature Flaming Peking Duck has become one of the most talked-about dishes in Dallas-Fort Worth,
-              combining tableside theatrics with authentic craftsmanship.
+              Prepared using time-honored techniques and presented with dramatic tableside flair, it has become one
+              of the most talked-about dining experiences in Dallas-Fort Worth.
             </p>
           </div>
 
@@ -99,10 +99,15 @@ export default function SignatureDish() {
             ))}
           </ul>
 
+          <p data-fade className="scene-copy mt-6 max-w-[34rem]">
+            Whether celebrating a special occasion or gathering for an evening out, the Flaming Peking Duck is the
+            centerpiece of the Lulu experience.
+          </p>
+
           <div data-fade className="mt-8">
             <Magnetic strength={0.4}>
               <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn btn-solid">
-                Explore the Duck Experience
+                Experience the Duck
               </a>
             </Magnetic>
           </div>

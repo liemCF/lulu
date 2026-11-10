@@ -33,12 +33,15 @@ export default function Celebrations() {
             <CipherScramble text="Private Dining & Celebrations" />
           </p>
           <h2 data-split className="t-scene mt-6">
-            Celebrations Deserve <br className="hidden sm:inline" />
+            Gather Around <br className="hidden sm:inline" />
             <em className="text-gold-soft font-serif italic">Something Extraordinary</em>
           </h2>
           <p data-fade className="scene-copy mt-7 max-w-[34rem]">
-            From birthdays and anniversaries to corporate gatherings and holiday events, Lulu Modern creates memorable
-            dining experiences for every occasion.
+            From intimate celebrations and family gatherings to corporate dinners and holiday events, Lulu Modern
+            creates experiences designed to bring people together.
+          </p>
+          <p data-fade className="scene-copy mt-4 max-w-[34rem]">
+            Exceptional food, thoughtful service, and unforgettable moments are at the center of every table.
           </p>
 
           <div data-fade className="mt-8 flex flex-wrap gap-2.5">
@@ -55,7 +58,7 @@ export default function Celebrations() {
           <div data-fade className="mt-9">
             <Magnetic strength={0.4}>
               <TLink href="/private-dining" className="btn btn-solid shadow-lg shadow-gold/10">
-                Plan Your Event
+                Private Dining &amp; Events
               </TLink>
             </Magnetic>
           </div>

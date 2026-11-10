@@ -55,12 +55,14 @@ export default function MeetChef({ id = "chef", showCta = true, number = "04" }:
 
           <div data-fade className="scene-copy mt-6 max-w-[34rem] space-y-4">
             <p>
-              Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering a new era of culinary
-              creativity.
+              Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering an exciting new era.
             </p>
             <p>
-              Discover a menu that honors tradition while pushing Asian cuisine forward through innovation, premium
-              ingredients, and unforgettable presentation.
+              Our evolving menu reflects a commitment to exploring the rich culinary traditions of Asia while
+              introducing fresh ideas, seasonal ingredients, and elevated dining experiences.
+            </p>
+            <p>
+              Chef Natalie’s vision builds upon what guests already love while introducing new reasons to return.
             </p>
           </div>
           {showCta && (

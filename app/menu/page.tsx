@@ -16,10 +16,10 @@ export default function MenuPage() {
         cn="菜单"
         title={
           <>
-            Inspired by Asia. <em className="gold-foil">Designed for Today.</em>
+            Inspired by Asia. <em className="gold-foil">Created for Today.</em>
           </>
         }
-        intro="From signature duck and dim sum favorites to chef-driven creations, every dish reflects our commitment to quality ingredients, bold flavors, and elevated hospitality."
+        intro="From handcrafted dim sum and wok-fired favorites to chef-driven specialties, our menu celebrates bold flavors, exceptional ingredients, and culinary craftsmanship."
         image={{ src: "/images/film-feast-wide.webp", alt: "A table laid with dishes from across the menu", focus: [0.5, 0.5] }}
         mobileImage={{ src: "/images/film-steam-tall.webp", focus: [0.5, 0.5] }}
         video={{ desktop: "/video/feast-wide.mp4", mobile: "/video/steam-tall.mp4" }}

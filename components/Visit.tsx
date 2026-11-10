@@ -75,7 +75,7 @@ export default function Visit() {
         <div className="mt-8 flex flex-col items-center gap-9 border-b border-cream/10 pb-16 text-center lg:mt-10">
           <div data-fade className="max-w-[44rem] space-y-2">
             <p className="font-display text-[clamp(1.3rem,1.7vw,2.1rem)] leading-tight text-cream/90">
-              Dallas-Fort Worth’s destination for modern Asian dining.
+              A destination for bold flavors, meaningful gatherings, and unforgettable dining experiences.
             </p>
           </div>
 
@@ -98,6 +98,16 @@ export default function Visit() {
                 className="btn text-cream text-center min-w-[160px] hover:border-gold"
               >
                 Order Online
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.4}>
+              <a
+                href={links.privateInquiry}
+                target="_blank"
+                rel="noreferrer"
+                className="btn text-cream text-center min-w-[160px] hover:border-gold"
+              >
+                Private Dining Inquiries
               </a>
             </Magnetic>
           </div>
@@ -156,7 +166,11 @@ export default function Visit() {
                 </a>
               </div>
             </div>
-            <p className="text-[0.75rem] text-cream/40 mt-6 sm:mt-0">
+            <p className="mt-6 sm:mt-0">
+              <span className="block font-display text-lg text-cream">Lulu Modern</span>
+              <span className="block text-[0.78rem] tracking-[0.14em] text-gold uppercase">Home of the Flaming Peking Duck</span>
+            </p>
+            <p className="text-[0.75rem] text-cream/40 mt-3">
               © {new Date().getFullYear()} Lulu Modern Chinese. All rights reserved.
             </p>
           </div>

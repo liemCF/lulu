@@ -100,23 +100,24 @@ export default function MenuShowcase() {
             <CipherScramble text="New Asian Menu" />
           </p>
           <h2 data-split className="t-scene mt-6">
-            Inspired by Asia. Designed for Today.
+            Inspired by Asia. Created for Today.
           </h2>
           <div data-fade className="scene-copy mt-7 max-w-[34rem] space-y-4">
+            <p>Lulu Modern brings together signature dishes from across Asia through a contemporary lens.</p>
             <p>
-              Lulu Modern celebrates the flavors, traditions, and culinary techniques found across Asia while honoring
-              the roots that inspired our journey.
+              From handcrafted dim sum and wok-fired favorites to chef-driven specialties, our menu celebrates bold
+              flavors, exceptional ingredients, and culinary craftsmanship.
             </p>
             <p>
-              From signature duck and dim sum favorites to chef-driven creations, every dish reflects our commitment to
-              quality ingredients, bold flavors, and elevated hospitality.
+              Every dish reflects our belief that honoring tradition and embracing innovation can exist on the same
+              plate.
             </p>
           </div>
 
           <div data-fade className="mt-8">
             <Magnetic strength={0.35}>
               <TLink href="/menu" className="btn btn-solid shadow-lg shadow-gold/10">
-                View Full Menu
+                Explore the Menu
               </TLink>
             </Magnetic>
           </div>
