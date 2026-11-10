@@ -207,6 +207,8 @@ export default function Seal3D({ logo = "/images/logo-lulu.png", className }: Pr
       let rx = 0;
       let ry = 0;
       let shown = false;
+      const punch = { z: 0, recoil: 0 };
+
       const st = ScrollTrigger.create({
         trigger: el,
         start: "top bottom",
@@ -222,17 +224,27 @@ export default function Seal3D({ logo = "/images/logo-lulu.png", className }: Pr
       };
       window.addEventListener("pointermove", move);
 
+      // Interactive stamp punch on click/tap
+      const handleStamp = () => {
+        gsap.killTweensOf(punch);
+        gsap.timeline()
+          .to(punch, { z: -0.6, recoil: 0.3, duration: 0.12, ease: "power3.in" })
+          .to(punch, { z: 0, recoil: 0, duration: 0.75, ease: "elastic.out(1.2, 0.35)" });
+      };
+      el.addEventListener("click", handleStamp);
+
       const start = performance.now();
       const tick = () => {
         if (!visible || document.hidden) return;
         const t = (performance.now() - start) / 1000;
         // It swings from one side to the other as it scrolls past, sways gently, and leans toward the pointer.
-        const targetY = (progress - 0.5) * 2.3 + Math.sin(t * 0.6) * 0.16 + px * 0.35;
-        const targetX = Math.sin(t * 0.45) * 0.07 + py * 0.22;
+        const targetY = (progress - 0.5) * 2.3 + Math.sin(t * 0.6) * 0.16 + px * 0.45;
+        const targetX = Math.sin(t * 0.45) * 0.07 + py * 0.32 + punch.recoil;
         ry += (targetY - ry) * 0.07;
         rx += (targetX - rx) * 0.07;
         plaque.rotation.set(rx, ry, Math.sin(t * 0.5) * 0.025);
         float.position.y = Math.sin(t * 0.9) * 0.07;
+        float.position.z = punch.z;
         glint.position.set(Math.sin(t * 0.7) * 3.4, 1.2 + Math.cos(t * 0.5) * 1.2, 3.2);
         renderer.render(scene, camera);
         if (!shown) {
@@ -246,6 +258,7 @@ export default function Seal3D({ logo = "/images/logo-lulu.png", className }: Pr
         gsap.ticker.remove(tick);
         st.kill();
         ro.disconnect();
+        el.removeEventListener("click", handleStamp);
         window.removeEventListener("pointermove", move);
         geo.dispose();
         face.dispose();

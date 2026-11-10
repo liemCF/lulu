@@ -4,6 +4,8 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { links } from "@/lib/content";
+import CipherScramble from "./CipherScramble";
+import Magnetic from "./Magnetic";
 import Scene from "./Scene";
 import Duck3D from "./three/Duck3D";
 
@@ -44,13 +46,26 @@ export default function SignatureDish() {
       dim={0.7}
       shade="left"
     >
-      {/* The dish itself, in 3D: it turns with the scroll over real-time flames */}
-      <Duck3D className="pointer-events-none absolute inset-x-0 top-[9svh] h-[54svh] lg:inset-y-0 lg:top-0 lg:right-0 lg:left-auto lg:h-full lg:w-[56%]" />
+      {/* The dish itself, in interactive 3D: drag to rotate, tap/click to flambé flame */}
+      <div
+        data-cursor="Flambé 🔥"
+        className="relative inset-x-0 top-[9svh] h-[54svh] lg:absolute lg:inset-y-0 lg:top-0 lg:right-0 lg:left-auto lg:h-full lg:w-[56%]"
+      >
+        <Duck3D className="pointer-events-auto h-full w-full cursor-grab active:cursor-grabbing" />
+        <div className="pointer-events-none absolute bottom-4 inset-x-0 flex justify-center lg:bottom-10">
+          <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-ink/80 px-4 py-1.5 text-[0.7rem] font-medium tracking-[0.2em] text-gold uppercase backdrop-blur-md shadow-2xl">
+            <span className="h-2 w-2 rounded-full bg-gold animate-ping" />
+            <span>Drag to Rotate · Tap to Flambé</span>
+          </span>
+        </div>
+      </div>
 
       <div className="shell relative grid pt-[60svh] pb-14 lg:grid-cols-12 lg:pt-[20svh] lg:pb-20">
         <div className="lg:col-span-6">
-          <p data-fade className="scene-label">
-            <span>02</span>The Signature Experience
+          <p data-fade className="scene-label flex items-center gap-3">
+            <CipherScramble text="02" className="text-gold font-serif" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+            <CipherScramble text="The Signature Experience" />
           </p>
           <h2 data-split className="t-scene mt-6">
             The Dish Everyone Talks About
@@ -67,7 +82,11 @@ export default function SignatureDish() {
             {beats.map((line, i) => (
               <li key={line} className="relative flex items-baseline gap-6 py-4 lg:py-5">
                 <span data-beat-rule aria-hidden className="absolute inset-x-0 top-0 h-px origin-left bg-cream/25" />
-                <span className="text-[0.7rem] font-medium tracking-[0.2em] text-gold tabular-nums">0{i + 1}</span>
+                <CipherScramble
+                  text={`0${i + 1}`}
+                  trigger="hover"
+                  className="text-[0.75rem] font-medium tracking-[0.2em] text-gold tabular-nums"
+                />
                 <span className="overflow-hidden pb-[0.12em]">
                   <span
                     data-beat-line
@@ -81,9 +100,11 @@ export default function SignatureDish() {
           </ul>
 
           <div data-fade className="mt-8">
-            <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn btn-solid">
-              Explore the Duck Experience
-            </a>
+            <Magnetic strength={0.4}>
+              <a href={links.duckExperience} target="_blank" rel="noreferrer" className="btn btn-solid">
+                Explore the Duck Experience
+              </a>
+            </Magnetic>
           </div>
         </div>
       </div>

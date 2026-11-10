@@ -1,5 +1,6 @@
 import Celebrations from "@/components/Celebrations";
 import Hero from "@/components/Hero";
+import KineticMarquee from "@/components/KineticMarquee";
 import MeetChef from "@/components/MeetChef";
 import MenuShowcase from "@/components/MenuShowcase";
 import OurStory from "@/components/OurStory";
@@ -29,6 +30,11 @@ export default function Home() {
       <Hero />
       {/* 2. The Signature Experience: The Dish Everyone Talks About */}
       <SignatureDish />
+      {/* Velocity-Driven Kinetic Typography Marquee */}
+      <KineticMarquee
+        items={["Flaming Peking Duck", "Tableside Flambé", "Artisanal Dim Sum", "Craft Cocktails", "West Plano Village"]}
+        speed={48}
+      />
       {/* 3. New Asian Menu */}
       <MenuShowcase />
       {/* 4. Meet the Chef */}
@@ -39,6 +45,12 @@ export default function Home() {
       <Reviews scene />
       {/* 7. Private Dining & Celebrations */}
       <Celebrations />
+      {/* Velocity-Driven Kinetic Marquee (Outline) */}
+      <KineticMarquee
+        items={["Private Dining Suites", "Full Buyouts", "Celebrations", "Late Night Energy"]}
+        speed={42}
+        outline
+      />
       {/* 8. Instagram Gallery */}
       <Panorama />
       {/* 9. Final CTA: "Experience Lulu Modern" is the top of the site footer (Visit) */}

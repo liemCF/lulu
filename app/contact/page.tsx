@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactForm from "@/components/ContactForm";
 import PageHeader from "@/components/PageHeader";
 import { hours, info, links } from "@/lib/content";
 
@@ -36,51 +37,62 @@ export default function ContactPage() {
         </div>
       </PageHeader>
 
-      <section className="grid gap-12 border-t border-gold/15 px-5 py-20 sm:px-10 lg:grid-cols-12 lg:gap-10 lg:py-28 lg:pl-24">
-        <div className="space-y-10 lg:col-span-4">
-          <div>
-            <p className="eyebrow mb-3">Call</p>
-            <a href={links.phone} className="link-line font-display text-3xl">
-              {info.phone}
-            </a>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Email</p>
-            <a href={links.email} className="link-line font-display text-xl text-gold-soft hover:text-gold transition-colors">
-              {info.email}
-            </a>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Hours</p>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5">
-              {hours.map((h) => (
-                <div key={h.day} className="contents">
-                  <dt className="text-cream/65">{h.day}</dt>
-                  <dd className={h.time === "Closed" ? "text-cream/55" : "text-cream/90"}>{h.time}</dd>
+      <section className="border-t border-gold/15 px-5 py-20 sm:px-10 lg:px-20 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+            {/* Left: Interactive Guest Contact Form */}
+            <div className="lg:col-span-7">
+              <ContactForm />
+            </div>
+
+            {/* Right: Direct Information, Hours & Map */}
+            <div className="space-y-8 lg:col-span-5">
+              <div className="rounded-2xl border border-cream/15 bg-night/50 p-6 sm:p-8 backdrop-blur-md space-y-7 shadow-xl">
+                <div>
+                  <p className="eyebrow mb-2 text-gold">Direct Line</p>
+                  <a href={links.phone} className="link-line font-display text-2xl sm:text-3xl text-cream hover:text-gold transition-colors">
+                    {info.phone}
+                  </a>
                 </div>
-              ))}
-            </dl>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Order & events</p>
-            <div className="flex flex-col gap-1.5">
-              <a href={links.order} target="_blank" rel="noreferrer" className="link-line w-fit text-cream/85">
-                Order online (Toast) ↗
-              </a>
-              <a href="/private-dining" className="link-line w-fit text-cream/85">
-                Private dining & events
-              </a>
+                <div>
+                  <p className="eyebrow mb-2 text-gold">Email Concierge</p>
+                  <a href={links.email} className="link-line font-display text-xl text-gold-soft hover:text-gold transition-colors">
+                    {info.email}
+                  </a>
+                </div>
+                <div>
+                  <p className="eyebrow mb-3 text-gold">Hours of Hospitality</p>
+                  <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[0.92rem]">
+                    {hours.map((h) => (
+                      <div key={h.day} className="contents">
+                        <dt className="text-cream/70 font-medium">{h.day}</dt>
+                        <dd className={h.time === "Closed" ? "text-gold/60" : "text-cream/90"}>{h.time}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+                <div className="border-t border-cream/10 pt-5">
+                  <p className="eyebrow mb-2 text-gold">Location</p>
+                  <p className="text-cream font-display text-lg">{info.address}</p>
+                  <p className="text-cream/70">{info.city}</p>
+                  <a href={links.directions} target="_blank" rel="noreferrer" className="inline-block mt-3 text-gold hover:underline text-sm font-medium">
+                    Open in Google Maps ↗
+                  </a>
+                </div>
+              </div>
+
+              {/* Map embed */}
+              <div className="relative min-h-[300px] overflow-hidden rounded-2xl border border-gold/20 shadow-xl">
+                <iframe
+                  title={`Map to ${info.name}`}
+                  src={mapSrc}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="absolute inset-0 h-full w-full border-0 [filter:grayscale(0.3)_contrast(1.08)]"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="relative min-h-[360px] overflow-hidden rounded-[1rem_4rem_1rem_4rem] lg:col-span-8 lg:min-h-[520px]">
-          <iframe
-            title={`Map to ${info.name}`}
-            src={mapSrc}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="absolute inset-0 h-full w-full border-0 [filter:grayscale(0.4)_contrast(1.05)]"
-          />
         </div>
       </section>
     </main>

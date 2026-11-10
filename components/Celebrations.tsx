@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useGSAP } from "@/lib/gsap";
 import { setupReveals } from "@/lib/reveal";
+import CipherScramble from "./CipherScramble";
+import Magnetic from "./Magnetic";
 import { TLink } from "./PageTransition";
 import Scene from "./Scene";
 
@@ -25,20 +27,37 @@ export default function Celebrations() {
     >
       <div className="shell grid pt-[30svh] pb-14 lg:grid-cols-12 lg:pb-24">
         <div className="lg:col-span-7">
-          <p data-fade className="scene-label">
-            <span>07</span>Private Dining &amp; Celebrations
+          <p data-fade className="scene-label flex items-center gap-3">
+            <CipherScramble text="07" className="text-gold font-serif" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+            <CipherScramble text="Private Dining & Celebrations" />
           </p>
           <h2 data-split className="t-scene mt-6">
-            Celebrations Deserve Something Extraordinary
+            Celebrations Deserve <br className="hidden sm:inline" />
+            <em className="text-gold-soft font-serif italic">Something Extraordinary</em>
           </h2>
           <p data-fade className="scene-copy mt-7 max-w-[34rem]">
             From birthdays and anniversaries to corporate gatherings and holiday events, Lulu Modern creates memorable
             dining experiences for every occasion.
           </p>
+
+          <div data-fade className="mt-8 flex flex-wrap gap-2.5">
+            {["Seated Dinners · up to 120 Guests", "Standing & Cocktail · 150+", "Full Venue Buy-Out"].map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-gold/30 bg-ink/75 px-3.5 py-1 text-[0.72rem] tracking-wider text-cream/90 backdrop-blur-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
           <div data-fade className="mt-9">
-            <TLink href="/private-dining" className="btn btn-solid">
-              Plan Your Event
-            </TLink>
+            <Magnetic strength={0.4}>
+              <TLink href="/private-dining" className="btn btn-solid shadow-lg shadow-gold/10">
+                Plan Your Event
+              </TLink>
+            </Magnetic>
           </div>
         </div>
       </div>

@@ -105,7 +105,14 @@ export default function Reviews({ scene = false, heading = true }: Props) {
 
         {/* Media mentions: a plain ruled list, read before the guest quotes */}
         {press.length > 0 && (
-          <aside data-press className={heading ? "lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:pt-2" : "lg:col-span-4 lg:col-start-9 lg:pt-2"}>
+          <aside
+            data-press
+            className={
+              heading
+                ? "lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:pt-2"
+                : "order-2 lg:order-2 lg:col-span-5 lg:col-start-8 lg:pt-2"
+            }
+          >
             <p className="eyebrow">Media mentions</p>
             <ul className="mt-6 border-t border-cream/15">
               {press.map((p) => (
@@ -134,7 +141,14 @@ export default function Reviews({ scene = false, heading = true }: Props) {
           </aside>
         )}
 
-        <div data-quotes className="lg:col-span-7">
+        <div
+          data-quotes
+          className={
+            heading
+              ? "lg:col-span-7"
+              : "order-1 lg:order-1 lg:col-span-7 lg:col-start-1"
+          }
+        >
           <p data-fade className="eyebrow">
             Guest testimonials
           </p>

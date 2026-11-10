@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion, setupReveals } from "@/lib/reveal";
 import { info, links } from "@/lib/content";
+import Magnetic from "./Magnetic";
 import Seal3D from "./three/Seal3D";
 
 /** Final CTA from the homepage doc: "Experience Lulu Modern", closing every page. */
@@ -51,8 +52,16 @@ export default function Visit() {
   return (
     <footer ref={root} id="visit" className="shell relative overflow-hidden bg-night py-20 lg:py-32">
       <div>
-        {/* The Lulu seal as a 3D object: gold raised on navy lacquer, turning as the page arrives */}
-        <Seal3D className="pointer-events-none mx-auto -mt-6 aspect-[3/2] w-[min(64vw,19rem)] lg:-mt-10 lg:w-[clamp(17rem,21vw,27rem)]" />
+        {/* Interactive 3D Lulu Imperial Seal: gold raised on navy lacquer, stamps on click */}
+        <div data-cursor="Stamp ✦" className="relative group/seal cursor-pointer select-none">
+          <Seal3D className="mx-auto -mt-6 aspect-[3/2] w-[min(64vw,19rem)] lg:-mt-10 lg:w-[clamp(17rem,21vw,27rem)] transition-transform duration-500 ease-out group-hover/seal:scale-105" />
+          <div className="absolute bottom-2 inset-x-0 text-center pointer-events-none">
+            <span className="text-[0.65rem] tracking-[0.25em] text-gold/60 uppercase opacity-0 transition-opacity duration-300 group-hover/seal:opacity-100">
+              ✦ Click to Stamp ✦
+            </span>
+          </div>
+        </div>
+
         <h2 className="overflow-hidden text-center">
           <span
             data-big-word
@@ -71,22 +80,26 @@ export default function Visit() {
           </div>
 
           <div data-fade className="flex flex-wrap justify-center gap-4">
-            <a
-              href={links.reserve}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-solid text-center min-w-[160px]"
-            >
-              Reserve a Table
-            </a>
-            <a
-              href={links.order}
-              target="_blank"
-              rel="noreferrer"
-              className="btn text-cream text-center min-w-[160px] hover:border-gold"
-            >
-              Order Online
-            </a>
+            <Magnetic strength={0.4}>
+              <a
+                href={links.reserve}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-solid text-center min-w-[160px] shadow-xl shadow-gold/10"
+              >
+                Reserve a Table
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.4}>
+              <a
+                href={links.order}
+                target="_blank"
+                rel="noreferrer"
+                className="btn text-cream text-center min-w-[160px] hover:border-gold"
+              >
+                Order Online
+              </a>
+            </Magnetic>
           </div>
         </div>
 

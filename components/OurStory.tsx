@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useGSAP } from "@/lib/gsap";
 import { setupReveals } from "@/lib/reveal";
+import CipherScramble from "./CipherScramble";
+import Magnetic from "./Magnetic";
 import { TLink } from "./PageTransition";
 import Scene from "./Scene";
 
@@ -25,12 +27,14 @@ export default function OurStory() {
     >
       <div className="shell grid pt-[30svh] pb-14 lg:grid-cols-12 lg:pb-24">
         <div className="lg:col-span-6">
-          <p data-fade className="scene-label">
-            <span>05</span>Our Story
+          <p data-fade className="scene-label flex items-center gap-3">
+            <CipherScramble text="05" className="text-gold font-serif" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+            <CipherScramble text="Our Story" />
           </p>
           <h2 data-split className="t-scene mt-6">
             <span className="block">Rooted in Culture.</span>
-            <span className="block">Inspired by Evolution.</span>
+            <span className="block text-gold-soft italic font-serif">Inspired by Evolution.</span>
           </h2>
           <div data-fade className="mt-7 max-w-[34rem] space-y-4">
             <p className="font-display text-[clamp(1.35rem,1.7vw,2.1rem)] leading-snug">
@@ -42,14 +46,16 @@ export default function OurStory() {
                 restaurant reflects that belief, bringing together authentic flavors, modern creativity, and a dining
                 experience designed to be shared.
               </p>
-              <p>This is more than a restaurant.</p>
+              <p className="text-gold-soft italic font-serif">This is more than a restaurant.</p>
               <p>It’s our interpretation of what modern Asian hospitality can become.</p>
             </div>
           </div>
           <div data-fade className="mt-9">
-            <TLink href="/about" className="btn text-cream">
-              Read Our Story
-            </TLink>
+            <Magnetic strength={0.35}>
+              <TLink href="/about" className="btn text-cream hover:border-gold">
+                Read Our Story
+              </TLink>
+            </Magnetic>
           </div>
         </div>
       </div>

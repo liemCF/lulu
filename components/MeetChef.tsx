@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useGSAP } from "@/lib/gsap";
 import { setupReveals } from "@/lib/reveal";
+import CipherScramble from "./CipherScramble";
+import Magnetic from "./Magnetic";
 import { TLink } from "./PageTransition";
 import Scene from "./Scene";
 
@@ -34,14 +36,24 @@ export default function MeetChef({ id = "chef", showCta = true, number = "04" }:
       shade="right"
     >
       <div className="shell grid pt-[30svh] pb-14 lg:grid-cols-12 lg:pb-24">
-        <div className="lg:col-span-5 lg:col-start-8">
-          <p data-fade className="scene-label">
-            <span>{number}</span>Meet the Chef
+        <div className="lg:col-span-6 lg:col-start-7">
+          <p data-fade className="scene-label flex items-center gap-3">
+            <CipherScramble text={number} className="text-gold font-serif" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+            <CipherScramble text="Meet the Chef" />
           </p>
           <h2 data-split className="t-scene mt-6">
             Leading the Next Chapter of Lulu Modern
           </h2>
-          <div data-fade className="scene-copy mt-7 max-w-[34rem] space-y-4">
+
+          <div data-fade className="mt-4 flex items-center gap-3">
+            <span className="h-px w-8 bg-gold/40" />
+            <span className="text-[0.78rem] font-medium tracking-[0.2em] text-gold uppercase">
+              Executive Chef Natalie Deprez
+            </span>
+          </div>
+
+          <div data-fade className="scene-copy mt-6 max-w-[34rem] space-y-4">
             <p>
               Under the direction of Executive Chef Natalie Deprez, Lulu Modern is entering a new era of culinary
               creativity.
@@ -53,9 +65,11 @@ export default function MeetChef({ id = "chef", showCta = true, number = "04" }:
           </div>
           {showCta && (
             <div data-fade className="mt-9">
-              <TLink href="/about#chef" className="btn text-cream">
-                Meet Our Chef
-              </TLink>
+              <Magnetic strength={0.35}>
+                <TLink href="/about#chef" className="btn text-cream hover:border-gold">
+                  Meet Our Chef
+                </TLink>
+              </Magnetic>
             </div>
           )}
         </div>

@@ -305,6 +305,14 @@ html:not(.intro-done) .intro-hide {
   50% { background-position: 0% 0; }
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
 /* Custom cursor: only on fine pointers. */
 .cursor {
   /* Hidden until Cursor.tsx switches it on, so it never sits in the corner for reduced motion or before hydration. */

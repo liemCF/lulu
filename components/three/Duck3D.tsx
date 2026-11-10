@@ -273,7 +273,17 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
       let lx = 0;
       let ly = 0;
       let shown = false;
-      const ignite = { power: 0 };
+      const ignite = { power: 0, boost: 0 };
+      
+      // Drag rotation state
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragRotX = 0;
+      let dragRotY = 0;
+      let targetRotX = 0;
+      let targetRotY = 0;
+
       const st = ScrollTrigger.create({
         trigger: el,
         start: "top bottom",
@@ -283,6 +293,7 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
       });
       visible = st.isActive;
       progress = st.progress;
+      
       // The duck is set alight as it arrives.
       const light = ScrollTrigger.create({
         trigger: el,
@@ -290,31 +301,68 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         once: true,
         onEnter: () => gsap.to(ignite, { power: 1, duration: 2.4, ease: "power2.out" }),
       });
+
       const move = (e: PointerEvent) => {
         px = (e.clientX / window.innerWidth) * 2 - 1;
         py = (e.clientY / window.innerHeight) * 2 - 1;
+        if (isDragging) {
+          const deltaX = e.clientX - dragStartX;
+          const deltaY = e.clientY - dragStartY;
+          targetRotY = dragRotY + deltaX * 0.008;
+          targetRotX = Math.max(-0.6, Math.min(0.6, dragRotX + deltaY * 0.006));
+        }
       };
+
+      const handlePointerDown = (e: PointerEvent) => {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragRotX = targetRotX;
+        dragRotY = targetRotY;
+      };
+
+      const handlePointerUp = () => {
+        isDragging = false;
+      };
+
+      // Click / tap to Flambé burst
+      const triggerFlambe = () => {
+        gsap.killTweensOf(ignite);
+        gsap.timeline()
+          .to(ignite, { boost: 1.8, duration: 0.35, ease: "expo.out" })
+          .to(ignite, { boost: 0, duration: 2.2, ease: "power2.out" });
+      };
+
+      el.addEventListener("pointerdown", handlePointerDown);
+      window.addEventListener("pointerup", handlePointerUp);
+      el.addEventListener("click", triggerFlambe);
       if (!calm) window.addEventListener("pointermove", move);
 
       const start = performance.now();
       const tick = () => {
         if (!visible || document.hidden) return;
         const t = (performance.now() - start) / 1000;
-        // One and a quarter turns across the scroll, plus a slow idle drift so it is never frozen.
-        turn.rotation.y = progress * Math.PI * 2.5 + t * 0.12 - 0.5;
-        lx += (py * 0.12 - lx) * 0.06;
+        
+        // Combine scroll progress rotation with user drag rotation
+        dragRotY += (targetRotY - dragRotY) * 0.08;
+        dragRotX += (targetRotX - dragRotX) * 0.08;
+
+        turn.rotation.y = progress * Math.PI * 2.5 + t * 0.12 - 0.5 + dragRotY;
+        lx += (py * 0.12 + dragRotX - lx) * 0.06;
         ly += (px * 0.28 - ly) * 0.06;
         lean.rotation.set(lx, ly, Math.sin(t * 0.6) * 0.02);
         lean.position.y = Math.sin(t * 0.8) * 0.05 + 0.25;
 
+        const effectivePower = Math.min(2.5, ignite.power + ignite.boost);
         const flick = 0.78 + 0.22 * Math.sin(t * 11.0) * Math.sin(t * 7.3 + 1.0) + 0.1 * Math.sin(t * 23.0);
-        fire.intensity = 13 * flick * ignite.power;
+        fire.intensity = (13 + ignite.boost * 18) * flick * effectivePower;
         flameMats.forEach((m) => {
-          m.uniforms.uTime.value = t;
-          m.uniforms.uPower.value = ignite.power;
+          m.uniforms.uTime.value = t * (1.0 + ignite.boost * 0.8);
+          m.uniforms.uPower.value = effectivePower;
         });
-        emberMat.uniforms.uTime.value = t;
-        embers.visible = ignite.power > 0.05;
+        emberMat.uniforms.uTime.value = t * (1.0 + ignite.boost * 1.2);
+        emberMat.uniforms.uSize.value = (60 + ignite.boost * 60) * renderer.getPixelRatio() * (el.clientHeight / 800);
+        embers.visible = effectivePower > 0.05;
         renderer.render(scene, camera);
         if (!shown) {
           shown = true;
@@ -328,6 +376,9 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         st.kill();
         light.kill();
         ro.disconnect();
+        el.removeEventListener("pointerdown", handlePointerDown);
+        window.removeEventListener("pointerup", handlePointerUp);
+        el.removeEventListener("click", triggerFlambe);
         window.removeEventListener("pointermove", move);
         flameGeo.dispose();
         flameMats.forEach((m) => m.dispose());
