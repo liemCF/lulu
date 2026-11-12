@@ -60,8 +60,8 @@ export default function SignatureDish() {
         </div>
       </div>
 
-      <div className="shell relative grid pt-[60svh] pb-14 lg:grid-cols-12 lg:pt-[20svh] lg:pb-20">
-        <div className="lg:col-span-6">
+      <div className="shell pointer-events-none relative grid pt-[13svh] pb-14 lg:grid-cols-12 lg:pt-[20svh] lg:pb-20">
+        <div className="pointer-events-auto lg:col-span-6">
           <p data-fade className="scene-label flex items-center gap-3">
             <CipherScramble text="02" className="text-gold font-serif" />
             <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />

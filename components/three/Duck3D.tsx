@@ -24,6 +24,7 @@ precision highp float;
 uniform float uTime;
 uniform float uSeed;
 uniform float uPower;
+uniform float uBoost;
 varying vec2 vUv;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -48,8 +49,9 @@ void main() {
   float x = (uv.x - 0.5 + sway) * (1.0 + uv.y * 1.6);
   float body = 1.0 - smoothstep(0.0, 0.5, abs(x));
   float n = fbm(vec2(uv.x * 4.5 + uSeed * 3.0, uv.y * 3.2 - t));
-  float flame = body * (1.0 - uv.y) * 1.25 + n * 1.05 - uv.y * 1.0 - 0.62;
-  flame = smoothstep(0.0, 0.8, flame) * uPower * 0.5;
+  // A flambé burst (uBoost) lets the tongues climb much higher and fill out.
+  float flame = body * (1.0 - uv.y) * 1.25 + n * 1.05 - uv.y * (1.0 - uBoost * 0.5) - 0.54 + uBoost * 0.3;
+  flame = min(smoothstep(0.0, 0.8, flame) * uPower * (0.6 + uBoost * 0.1), 1.0);
   // Fade the sheet's own edges so no rectangle shows.
   flame *= smoothstep(0.0, 0.06, uv.y) * smoothstep(0.0, 0.12, uv.x) * smoothstep(1.0, 0.88, uv.x);
 
@@ -210,7 +212,7 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         const mat = new THREE.ShaderMaterial({
           vertexShader: FLAME_VERT,
           fragmentShader: FLAME_FRAG,
-          uniforms: { uTime: { value: 0 }, uSeed: { value: i * 0.37 + 0.1 }, uPower: { value: 0 } },
+          uniforms: { uTime: { value: 0 }, uSeed: { value: i * 0.37 + 0.1 }, uPower: { value: 0 }, uBoost: { value: 0 } },
           transparent: true,
           depthWrite: false,
           side: THREE.DoubleSide,
@@ -302,12 +304,20 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         onEnter: () => gsap.to(ignite, { power: 1, duration: 2.4, ease: "power2.out" }),
       });
 
+      // Horizontal drags turn the duck; vertical swipes still scroll the page on touch screens.
+      el.style.touchAction = "pan-y";
+      let moved = 0;
+
       const move = (e: PointerEvent) => {
-        px = (e.clientX / window.innerWidth) * 2 - 1;
-        py = (e.clientY / window.innerHeight) * 2 - 1;
+        // The hover lean is for fine pointers; dragging works for mouse and finger alike.
+        if (!calm) {
+          px = (e.clientX / window.innerWidth) * 2 - 1;
+          py = (e.clientY / window.innerHeight) * 2 - 1;
+        }
         if (isDragging) {
           const deltaX = e.clientX - dragStartX;
           const deltaY = e.clientY - dragStartY;
+          moved = Math.max(moved, Math.hypot(deltaX, deltaY));
           targetRotY = dragRotY + deltaX * 0.008;
           targetRotX = Math.max(-0.6, Math.min(0.6, dragRotX + deltaY * 0.006));
         }
@@ -315,30 +325,43 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
 
       const handlePointerDown = (e: PointerEvent) => {
         isDragging = true;
+        moved = 0;
         dragStartX = e.clientX;
         dragStartY = e.clientY;
         dragRotX = targetRotX;
         dragRotY = targetRotY;
       };
 
-      const handlePointerUp = () => {
-        isDragging = false;
+      // Flambé: the flames surge up around the duck, then settle. Only the burst is restarted,
+      // so tapping while the duck is first being lit cannot leave it unlit.
+      const flambe = gsap
+        .timeline({ paused: true })
+        .to(ignite, { boost: 1, duration: 0.3, ease: "expo.out" })
+        .to(ignite, { boost: 0, duration: 2.6, ease: "power2.inOut" }, ">0.5");
+      const triggerFlambe = () => {
+        gsap.to(ignite, { power: 1, duration: 0.4, overwrite: "auto" });
+        flambe.restart();
       };
 
-      // Click / tap to Flambé burst
-      const triggerFlambe = () => {
-        gsap.killTweensOf(ignite);
-        gsap.timeline()
-          .to(ignite, { boost: 1.8, duration: 0.35, ease: "expo.out" })
-          .to(ignite, { boost: 0, duration: 2.2, ease: "power2.out" });
+      const handlePointerUp = () => {
+        // A press that barely moved is a tap; a real drag only turns the duck.
+        if (isDragging && moved < 8) triggerFlambe();
+        isDragging = false;
+      };
+      const handleKey = (e: KeyboardEvent) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        triggerFlambe();
       };
 
       el.addEventListener("pointerdown", handlePointerDown);
       window.addEventListener("pointerup", handlePointerUp);
-      el.addEventListener("click", triggerFlambe);
-      if (!calm) window.addEventListener("pointermove", move);
+      window.addEventListener("pointercancel", handlePointerUp);
+      el.addEventListener("keydown", handleKey);
+      window.addEventListener("pointermove", move);
 
       const start = performance.now();
+      let flameClock = 0;
       const tick = () => {
         if (!visible || document.hidden) return;
         const t = (performance.now() - start) / 1000;
@@ -353,15 +376,20 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         lean.rotation.set(lx, ly, Math.sin(t * 0.6) * 0.02);
         lean.position.y = Math.sin(t * 0.8) * 0.05 + 0.25;
 
-        const effectivePower = Math.min(2.5, ignite.power + ignite.boost);
+        const effectivePower = ignite.power * (1 + ignite.boost * 0.3);
         const flick = 0.78 + 0.22 * Math.sin(t * 11.0) * Math.sin(t * 7.3 + 1.0) + 0.1 * Math.sin(t * 23.0);
-        fire.intensity = (13 + ignite.boost * 18) * flick * effectivePower;
+        fire.intensity = (13 + ignite.boost * 40) * flick * ignite.power;
+        // During a burst the sheets grow taller and wider so the fire wraps the whole duck.
+        flames.scale.set(1 + ignite.boost * 0.35, 1 + ignite.boost * 0.55, 1 + ignite.boost * 0.35);
+        // Flame time is accumulated, so speeding it up for a burst never makes the flames jump.
+        flameClock += (1 / 60) * (1 + ignite.boost * 1.4);
         flameMats.forEach((m) => {
-          m.uniforms.uTime.value = t * (1.0 + ignite.boost * 0.8);
+          m.uniforms.uTime.value = flameClock;
           m.uniforms.uPower.value = effectivePower;
+          m.uniforms.uBoost.value = ignite.boost;
         });
-        emberMat.uniforms.uTime.value = t * (1.0 + ignite.boost * 1.2);
-        emberMat.uniforms.uSize.value = (60 + ignite.boost * 60) * renderer.getPixelRatio() * (el.clientHeight / 800);
+        emberMat.uniforms.uTime.value = flameClock;
+        emberMat.uniforms.uSize.value = (60 + ignite.boost * 70) * renderer.getPixelRatio() * (el.clientHeight / 800);
         embers.visible = effectivePower > 0.05;
         renderer.render(scene, camera);
         if (!shown) {
@@ -378,8 +406,10 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
         ro.disconnect();
         el.removeEventListener("pointerdown", handlePointerDown);
         window.removeEventListener("pointerup", handlePointerUp);
-        el.removeEventListener("click", triggerFlambe);
+        window.removeEventListener("pointercancel", handlePointerUp);
+        el.removeEventListener("keydown", handleKey);
         window.removeEventListener("pointermove", move);
+        flambe.kill();
         flameGeo.dispose();
         flameMats.forEach((m) => m.dispose());
         emberGeo.dispose();
@@ -412,8 +442,9 @@ export default function Duck3D({ src = "/models/duck.glb", className }: Props) {
   return (
     <div
       ref={wrap}
-      role="img"
-      aria-label="The Flaming Peking Duck, turning slowly over the flames"
+      role="button"
+      tabIndex={0}
+      aria-label="The Flaming Peking Duck in 3D. Drag to turn it, press to flambé"
       className={className}
       style={{ opacity: 0 }}
     />
